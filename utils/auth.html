@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script>
+            window.hapi = '';
+            document.addEventListener('message', e => {
+                // alert('from auth' + JSON.stringify(e.data));
+                switch (e.data.event) {
+                    // case "dark":
+                    //   uiStore.onSetDark(e.data.dark);
+                    //   // alert(`${JSON.stringify(e.data)}::: ===> ${route.name}`);
+                    //   break;
+                    case 'setText':
+                        const {title, description} = e.data.data;
+                        const titleEl = document.getElementById('title');
+                        if (titleEl) {
+                            titleEl.innerText = title;
+                        }
+                        const descriptionEl = document.getElementById('description');
+                        if (descriptionEl) {
+                            descriptionEl.innerText = description;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            });
+            const onAuthOauth = service => {
+                if (!window.hapi) {
+                    return;
+                }
+
+                const path = `${window.hapi}/oauth/${service}`;
+                // alert(path);
+                window.location.href = path;
+            };
+        </script>
+        <style>
+            .wrapper {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .flex {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .link {
+                font-weight: bold;
+                font-size: 20px;
+                color: #555555;
+                background: #eeeeee;
+                padding: 15px;
+                border-radius: 15px;
+                margin-bottom: 15px;
+                width: 100%;
+                outline: none;
+                border: 0;
+            }
+            button.link:hover {
+                background-color: #ddd;
+            }
+            h1.title {
+                font-size: 20px;
+                padding-bottom: 0px;
+                margin-bottom: 0px;
+            }
+            p.description {
+                padding-top: 5px;
+                margin-top: 5px;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <h1 id="title" class="title">t</h1>
+            <p id="description" class="description">d</p>
+
+            <div id="buttons">
+                <button type="button" class="link flex" onClick="onAuthOauth('google')">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="50px"
+                        height="50px"
+                        viewBox="0 0 50 50"
+                        version="1.1">
+                        <g id="surface1">
+                            <path
+                                style="
+                                    stroke: none;
+                                    fill-rule: evenodd;
+                                    fill: rgb(98.431373%, 73.72549%, 1.960784%);
+                                    fill-opacity: 1;
+                                "
+                                d="M 10.757812 25 C 10.757812 23.414062 11.019531 21.890625 11.492188 20.460938 L 3.253906 14.171875 C 1.648438 17.429688 0.742188 21.105469 0.742188 25 C 0.742188 28.890625 1.648438 32.5625 3.25 35.820312 L 11.484375 29.519531 C 11.019531 28.097656 10.757812 26.578125 10.757812 25 " />
+                            <path
+                                style="
+                                    stroke: none;
+                                    fill-rule: evenodd;
+                                    fill: rgb(92.156863%, 26.27451%, 20.784314%);
+                                    fill-opacity: 1;
+                                "
+                                d="M 25.222656 10.554688 C 28.671875 10.554688 31.789062 11.777344 34.234375 13.777344 L 41.355469 6.667969 C 37.015625 2.890625 31.453125 0.554688 25.222656 0.554688 C 15.546875 0.554688 7.234375 6.085938 3.253906 14.171875 L 11.492188 20.460938 C 13.390625 14.699219 18.800781 10.554688 25.222656 10.554688 " />
+                            <path
+                                style="
+                                    stroke: none;
+                                    fill-rule: evenodd;
+                                    fill: rgb(20.392157%, 65.882353%, 32.54902%);
+                                    fill-opacity: 1;
+                                "
+                                d="M 25.222656 39.445312 C 18.800781 39.445312 13.390625 35.300781 11.492188 29.539062 L 3.253906 35.828125 C 7.234375 43.914062 15.546875 49.445312 25.222656 49.445312 C 31.191406 49.445312 36.894531 47.324219 41.171875 43.351562 L 33.351562 37.308594 C 31.144531 38.695312 28.367188 39.445312 25.222656 39.445312 " />
+                            <path
+                                style="
+                                    stroke: none;
+                                    fill-rule: evenodd;
+                                    fill: rgb(25.882353%, 52.156863%, 95.686275%);
+                                    fill-opacity: 1;
+                                "
+                                d="M 48.589844 25 C 48.589844 23.554688 48.367188 22 48.03125 20.554688 L 25.222656 20.554688 L 25.222656 30 L 38.351562 30 C 37.695312 33.21875 35.910156 35.695312 33.351562 37.308594 L 41.171875 43.351562 C 45.664062 39.179688 48.589844 32.96875 48.589844 25 " />
+                        </g>
+                    </svg>
+                    Goggle
+                </button>
+                <!-- <button type="button" class="flex link" onClick="onAuthOauth('vk')">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="50px"
+                        height="50px"
+                        viewBox="0 0 50 50"
+                        version="1.1">
+                        <g id="surface1">
+                            <path
+                                style="
+                                    stroke: none;
+                                    fill-rule: nonzero;
+                                    fill: rgb(15.294118%, 52.941176%, 96.078431%);
+                                    fill-opacity: 1;
+                                "
+                                d="M 50 25 C 50 38.808594 38.808594 50 25 50 C 11.191406 50 0 38.808594 0 25 C 0 11.191406 11.191406 0 25 0 C 38.808594 0 50 11.191406 50 25 Z M 50 25 " />
+                            <path
+                                style="stroke: none; fill-rule: nonzero; fill: rgb(100%, 100%, 100%); fill-opacity: 1"
+                                d="M 28.605469 13.257812 L 21.394531 13.257812 C 14.816406 13.257812 13.257812 14.816406 13.257812 21.394531 L 13.257812 28.605469 C 13.257812 35.183594 14.816406 36.742188 21.394531 36.742188 L 28.605469 36.742188 C 35.183594 36.742188 36.742188 35.183594 36.742188 28.605469 L 36.742188 21.394531 C 36.742188 14.816406 35.167969 13.257812 28.605469 13.257812 Z M 32.21875 30.015625 L 30.507812 30.015625 C 29.863281 30.015625 29.664062 29.5 28.503906 28.324219 C 27.492188 27.347656 27.046875 27.214844 26.792969 27.214844 C 26.445312 27.214844 26.347656 27.3125 26.347656 27.792969 L 26.347656 29.335938 C 26.347656 29.75 26.214844 29.996094 25.121094 29.996094 C 23.3125 29.996094 21.308594 28.902344 19.898438 26.863281 C 17.777344 23.882812 17.199219 21.644531 17.199219 21.179688 C 17.199219 20.929688 17.296875 20.699219 17.777344 20.699219 L 19.488281 20.699219 C 19.917969 20.699219 20.082031 20.898438 20.25 21.363281 C 21.09375 23.800781 22.503906 25.9375 23.082031 25.9375 C 23.296875 25.9375 23.394531 25.839844 23.394531 25.289062 L 23.394531 22.769531 C 23.328125 21.609375 22.714844 21.511719 22.714844 21.097656 C 22.714844 20.898438 22.882812 20.699219 23.148438 20.699219 L 25.832031 20.699219 C 26.199219 20.699219 26.328125 20.898438 26.328125 21.328125 L 26.328125 24.726562 C 26.328125 25.089844 26.496094 25.222656 26.59375 25.222656 C 26.808594 25.222656 26.992188 25.089844 27.390625 24.695312 C 28.617188 23.316406 29.496094 21.195312 29.496094 21.195312 C 29.613281 20.949219 29.808594 20.714844 30.242188 20.714844 L 31.949219 20.714844 C 32.464844 20.714844 32.582031 20.980469 32.464844 21.347656 C 32.25 22.339844 30.160156 25.289062 30.160156 25.289062 C 29.976562 25.589844 29.910156 25.722656 30.160156 26.054688 C 30.34375 26.300781 30.941406 26.816406 31.335938 27.28125 C 32.066406 28.109375 32.628906 28.804688 32.777344 29.285156 C 32.949219 29.765625 32.699219 30.015625 32.21875 30.015625 Z M 32.21875 30.015625 " />
+                        </g>
+                    </svg>
+                    VK
+                </button> -->
+            </div>
+        </div>
+    </body>
+</html>

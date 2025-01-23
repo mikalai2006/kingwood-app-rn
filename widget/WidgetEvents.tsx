@@ -277,6 +277,29 @@ export default function WidgetEvents() {
                 );
                 break;
 
+              case "object":
+                nameOperation = "object";
+                if (data.method === "DELETE") {
+                  realm.delete(
+                    realm.objectForPrimaryKey(
+                      "ObjectsSchema",
+                      new BSON.ObjectId(data.content.id)
+                    )
+                  );
+                } else {
+                  realm.create(
+                    "ObjectsSchema",
+                    {
+                      ...data.content,
+                      _id: new BSON.ObjectId(
+                        data.content.id || data.content._id
+                      ),
+                    },
+                    UpdateMode.Modified
+                  );
+                }
+                break;
+
               case "task":
                 nameOperation = "task";
                 if (data.method === "DELETE") {

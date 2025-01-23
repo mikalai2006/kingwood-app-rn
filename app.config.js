@@ -20,7 +20,7 @@ export default {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
-    package: "com.anonymous.kingwood",
+    package: "com.mikalai2006.kingwood",
     userInterfaceStyle: "automatic",
     googleServicesFile:
       process.env.GOOGLE_SERVICES_JSON || "./google-services.json",

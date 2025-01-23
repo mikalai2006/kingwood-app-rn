@@ -1,6 +1,6 @@
 export default {
-  name: "kingwood",
-  slug: "kingwoodapp",
+  name: "kingwood-app-rn",
+  slug: "kingwood-app-rn",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
@@ -48,7 +48,8 @@ export default {
   },
   extra: {
     eas: {
-      projectId: "9efc7b1e-694e-4493-b25a-9f33352ea3dc",
+      projectId: "ee1c0c54-2ded-4af3-9dfb-a273f41f1ba0",
     },
   },
+  owner: "mikalai2006",
 };

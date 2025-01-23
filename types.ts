@@ -353,6 +353,10 @@ export interface IUser {
   oklad: number;
   // workes: number;
   post: IPost;
+  auth: {
+    login: string;
+    pushToken: string;
+  };
   images: IImage[];
   lastTime: Date;
   createdAt: Date;

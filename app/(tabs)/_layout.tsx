@@ -77,6 +77,9 @@ export default function TabLayout() {
           initialRouteName="index"
           screenOptions={{
             tabBarStyle: {
+              // display: userFromStore.roleObject.value.includes("list-create")
+              //   ? "none"
+              //   : "flex",
               // minHeight: 60,
               borderTopWidth: 0,
               borderBottomWidth: 0,
@@ -118,6 +121,9 @@ export default function TabLayout() {
           <Tabs.Screen
             name="finance"
             options={{
+              href: ["admin", "boss"].includes(userFromStore.roleObject.code)
+                ? null
+                : "/(tabs)",
               title: t("title.finance"),
               // tabBarActiveTintColor: Colors.white,
               // tabBarInactiveTintColor: Colors.white,
@@ -142,6 +148,9 @@ export default function TabLayout() {
           <Tabs.Screen
             name="index"
             options={{
+              href: ["admin", "boss"].includes(userFromStore.roleObject.code)
+                ? null
+                : "/(tabs)",
               title:
                 (activeTaskWorkerFromStore &&
                   activeTaskWorkerFromStore?.status == "process") ||

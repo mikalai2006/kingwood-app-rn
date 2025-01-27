@@ -23,51 +23,48 @@ const UserSettingAvatar = () => {
   const userFromStore = useAppSelector(user);
   const tokensFromStore = useAppSelector(tokens);
 
-  const handleUploadPhoto = useCallback(
-    async (response: ImagePickerResponse) => {
-      if (!userFromStore) {
-        return;
-      }
+  const handleUploadPhoto = useCallback(async (response: any) => {
+    if (!userFromStore) {
+      return;
+    }
 
-      const images = response.assets;
-      if (!images?.length) {
-        return;
-      }
+    const images = response.assets;
+    if (!images?.length) {
+      return;
+    }
 
-      const data = new FormData();
+    const data: any = new FormData();
 
-      data.append("images", {
-        name: images[0].fileName,
-        type: images[0].mimeType, //.type,
-        uri: images[0].uri,
-      });
-      data.append("service", "user");
-      data.append("serviceId", userFromStore.id);
+    data.append("images", {
+      name: images[0].fileName,
+      type: images[0].mimeType, //.type,
+      uri: images[0].uri,
+    });
+    data.append("service", "user");
+    data.append("serviceId", userFromStore.id);
 
-      if (!tokensFromStore) {
-        return;
-      }
-      isWriteConsole && console.log("fetch: ", `${hostAPI}/image`);
+    if (!tokensFromStore) {
+      return;
+    }
+    isWriteConsole && console.log("fetch: ", `${hostAPI}/image`);
 
-      await fetch(`${hostAPI}/user/${userFromStore.id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${tokensFromStore.access_token}`,
-          "Access-Control-Allow-Origin-Type": "*",
-        },
-        body: data,
+    await fetch(`${hostAPI}/user/${userFromStore.id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${tokensFromStore.access_token}`,
+        "Access-Control-Allow-Origin-Type": "*",
+      },
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        isWriteConsole && console.log("response", response);
+        // dispatch(setUser({ ...userFromStore, images: [...response] }));
       })
-        .then((res) => res.json())
-        .then((response) => {
-          isWriteConsole && console.log("response", response);
-          // dispatch(setUser({ ...userFromStore, images: [...response] }));
-        })
-        .catch((error) => {
-          isWriteConsole && console.log("error", error);
-        });
-    },
-    []
-  );
+      .catch((error) => {
+        isWriteConsole && console.log("error", error);
+      });
+  }, []);
 
   // const onResponse = useCallback(
   //   (response) => {
@@ -145,24 +142,24 @@ const UserSettingAvatar = () => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View className="bg-s-200 dark:bg-s-800 opacity-90 flex-1 p-6">
-          <View className="flex gap-4 bg-white rounded-lg p-4">
-            <RTitle text="Изменение аватара" />
+        <View className="bg-s-200 dark:bg-s-950 opacity-90 flex-1 p-6">
+          <View className="flex gap-4 bg-white dark:bg-s-800 rounded-lg p-4">
+            <RTitle text={t("title.changeAva")} />
             <UIButton
               type="secondary"
-              text="goPhoto"
+              text={t("goPhoto")}
               icon="iCamera"
               onPress={goPhoto}
             />
             <UIButton
               type="secondary"
-              text="pickImage"
+              text={t("pickImage")}
               icon="iImage"
               onPress={pickImage}
             />
             <UIButton
               type="link"
-              text="close"
+              text={t("button.cancel")}
               icon="iClose"
               onPress={() => setModalVisible(false)}
             />

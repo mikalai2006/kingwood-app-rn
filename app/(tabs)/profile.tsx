@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Alert } from "react-native";
 
 // import { hostAPI } from "@/utils/global";
 // import * as WebBrowser from "expo-web-browser";
@@ -41,6 +41,22 @@ export default function TabProfileScreen() {
     dispatch(setActiveTaskWorker(null));
 
     onLogout();
+  };
+
+  const alertLogout = () => {
+    Alert.alert(t("info.exitApp"), t("info.exitAppDescription"), [
+      {
+        text: t("button.no"),
+        onPress: () => {},
+        style: "cancel",
+      },
+      {
+        text: t("button.yes"),
+        onPress: () => {
+          logout();
+        },
+      },
+    ]);
   };
 
   const post = useObject(PostSchema, new BSON.ObjectId(userFromStore?.postId));
@@ -91,15 +107,19 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
-                  <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
-                    {t(`typePay.${userFromStore.typePay}`)}
-                  </Text>
-                  <Text className="text-lg font-bold text-p-800 dark:text-p-200">
-                    {userFromStore?.oklad}{" "}
-                    {getNoun(userFromStore?.oklad, "₽", "₽", "₽")}
-                  </Text>
-                </View>
+                {!["admin", "boss"].includes(
+                  userFromStore.roleObject?.code
+                ) && (
+                  <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
+                    <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
+                      {t(`typePay.${userFromStore.typePay}`)}
+                    </Text>
+                    <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                      {userFromStore?.oklad}{" "}
+                      {getNoun(userFromStore?.oklad, "₽", "₽", "₽")}
+                    </Text>
+                  </View>
+                )}
 
                 <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
                   <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
@@ -122,21 +142,24 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="py-2">
-                  <UIButton
-                    type="link"
-                    onPress={() => {
-                      router.push("/(tabs)/order/completed");
-                    }}
-                  >
-                    <View className="flex-row gap-4">
-                      <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
-                        {t("button.completedTask")}
-                      </Text>
-                      <SIcon path="iChevronRight" size={20} />
-                    </View>
-                  </UIButton>
-                  {/* <UIButton
+                {!["admin", "boss"].includes(
+                  userFromStore.roleObject?.code
+                ) && (
+                  <View className="py-2">
+                    <UIButton
+                      type="link"
+                      onPress={() => {
+                        router.push("/(tabs)/order/completed");
+                      }}
+                    >
+                      <View className="flex-row gap-4">
+                        <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                          {t("button.completedTask")}
+                        </Text>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
+                    </UIButton>
+                    {/* <UIButton
                     type="link"
                     onPress={() => {
                       router.navigate({
@@ -154,7 +177,8 @@ export default function TabProfileScreen() {
                       <SIcon path="iChevronRight" size={20} />
                     </View>
                   </UIButton> */}
-                </View>
+                  </View>
+                )}
 
                 <View className="py-2">
                   <UIButton
@@ -179,7 +203,7 @@ export default function TabProfileScreen() {
               </Card> */}
               <View className="mt-4">
                 <Card>
-                  <UIButton type="link" onPress={logout}>
+                  <UIButton type="link" onPress={alertLogout}>
                     <View className="flex flex-row items-center gap-4">
                       <Text className="text-red-800 dark:text-red-200 text-center text-xl">
                         Выйти из аккаунта

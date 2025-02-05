@@ -17,6 +17,7 @@ import { OrderSchema } from "@/schema";
 import OrderObject from "@/components/order/OrderObject";
 import { useTranslation } from "react-i18next";
 import OrderTasks from "@/components/order/OrderTasks";
+import { ObjectsSchema } from "@/schema/ObjectsSchema";
 
 export default function OrderIdScreen() {
   const { colorScheme } = useColorScheme();
@@ -34,12 +35,17 @@ export default function OrderIdScreen() {
   });
 
   const allOrders = useQuery(OrderSchema);
+  const allObjects = useQuery(ObjectsSchema);
 
   const currentOrder = useMemo(
     () => allOrders.find((x) => x._id.toString() === id),
     [id]
   );
 
+  const object = useMemo(
+    () => allObjects.find((x) => x._id.toString() === currentOrder?.objectId),
+    [id, currentOrder?.objectId]
+  );
   const image = useMemo(
     () => null, //(userFromDB?.images ? userFromDB?.images[0] : null),
     []
@@ -57,7 +63,7 @@ export default function OrderIdScreen() {
             </View>
             <View className="flex-auto">
               <Text className="px-4 text-lg leading-5 text-s-800 dark:text-s-200">
-                {currentOrder?.name}
+                {object?.name}, №{currentOrder?.number} - {currentOrder?.name}
               </Text>
             </View>
           </View>

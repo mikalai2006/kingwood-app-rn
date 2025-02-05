@@ -7,9 +7,10 @@ import { useQuery } from "@realm/react";
 import { NotifySchema } from "@/schema";
 import NotifyItem from "@/components/notify/NotifyItem";
 import useNotify from "@/hooks/useNotify";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-export default function NotifyScreen() {
+export default function MessageOrderScreen() {
   const userFromStore = useAppSelector(user);
 
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export default function NotifyScreen() {
   );
 
   return (
-    // <SafeAreaView style={{ flex: 1 }} className="bg-s-200 dark:bg-s-950">
+    // <SafeAreaView style={{ flex: 1 }} className="">
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       {!notifys.length ? (
         <View>

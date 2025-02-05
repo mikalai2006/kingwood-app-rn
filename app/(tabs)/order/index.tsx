@@ -9,6 +9,22 @@ import UIButton from "@/components/ui/UIButton";
 import TaskWorkerTabs from "@/components/task/TaskWorkerTabs";
 import { useEffect, useState } from "react";
 import TaskWorkerList from "@/components/task/TaskWorkerList";
+import OrderAdminTabs from "@/components/order/admin/OrderAdminTabs";
+import OrderAdminList from "@/components/order/admin/OrderAdminList";
+
+export interface IAdminOrderParams {
+  status?: number;
+  montajComplete?: number;
+  malyarComplete?: number;
+  stolyarComplete?: number;
+  shlifComplete?: number;
+  goComplete?: number;
+}
+
+export interface IAdminOrder {
+  key: string;
+  params: IAdminOrderParams;
+}
 
 export default function FollowScreen() {
   const userFromStore = useAppSelector(user);
@@ -18,6 +34,13 @@ export default function FollowScreen() {
   const { t } = useTranslation();
 
   const [objectId, setObjectId] = useState("");
+
+  const [tab, setTab] = useState<IAdminOrder>({
+    key: "inWork",
+    params: {
+      status: 1,
+    },
+  });
 
   useEffect(() => {
     if (!objectId && activeTaskWorkerFromStore?.objectId) {
@@ -33,22 +56,41 @@ export default function FollowScreen() {
           <TaskMontajWorkerList />
         ) : ( */}
         {/* <Text>{JSON.stringify(objectId)}</Text> */}
-        <View>
-          <TaskWorkerTabs setObjectId={setObjectId} objectId={objectId} />
-        </View>
-        <View className="flex-1">
-          <TaskWorkerList key={objectId} objectId={objectId} />
-          {/* )} */}
-        </View>
-        <UIButton
-          type="secondary"
-          text={t("button.completedTask")}
-          icon="iChevronRight"
-          startText
-          onPress={() => {
-            router.push("/(tabs)/order/completed");
-          }}
-        />
+        {userFromStore &&
+        ["admin", "boss"].includes(userFromStore?.roleObject.code) ? (
+          <View className="flex-1">
+            <View>
+              {/* <Text>{JSON.stringify(tab)}</Text> */}
+              <OrderAdminTabs tab={tab} setTab={setTab} />
+            </View>
+            <View className="flex-1">
+              <OrderAdminList key={tab.key} params={tab.params} />
+              {/* )} */}
+            </View>
+          </View>
+        ) : (
+          <View className="flex-1">
+            <View>
+              <TaskWorkerTabs setObjectId={setObjectId} objectId={objectId} />
+            </View>
+            <View className="flex-1">
+              <TaskWorkerList key={objectId} objectId={objectId} />
+              {/* )} */}
+            </View>
+          </View>
+        )}
+        {userFromStore &&
+          !["admin", "boss"].includes(userFromStore?.roleObject.code) && (
+            <UIButton
+              type="secondary"
+              text={t("button.completedTask")}
+              icon="iChevronRight"
+              startText
+              onPress={() => {
+                router.push("/(tabs)/order/completed");
+              }}
+            />
+          )}
       </SafeAreaView>
     </View>
   );

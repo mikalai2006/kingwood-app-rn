@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -101,7 +101,7 @@ export default function WidgetEvents() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      Alert.alert("token", token);
+      // Alert.alert("token", token);
       token && onSetExpoPushToken(token);
     });
 
@@ -347,6 +347,32 @@ export default function WidgetEvents() {
                     },
                     UpdateMode.Modified
                   );
+
+                  if (data.content?.object) {
+                    realm.create(
+                      "ObjectsSchema",
+                      {
+                        ...data.content.object,
+                        _id: new BSON.ObjectId(
+                          data.content.object.id || data.content.object._id
+                        ),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+
+                  if (data.content?.order) {
+                    realm.create(
+                      "OrderSchema",
+                      {
+                        ...data.content.order,
+                        _id: new BSON.ObjectId(
+                          data.content.order.id || data.content.order._id
+                        ),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
 
                   onDetectActiveTaskWork(data);
                 }

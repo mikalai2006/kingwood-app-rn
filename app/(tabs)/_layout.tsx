@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import BadgeTabNotify from "@/components/badge/BadgeTabNotify";
 import useNotify from "@/hooks/useNotify";
 import { isWriteConsole } from "@/utils/global";
+import Updater from "@/components/update/Updater";
 
 export default function TabLayout() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -74,7 +75,11 @@ export default function TabLayout() {
       <View className="flex-auto">
         <Tabs
           backBehavior="history"
-          initialRouteName="index"
+          initialRouteName={
+            ["admin", "boss"].includes(userFromStore.roleObject.code)
+              ? "order"
+              : "work"
+          }
           screenOptions={{
             tabBarStyle: {
               // display: userFromStore.roleObject.value.includes("list-create")
@@ -123,7 +128,7 @@ export default function TabLayout() {
             options={{
               href: ["admin", "boss"].includes(userFromStore.roleObject.code)
                 ? null
-                : "/(tabs)",
+                : "/(tabs)/finance",
               title: t("title.finance"),
               // tabBarActiveTintColor: Colors.white,
               // tabBarInactiveTintColor: Colors.white,
@@ -146,11 +151,11 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="index"
+            name="work"
             options={{
               href: ["admin", "boss"].includes(userFromStore.roleObject.code)
                 ? null
-                : "/(tabs)",
+                : "/(tabs)/work",
               title:
                 (activeTaskWorkerFromStore &&
                   activeTaskWorkerFromStore?.status == "process") ||
@@ -225,6 +230,12 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
+            name="index"
+            options={{
+              href: null,
+            }}
+          />
+          <Tabs.Screen
             name="profile"
             options={{
               title: t("title.profile"),
@@ -244,6 +255,7 @@ export default function TabLayout() {
             }}
           />
         </Tabs>
+        <Updater />
       </View>
     </View>
   ) : null;

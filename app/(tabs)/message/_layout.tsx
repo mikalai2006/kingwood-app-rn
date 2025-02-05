@@ -9,18 +9,14 @@ import {
 import { ParamListBase, TabNavigationState } from "@react-navigation/native";
 
 import { Colors } from "@/utils/Colors";
-import { router, Stack, withLayoutContext } from "expo-router";
+import { withLayoutContext } from "expo-router";
 import { useColorScheme } from "nativewind";
 
-import UIButton from "@/components/ui/UIButton";
-import { SafeAreaView } from "react-native-safe-area-context";
 import LotsTabBar from "@/components/navigate/LotsTabBar";
 import { useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
-import SIcon from "@/components/ui/SIcon";
-import BadgeTabQuestion from "@/components/badge/BadgeTabQuestion";
-import BadgeTabMessage from "@/components/badge/BadgeTabMessage";
-import BadgeTabNotify from "@/components/badge/BadgeTabNotify";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -32,13 +28,14 @@ export const MaterialTopTabs = withLayoutContext<
 >(Navigator);
 
 export default function Layout() {
+  const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const userFromStore = useAppSelector(user);
 
   return (
     <View className="flex-1 bg-s-100 dark:bg-s-800">
-      {/* <SafeAreaView style={{ flex: 1 }}> */}
-      <Stack
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* <Stack
         screenOptions={{
           headerStyle: {
             backgroundColor:
@@ -57,21 +54,21 @@ export default function Layout() {
             animation: "slide_from_right",
           }}
         />
-      </Stack>
+      </Stack> */}
 
-      {/* <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
+        <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
           <MaterialTopTabs.Screen
-            name="room"
+            name="order"
             options={{
-              title: "Сообщения",
-              tabBarIcon: ({ color, focused }) => (
-                <View className="absolute top-4 right-3">
-                  <BadgeTabMessage />
-                </View>
-              ),
+              title: t("title.order"),
+              // tabBarIcon: ({ color, focused }) => (
+              //   <View className="absolute top-4 right-3">
+              //     <BadgeTabMessage />
+              //   </View>
+              // ),
             }}
           />
-          <MaterialTopTabs.Screen
+          {/* <MaterialTopTabs.Screen
             name="question"
             options={{
               title: "Вопросы",
@@ -81,20 +78,20 @@ export default function Layout() {
                 </View>
               ),
             }}
-          />
+          /> */}
           <MaterialTopTabs.Screen
             name="notify"
             options={{
-              title: "Push",
-              tabBarIcon: ({ color, focused }) => (
-                <View className="absolute top-4 right-3">
-                  <BadgeTabNotify />
-                </View>
-              ),
+              title: t("title.message"),
+              // tabBarIcon: ({ color, focused }) => (
+              //   <View className="absolute top-4 right-3">
+              //     <BadgeTabNotify />
+              //   </View>
+              // ),
             }}
           />
-        </MaterialTopTabs> */}
-      {/* </SafeAreaView> */}
+        </MaterialTopTabs>
+      </SafeAreaView>
     </View>
   );
   // (

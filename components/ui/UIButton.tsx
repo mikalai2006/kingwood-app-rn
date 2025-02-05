@@ -30,13 +30,17 @@ export default function UIButton(props: UIButtonProps) {
 
     switch (props.type) {
       case "primary":
-        result += props.disabled ? disableClass : " bg-p-500 border-p-500 ";
+        result += props.disabled
+          ? disableClass
+          : " bg-p-500 border-p-500 dark:bg-p-600";
         break;
       case "danger":
         result += props.disabled ? disableClass : " bg-r-500 border-r-500 ";
         break;
       case "success":
-        result += props.disabled ? disableClass : " bg-gr-500 border-gr-500 ";
+        result += props.disabled
+          ? disableClass
+          : " bg-gr-500 border-gr-500 dark:bg-gr-700";
         break;
       case "secondary":
         result += props.disabled ? disableClass : " bg-s-200 dark:bg-black/20 ";
@@ -61,13 +65,13 @@ export default function UIButton(props: UIButtonProps) {
 
     switch (props.type) {
       case "primary":
-        result += props.disabled ? disableClass : " text-p-50";
+        result += props.disabled ? disableClass : " text-black dark:text-white";
         break;
       case "danger":
         result += props.disabled ? disableClass : " text-r-50";
         break;
       case "success":
-        result += props.disabled ? disableClass : " text-gr-50";
+        result += props.disabled ? disableClass : " text-black dark:text-gr-50";
         break;
       case "secondary":
         result += props.disabled ? disableClass : " text-s-800 dark:text-s-50";

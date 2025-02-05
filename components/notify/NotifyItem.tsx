@@ -55,7 +55,7 @@ const NotifyItem = ({ notify }: NotifyItemProps) => {
   };
 
   return notify ? (
-    <Card className="flex flex-wrap items-start gap-1 p-4 mb-3">
+    <Card className="flex flex-wrap items-start gap-1 p-4 mt-4 mx-4">
       <Text className="text-lg text-s-800 dark:text-s-200 leading-5">
         {notify.message}
       </Text>

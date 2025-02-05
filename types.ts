@@ -101,8 +101,22 @@ export interface IOrder {
   number: number;
   constructorId: string;
   term: string;
-  object: string;
+  termMontaj: string;
+  dateStart: string;
+  objectId: string;
   priority: number;
+  group: string[];
+  status: number;
+
+  object?: IObject;
+  tasks?: ITask[];
+
+  stolyarComplete: number;
+  malyarComplete: number;
+  goComplete: number;
+  dateOtgruzka: string;
+  montajComplete: number;
+
   createdAt: Date;
   updatedAt: Date;
 }

@@ -19,9 +19,10 @@ export interface IUseOrderProps {
   group?: string[];
   status?: number;
   stolyarComplete?: number;
+  shlifComplete?: number;
   malyarComplete?: number;
   goComplete?: number;
-  MontajComplete?: number;
+  montajComplete?: number;
 }
 
 const useOrders = (props: IUseOrderProps) => {
@@ -65,8 +66,7 @@ const useOrders = (props: IUseOrderProps) => {
             .then((r) => r.json())
             .then((response) => {
               if (!ignore) {
-                isWriteConsole &&
-                  console.log("useProducts response: ", response);
+                isWriteConsole && console.log("useOrders response: ", response);
 
                 const responseOrdersData: IOrder[] = response.data;
                 if (!responseOrdersData) {
@@ -83,6 +83,8 @@ const useOrders = (props: IUseOrderProps) => {
                     ...x,
                     // _id: existLocalNode?._id || new BSON.ObjectId(),
                     _id: new BSON.ObjectId(x.id),
+                    object: x?.object,
+                    tasks: x?.tasks || [],
                   };
                 });
 
@@ -100,6 +102,67 @@ const useOrders = (props: IUseOrderProps) => {
                           listDataForRealm[i],
                           UpdateMode.Modified
                         );
+
+                        if (listDataForRealm[i].object) {
+                          realm.create(
+                            "ObjectsSchema",
+                            {
+                              ...listDataForRealm[i].object,
+                              _id: new BSON.ObjectId(
+                                listDataForRealm[i].object?.id
+                              ),
+                            },
+                            UpdateMode.Modified
+                          );
+                        }
+
+                        if (listDataForRealm[i].tasks.length) {
+                          for (
+                            let j = 0, total = listDataForRealm[i].tasks.length;
+                            j < total;
+                            j++
+                          ) {
+                            const _task = listDataForRealm[i].tasks[j];
+
+                            realm.create(
+                              "TaskSchema",
+                              {
+                                ..._task,
+                                _id: new BSON.ObjectId(_task.id),
+                              },
+                              UpdateMode.Modified
+                            );
+
+                            if (_task.workers.length) {
+                              for (
+                                let k = 0, total = _task.workers.length;
+                                k < total;
+                                k++
+                              ) {
+                                const _worker = _task.workers[k];
+                                realm.create(
+                                  "TaskWorkerSchema",
+                                  {
+                                    ..._worker,
+                                    _id: new BSON.ObjectId(_worker.id),
+                                  },
+                                  UpdateMode.Modified
+                                );
+
+                                if (_worker.worker) {
+                                  realm.create(
+                                    "UserSchema",
+                                    {
+                                      ..._worker.worker,
+                                      _id: new BSON.ObjectId(_worker.worker.id),
+                                    },
+                                    UpdateMode.Modified
+                                  );
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     } catch (e) {
                       isWriteConsole && console.log("useOrders error: ", e);

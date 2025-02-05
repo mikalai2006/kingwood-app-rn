@@ -11,6 +11,27 @@ export default {
     resizeMode: "contain",
     backgroundColor: "#202020",
   },
+  // updates: {
+  //   url: "http://localhost:8000/api/v1/updates/manifest",
+  //   enabled: true,
+  //   fallbackToCacheTimeout: 30000,
+  //   codeSigningCertificate: "./code-signing/certificate.pem",
+  //   codeSigningMetadata: {
+  //     keyid: "main",
+  //     alg: "rsa-v1_5-sha256",
+  //   },
+  // },
+  updates: {
+    url: "https://u.expo.dev/ee1c0c54-2ded-4af3-9dfb-a273f41f1ba0",
+    codeSigningCertificate: "./certs/certificate.pem",
+    codeSigningMetadata: {
+      keyid: "main",
+      alg: "rsa-v1_5-sha256",
+    },
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
   ios: {
     supportsTablet: true,
     userInterfaceStyle: "automatic",

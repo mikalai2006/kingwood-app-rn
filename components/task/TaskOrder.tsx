@@ -46,9 +46,14 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
             </Text>
           </View> */}
           <View className="flex flex-row items-center">
-            <Text className="text-lg font-medium text-s-500 dark:text-s-400 pr-1">
+            <Text className="text-xl font-medium text-s-800 dark:text-s-300 pr-1">
               {object?.name}
             </Text>
+            {order.priority ? (
+              <Text className="px-1 rounded-sm text-sm bg-red-300 dark:bg-red-300">
+                Срочный заказ
+              </Text>
+            ) : null}
             {/* <Text className="text-xl leading-5 font-medium text-s-500 dark:text-s-300">
             {object?.name}
           </Text> */}

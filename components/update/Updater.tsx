@@ -43,7 +43,7 @@ const Updater = () => {
       />
     </View>
   ) : (
-    <Text>{JSON.stringify(update)}</Text>
+    <Text>hello{JSON.stringify(update)}</Text>
   );
 };
 

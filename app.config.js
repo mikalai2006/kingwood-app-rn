@@ -1,10 +1,7 @@
 export default {
   name: "kingwood-app-rn",
   slug: "kingwood-app-rn",
-  runtimeVersion: {
-    policy: "appVersion",
-  },
-  version: "1.0.3",
+  version: "1.0.4",
   orientation: "portrait",
   icon: "./assets/images/icon_black.ico",
   scheme: "kingwood",
@@ -24,13 +21,16 @@ export default {
   //     alg: "rsa-v1_5-sha256",
   //   },
   // },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
   updates: {
     url: "https://u.expo.dev/ee1c0c54-2ded-4af3-9dfb-a273f41f1ba0",
-    codeSigningCertificate: "./certs/certificate.pem",
-    codeSigningMetadata: {
-      keyid: "main",
-      alg: "rsa-v1_5-sha256",
-    },
+    // codeSigningCertificate: "./certs/certificate.pem",
+    // codeSigningMetadata: {
+    //   keyid: "main",
+    //   alg: "rsa-v1_5-sha256",
+    // },
   },
   ios: {
     supportsTablet: true,

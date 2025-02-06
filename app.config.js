@@ -6,7 +6,7 @@ export default {
   },
   version: "1.0.3",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/icon_black.ico",
   scheme: "kingwood",
   userInterfaceStyle: "automatic",
   splash: {

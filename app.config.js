@@ -3,7 +3,7 @@ export default {
   slug: "kingwood-app-rn",
   version: "1.0.4",
   orientation: "portrait",
-  icon: "./assets/images/icon_black.ico",
+  icon: "./assets/images/icon.png",
   scheme: "kingwood",
   userInterfaceStyle: "automatic",
   splash: {

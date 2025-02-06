@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Updates from "expo-updates";
 import UIButton from "../ui/UIButton";
@@ -42,7 +42,9 @@ const Updater = () => {
         onPress={onDownLoadUpdates}
       />
     </View>
-  ) : null;
+  ) : (
+    <Text>Hello</Text>
+  );
 };
 
 export default Updater;

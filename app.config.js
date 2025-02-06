@@ -1,7 +1,10 @@
 export default {
   name: "kingwood-app-rn",
   slug: "kingwood-app-rn",
-  version: "1.0.0",
+  runtimeVersion: {
+    policy: "appVersion",
+  },
+  version: "1.0.3",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "kingwood",
@@ -28,9 +31,6 @@ export default {
       keyid: "main",
       alg: "rsa-v1_5-sha256",
     },
-  },
-  runtimeVersion: {
-    policy: "appVersion",
   },
   ios: {
     supportsTablet: true,

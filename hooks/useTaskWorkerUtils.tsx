@@ -14,7 +14,7 @@ import {
 import { ITaskWorker, IWorkTime } from "@/types";
 import { BSON, UpdateMode } from "realm";
 import dayjs from "@/utils/dayjs";
-import { Alert } from "react-native";
+import { Alert, ToastAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
 
 export const useTaskWorkerUtils = () => {
@@ -171,6 +171,7 @@ export const useTaskWorkerUtils = () => {
             }
             // dispatch(setActiveTaskWorker(null));
             dispatch(setWorkTime(null));
+            ToastAndroid.show(t("info.successEndWorkTime"), ToastAndroid.LONG);
           });
         } catch (e) {
           isWriteConsole && console.log("onEndWorkTime error: ", e);
@@ -220,6 +221,8 @@ export const useTaskWorkerUtils = () => {
           });
 
           dispatch(setWorkTime(res));
+
+          ToastAndroid.show(t("info.successStartWorkTime"), ToastAndroid.LONG);
         } catch (e) {
           isWriteConsole && console.log("onStartWorkTime error: ", e);
         }
@@ -230,36 +233,36 @@ export const useTaskWorkerUtils = () => {
       .finally(() => {
         setLoading(false);
 
-        const orders = allOrders.filtered(
-          "_id=$0",
-          new BSON.ObjectId(activeTaskWorkerFromStore?.orderId)
-        );
+        // const orders = allOrders.filtered(
+        //   "_id=$0",
+        //   new BSON.ObjectId(activeTaskWorkerFromStore?.orderId)
+        // );
 
-        if (orders.length) {
-          Alert.alert(
-            t("info.loadPrevTask"),
-            t("info.loadPrevTaskDescription", { orderName: orders[0]?.name }),
-            [
-              // {
-              //   text: "Ask me later",
-              //   onPress: () => console.log("Ask me later pressed"),
-              // },
-              {
-                text: t("button.no"),
-                onPress: () => {
-                  dispatch(setActiveTaskWorker(null));
-                },
-                style: "cancel",
-              },
-              {
-                text: t("button.yes"),
-                onPress: () => {
-                  onStartPrevTask();
-                },
-              },
-            ]
-          );
-        }
+        // if (orders.length) {
+        //   Alert.alert(
+        //     t("info.loadPrevTask"),
+        //     t("info.loadPrevTaskDescription", { orderName: orders[0]?.name }),
+        //     [
+        //       // {
+        //       //   text: "Ask me later",
+        //       //   onPress: () => console.log("Ask me later pressed"),
+        //       // },
+        //       {
+        //         text: t("button.no"),
+        //         onPress: () => {
+        //           dispatch(setActiveTaskWorker(null));
+        //         },
+        //         style: "cancel",
+        //       },
+        //       {
+        //         text: t("button.yes"),
+        //         onPress: () => {
+        //           onStartPrevTask();
+        //         },
+        //       },
+        //     ]
+        //   );
+        // }
         // dispatch(setTimeWorkStart(timeDate.millisecond()));
       });
   };

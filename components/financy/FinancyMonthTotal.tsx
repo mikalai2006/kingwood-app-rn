@@ -1,15 +1,16 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useQuery } from "@realm/react";
 import { useColorScheme } from "nativewind";
 import { PaySchema, WorkTimeSchema } from "@/schema";
 import dayjs from "@/utils/dayjs";
 import { useAppSelector } from "@/store/hooks";
 import { financyFilter, user, workTime } from "@/store/storeSlice";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Card from "../Card";
 import { TimerData } from "@/hooks/useTimer";
 import usePay from "@/hooks/usePay";
+import SIcon from "../ui/SIcon";
 
 export type FinancyMonthTotalProps = {
   from: string;
@@ -116,40 +117,53 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
     return totalFromDb + (isToday ? Math.ceil(zp) : 0);
   }, [allWorkTimeMonth, zp, time]);
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Card className="mt-1">
-      <View className="flex flex-row gap-2 mb-1">
-        <Text className="flex-auto text-s-800 dark:text-s-300">
-          {t("totalBy", {
-            date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
-          })}
-        </Text>
-        <Text className="text-p-600 dark:text-p-300">
-          {(zpFullDay || 0).toLocaleString("ru-RU")} ₽
-        </Text>
-      </View>
-      {allPayMonth.map((pay) => (
-        <View key={pay._id.toString()} className="flex flex-row gap-2 mb-1">
-          <Text className="flex-auto text-s-800 dark:text-s-300">
-            {pay.name}
+    <Pressable onPress={() => setOpen(!open)}>
+      <Card className="mt-1">
+        {open && (
+          <View className=" border-b border-s-200 dark:border-s-700 mb-2">
+            <View className="flex flex-row gap-2 mb-1">
+              <Text className="flex-auto text-s-800 dark:text-s-300">
+                {t("totalBy", {
+                  date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
+                })}
+              </Text>
+              <Text className="text-p-600 dark:text-p-300">
+                {(zpFullDay || 0).toLocaleString("ru-RU")} ₽
+              </Text>
+            </View>
+            {allPayMonth.map((pay) => (
+              <View
+                key={pay._id.toString()}
+                className="flex flex-row gap-2 mb-1"
+              >
+                <Text className="flex-auto text-s-800 dark:text-s-300">
+                  {pay.name}
+                </Text>
+                <Text className="text-p-600 dark:text-p-300">
+                  {pay.total.toLocaleString("ru-RU")} ₽
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+        <View className="flex flex-row gap-2 items-center">
+          <Text className="flex-auto text-lg leading-6 text-s-800 dark:text-s-300">
+            {t("totalZpBy", {
+              date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
+            })}
+            :
           </Text>
-          <Text className="text-p-600 dark:text-p-300">
-            {pay.total.toLocaleString("ru-RU")} ₽
+          <Text className="text-2xl font-bold leading-7 text-p-600 dark:text-p-300">
+            {(zpFullDay + totalPay || 0).toLocaleString("ru-RU")} ₽
           </Text>
+          <View>
+            <SIcon path={open ? "iChevronRight" : "iChevronDown"} size={20} />
+          </View>
         </View>
-      ))}
-      <View className="flex flex-row gap-2 items-center mt-2 border-t border-s-200 dark:border-s-700">
-        <Text className="flex-auto text-lg leading-6 text-s-800 dark:text-s-300">
-          {t("totalZpBy", {
-            date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
-          })}
-          :
-        </Text>
-        <Text className="text-2xl font-bold leading-7 text-p-600 dark:text-p-300">
-          {(zpFullDay + totalPay || 0).toLocaleString("ru-RU")} ₽
-        </Text>
-      </View>
-      {/* {msFullDay && (
+        {/* {msFullDay && (
           <View className="flex flex-row gap-2">
             <Text className="text-lg leading-6 text-s-500 dark:text-s-400">
               {t("totalTimeDay")}:
@@ -160,6 +174,7 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
             />
           </View>
         )} */}
-    </Card>
+      </Card>
+    </Pressable>
   );
 }

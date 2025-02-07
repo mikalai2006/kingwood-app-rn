@@ -48,6 +48,10 @@ export function TaskWorkerNotify({ short }: TaskWorkerNotifyProps) {
 
   const { t } = useTranslation();
 
+  const dispatch = useAppDispatch();
+
+  const allOrders = useQuery(OrderSchema);
+
   // const userFromStore = useAppSelector(user);
 
   const workTimeFromStore = useAppSelector(workTime);
@@ -60,7 +64,8 @@ export function TaskWorkerNotify({ short }: TaskWorkerNotifyProps) {
 
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
 
-  const { loading, onEndWorkTime, onStartWorkTime } = useTaskWorkerUtils();
+  const { loading, onEndWorkTime, onStartWorkTime, onStartPrevTask } =
+    useTaskWorkerUtils();
 
   return (
     <View className="flex gap-4">
@@ -76,7 +81,7 @@ export function TaskWorkerNotify({ short }: TaskWorkerNotifyProps) {
             </View>
             <View className="">
               <Text className="text-s-700 dark:text-s-200 text-base">
-                Общее рабочее время:
+                {t("totalWorkTime")}:
               </Text>
               {workTimeFromStore !== null && (
                 <TaskWorkerNotifyTimer className="text-s-900 font-medium dark:text-white text-2xl leading-8 " />
@@ -130,8 +135,40 @@ export function TaskWorkerNotify({ short }: TaskWorkerNotifyProps) {
                     },
                     {
                       text: t("button.yes"),
-                      onPress: () => {
-                        onStartWorkTime();
+                      onPress: async () => {
+                        await onStartWorkTime();
+
+                        const orders = allOrders.filtered(
+                          "_id=$0",
+                          new BSON.ObjectId(activeTaskWorkerFromStore?.orderId)
+                        );
+                        if (orders.length) {
+                          Alert.alert(
+                            t("info.loadPrevTask"),
+                            t("info.loadPrevTaskDescription", {
+                              orderName: orders[0]?.name,
+                            }),
+                            [
+                              // {
+                              //   text: "Ask me later",
+                              //   onPress: () => console.log("Ask me later pressed"),
+                              // },
+                              {
+                                text: t("button.no"),
+                                onPress: () => {
+                                  dispatch(setActiveTaskWorker(null));
+                                },
+                                style: "cancel",
+                              },
+                              {
+                                text: t("button.yes"),
+                                onPress: () => {
+                                  onStartPrevTask();
+                                },
+                              },
+                            ]
+                          );
+                        }
                       },
                     },
                   ]

@@ -79,9 +79,9 @@ export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) 
           {activeTaskWorkerFromStore?.object?.name})
         </Text>
       </View>
-      <View className="">
+      {/* <View className="">
         <SIcon path="iChevronRight" size={25} color="white" />
-      </View>
+      </View> */}
     </View>
   ) : null;
 }

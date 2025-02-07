@@ -1,4 +1,4 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, Text, ToastAndroid, View } from "react-native";
 import UIButton from "@/components/ui/UIButton";
 import { useColorScheme } from "nativewind";
 import {
@@ -30,6 +30,7 @@ import dayjs from "@/utils/dayjs";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import TaskNotFound from "./TaskNotFound";
 import { useWork } from "@/hooks/useWork";
+import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
 export type TaskWorkerItemProps = {
   // taskWorker: TaskWorkerSchema;
@@ -40,6 +41,8 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   const { colorScheme } = useColorScheme();
 
   const userFromStore = useAppSelector(user);
+
+  const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
 
   const { t } = useTranslation();
 
@@ -202,6 +205,12 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
               // _statusPause.status &&
               //   onWriteWorkHistory(_statusPause.status, res);
+              // ToastAndroid.show(
+              //   t("info.successPauseTask", {
+              //     orderName: `№${res.order.number}-${res.order.name}`,
+              //   }),
+              //   ToastAndroid.SHORT
+              // );
             } catch (e) {
               isWriteConsole && console.log("toggleTask prev error: ", e);
             }
@@ -241,6 +250,22 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
               dispatch(setActiveTaskWorker(Object.assign({}, res)));
             } else {
               dispatch(setActiveTaskWorker(null));
+            }
+
+            if (statusName === "process") {
+              ToastAndroid.show(
+                t("info.successProcessTask", {
+                  orderName: `№${res.order.number}-${res.order.name}`,
+                }),
+                ToastAndroid.SHORT
+              );
+            } else if (statusName === "pause") {
+              ToastAndroid.show(
+                t("info.successPauseTask", {
+                  orderName: `№${res.order.number}-${res.order.name}`,
+                }),
+                ToastAndroid.SHORT
+              );
             }
 
             // onWriteWorkHistory(statusName, res);
@@ -309,7 +334,9 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
     );
   }
 
-  function onProcessTask(task: TaskSchema): void {
+  const { onStartWorkTime } = useTaskWorkerUtils();
+
+  async function onProcessTask(task: TaskSchema): Promise<void> {
     const orders = allOrders.filtered(
       "_id=$0",
       new BSON.ObjectId(task.orderId)
@@ -325,7 +352,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
     Alert.alert(
       t("info.taskProcess"),
-      activeTaskFromStore != null
+      activeTaskFromStore != null && workTimeFromStore != null
         ? t("info.taskProcessRunOtherDescription", {
             orderName: `№${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
             prevOrderName: `№${activeTaskFromStore.order?.number}: ${activeTaskFromStore.order?.name} (${activeTaskFromStore.object?.name})`,
@@ -345,8 +372,12 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         },
         {
           text: t("button.yes"),
-          onPress: () => {
-            toggleTaskWorker("process");
+          onPress: async () => {
+            if (workTimeFromStore == null) {
+              await onStartWorkTime();
+            }
+
+            await toggleTaskWorker("process");
           },
         },
       ]
@@ -392,11 +423,11 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         // style={{ backgroundColor: taskStatus?.color }}
       >
         <View className="rounded-t-lg p-2 pb-0">
-          {order.priority && (
+          {/* {order.priority && (
             <Text className="self-start p-1 rounded-sm text-base bg-red-300 dark:bg-red-400">
               Срочный заказ
             </Text>
-          )}
+          )} */}
           <View className="px-1">
             <TaskOrder orderId={task.orderId} />
           </View>
@@ -420,13 +451,13 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             <View className="p-2">
               {/* <Text className="text-s-500 leading-5 mb-1">Задача</Text> */}
               <Text
-                className="text-xl leading-6 text-g-950 dark:text-s-100"
+                className="text-base leading-6 text-s-700 dark:text-s-300"
                 numberOfLines={2}
                 lineBreakMode="tail"
               >
-                {task.name}
+                {t("yourTask")}: {task.name}
               </Text>
-              <Text className="text-s-500 leading-5 mb-1">
+              <Text className="text-s-400 dark:text-s-400 leading-5 mb-1">
                 {taskStatus?.name}{" "}
               </Text>
             </View>
@@ -438,18 +469,18 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                   {/* <Text>{JSON.stringify(activeTaskFromStore)}</Text> */}
                   {taskStatus?.status === "process" ? (
                     <UIButton
-                      type="secondary"
+                      type="primary"
                       text={t("button.pauseTask")}
                       loading={loading}
                       onPress={() => onPauseTask(task)}
                     ></UIButton>
                   ) : (
                     <UIButton
-                      type="primary"
+                      type="secondary"
                       text={t("button.goTask")}
                       loading={loading}
                       disabled={
-                        workTimeFromStore === null ||
+                        // workTimeFromStore === null ||
                         !dayjs(new Date()).isBetween(
                           dayjs(taskWorker.from),
                           dayjs(taskWorker.to),

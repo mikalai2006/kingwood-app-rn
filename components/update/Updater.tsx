@@ -42,9 +42,7 @@ const Updater = () => {
         onPress={onDownLoadUpdates}
       />
     </View>
-  ) : (
-    <Text>hello{JSON.stringify(update)}</Text>
-  );
+  ) : null; //<Text>hello{JSON.stringify(update)}</Text>
 };
 
 export default Updater;

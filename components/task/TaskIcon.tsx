@@ -56,7 +56,7 @@ const TaskIcon = (props: ITaskIconProps) => {
     >
       <SIcon
         pathText={taskStatus.icon}
-        size={props.size || 30}
+        size={props.size || 15}
         color={colorScheme === "dark" ? Colors.white : Colors.white}
       />
     </Animated.View>

@@ -82,7 +82,7 @@ export default function FollowScreen() {
         {userFromStore &&
           !["admin", "boss"].includes(userFromStore?.roleObject.code) && (
             <UIButton
-              type="secondary"
+              type="link"
               text={t("button.completedTask")}
               icon="iChevronRight"
               startText

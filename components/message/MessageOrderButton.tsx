@@ -10,28 +10,29 @@ import UserInfoAvatar from "../user/UserInfoAvatar";
 import { Colors } from "@/utils/Colors";
 import { BSON } from "realm";
 import OrderShortInfo from "../order/OrderShortInfo";
+import { OrderSchema } from "@/schema";
 
-export type MessageRoomButtonProps = {
-  roomId: string;
+export type MessageOrderButtonProps = {
+  orderId: string;
 };
 
-const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
-  const room = useObject(MessageRoomSchema, new BSON.ObjectId(roomId));
+const MessageOrderButton = ({ orderId }: MessageOrderButtonProps) => {
+  const order = useObject(OrderSchema, new BSON.ObjectId(orderId));
 
-  const messagesByRoom = useQuery(MessageSchema, (items) =>
-    items.filtered("roomId == $0 && status == $1", roomId, 1)
+  const messagesByOrder = useQuery(MessageSchema, (items) =>
+    items.filtered("orderId == $0", orderId)
   );
 
   return (
-    room && (
+    order && (
       <UIButton
         type="link"
         className="m-0 bg-white dark:bg-s-900 border-t border-s-200 dark:border-s-800"
         onPress={() => {
           router.push({
-            pathname: `/modalmessage/[roomId]`,
+            pathname: `/modalmessage/[orderId]`,
             params: {
-              roomId,
+              orderId,
             },
           });
         }}
@@ -45,13 +46,13 @@ const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
           {products[0]?.description}
         </Text> */}
           <View className="flex-auto flex flex-row items-center gap-4">
-            <View>
+            {/* <View>
               <UserInfoAvatar
                 key={room.userId}
                 userId={room.userId}
                 borderColor="border-white dark:border-s-800"
               />
-            </View>
+            </View> */}
             <View className="rotate-180">
               <SIcon
                 path="iChevronLeftDouble"
@@ -60,7 +61,7 @@ const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
               />
             </View>
             <View className="flex-auto">
-              <OrderShortInfo id={room.productId} />
+              {/* <OrderShortInfo id={room.productId} /> */}
             </View>
             <View className="rotate-180">
               <SIcon
@@ -70,11 +71,11 @@ const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
               />
             </View>
             <View>
-              <UserInfoAvatar
+              {/* <UserInfoAvatar
                 key={room.takeUserId}
                 userId={room.takeUserId}
                 borderColor="border-white dark:border-s-800"
-              />
+              /> */}
             </View>
           </View>
           {/* <View>
@@ -95,13 +96,13 @@ const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
             <SIcon path="iChevronRight" size={20} />
           </View>
         </View> */}
-          {messagesByRoom.length ? (
+          {messagesByOrder.length ? (
             <View
               className="rounded-lg bg-gr-500 absolute top-0 right-0 border-white dark:border-s-800"
               style={{ borderWidth: 2 }}
             >
               <Text className="px-1.5 py-0.5 text-white dark:text-black leading-4">
-                новое
+                new
               </Text>
             </View>
           ) : null}
@@ -111,4 +112,4 @@ const MessageRoomButton = ({ roomId }: MessageRoomButtonProps) => {
   );
 };
 
-export default MessageRoomButton;
+export default MessageOrderButton;

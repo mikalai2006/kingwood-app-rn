@@ -9,15 +9,12 @@ import UIButtonBack from "@/components/ui/UIButtonBack";
 import { useObject, useQuery } from "@realm/react";
 import { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { UserSchema } from "@/schema/UserSchema";
-import UserInfo from "@/components/user/UserInfo";
 import UserInfoAvatar from "@/components/user/UserInfoAvatar";
 import UIButton from "@/components/ui/UIButton";
 import SIcon from "@/components/ui/SIcon";
 import useMessages from "@/hooks/useMessages";
 import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 import { hostAPI, hostSERVER, isWriteConsole } from "@/utils/global";
-import { MessageRoomSchema } from "@/schema/MessageRoomSchema";
 import { MessageSchema } from "@/schema/MessageSchema";
 import dayjs from "@/utils/dayjs";
 import { Colors } from "@/utils/Colors";
@@ -29,18 +26,18 @@ import RImage from "@/components/r/RImage";
 import { OrderSchema } from "@/schema";
 import OrderShortInfo from "@/components/order/OrderShortInfo";
 
-export default function MessageRoomScreen() {
+export default function MessageOrderScreen() {
   const dispatch = useAppDispatch();
 
   const { colorScheme } = useColorScheme();
 
   const pathname = usePathname();
 
-  const { roomId } = useLocalSearchParams<{
-    roomId: string;
+  const { orderId } = useLocalSearchParams<{
+    orderId: string;
   }>();
 
-  const room = useObject(MessageRoomSchema, new BSON.ObjectId(roomId));
+  // const room = useObject(MessageRoomSchema, new BSON.ObjectId(roomId));
   // const { productId: productIdGlobal } = useGlobalSearchParams<{
   //   productId: string;
   // }>();
@@ -50,22 +47,22 @@ export default function MessageRoomScreen() {
 
   const userFromStore = useAppSelector(user);
 
-  const order = useObject(OrderSchema, new BSON.ObjectId(room?.productId));
+  const order = useObject(OrderSchema, new BSON.ObjectId(orderId));
 
-  const userRoom = useObject(
-    UserSchema,
-    new BSON.ObjectId(
-      room?.userId === userFromStore?.id ? room?.takeUserId : room?.userId
-    )
-  );
+  // const userRoom = useObject(
+  //   UserSchema,
+  //   new BSON.ObjectId(
+  //     room?.userId === userFromStore?.id ? room?.takeUserId : room?.userId
+  //   )
+  // );
 
   const messagesByRoom = useQuery(MessageSchema, (items) =>
-    items.filtered("roomId == $0", roomId)
+    items.filtered("orderId == $0", orderId)
   );
 
   const [newMessage, setNewMessage] = useState("");
 
-  useMessages({ roomId: [roomId] });
+  useMessages({ orderId: [orderId] });
 
   const [loading, setLoading] = useState(false);
 
@@ -107,7 +104,7 @@ export default function MessageRoomScreen() {
     }
 
     data.append("message", newMessage);
-    data.append("roomId", roomId);
+    data.append("orderId", orderId);
 
     return await onFetchWithAuth(`${hostAPI}/message`, {
       method: "POST",
@@ -141,20 +138,20 @@ export default function MessageRoomScreen() {
         <View className="flex flex-row gap-2 px-4 mb-2">
           <UIButtonBack />
           <View className="flex-auto">
-            <UserInfo userId={userRoom?._id.toString()} />
+            {/* <UserInfo userId={userRoom?._id.toString()} /> */}
           </View>
         </View>
         <View className="flex-1 bg-s-200 dark:bg-s-950">
-          {order && room && (
+          {order && (
             <>
               <View className="border-y bg-white dark:bg-s-800 border-s-200 dark:border-s-900 p-4">
                 <View className="flex-auto flex flex-row items-center gap-4">
                   <View>
-                    <UserInfoAvatar
+                    {/* <UserInfoAvatar
                       key={room.userId}
                       userId={room.userId}
                       borderColor="border-white dark:border-s-800"
-                    />
+                    /> */}
                   </View>
                   <View className="rotate-180">
                     <SIcon
@@ -164,7 +161,7 @@ export default function MessageRoomScreen() {
                     />
                   </View>
                   <View className="flex-auto">
-                    <OrderShortInfo id={room.productId} />
+                    {/* <OrderShortInfo id={orderId} /> */}
                   </View>
                   <View className="rotate-180">
                     <SIcon
@@ -174,14 +171,14 @@ export default function MessageRoomScreen() {
                     />
                   </View>
                   <View>
-                    <UserInfoAvatar
+                    {/* <UserInfoAvatar
                       key={room.takeUserId}
                       userId={room.takeUserId}
                       borderColor="border-white dark:border-s-800"
-                    />
+                    /> */}
                   </View>
                 </View>
-                <View className="pt-2">
+                {/* <View className="pt-2">
                   <UIButton
                     type="primary"
                     text="Завершить сделку"
@@ -197,7 +194,7 @@ export default function MessageRoomScreen() {
                       });
                     }}
                   />
-                </View>
+                </View> */}
               </View>
               <View className="flex-auto">
                 <ScrollView

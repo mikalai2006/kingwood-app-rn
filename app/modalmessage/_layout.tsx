@@ -5,7 +5,7 @@ import "react-native-reanimated";
 export default function Layout() {
   return (
     <Stack>
-      <Stack.Screen name="[roomId]" options={{ headerShown: false }} />
+      <Stack.Screen name="[orderId]" options={{ headerShown: false }} />
       {/* <Stack.Screen name="user" options={{ headerShown: false }} /> */}
     </Stack>
   );

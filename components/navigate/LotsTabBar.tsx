@@ -55,7 +55,7 @@ export default function LotsTabBar({
           <UIButton
             key={index}
             type="link"
-            className="flex flex-row p-4"
+            className="flex flex-row px-4 pb-4 pt-2"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}

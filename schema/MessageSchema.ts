@@ -3,8 +3,7 @@ import Realm, { BSON, ObjectSchema } from "realm";
 export class MessageSchema extends Realm.Object<MessageSchema> {
   _id!: BSON.ObjectId;
   userId!: string;
-  // productId!: string;
-  roomId!: string;
+  orderId!: string;
   message?: string;
   images?: Realm.List<string>;
   status!: number;
@@ -16,8 +15,7 @@ export class MessageSchema extends Realm.Object<MessageSchema> {
     properties: {
       _id: "objectId",
       userId: "string",
-      // productId: "string",
-      roomId: "string",
+      orderId: "string",
       message: "string?",
       images: "string?[]",
       status: "int",

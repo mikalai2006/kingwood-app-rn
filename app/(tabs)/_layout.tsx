@@ -215,7 +215,7 @@ export default function TabLayout() {
           <Tabs.Screen
             name="message"
             options={{
-              title: t("title.message"),
+              title: t("title.noty"),
               tabBarIcon: ({ color, focused }) => (
                 <View>
                   <SIcon

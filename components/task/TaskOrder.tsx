@@ -33,8 +33,8 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
       className="p-2 flex flex-row items-center"
       onPress={() => {
         router.push({
-          pathname: "/(tabs)/order/[id]",
-          params: { id: order._id.toString() },
+          pathname: "/[orderId]",
+          params: { orderId: order._id.toString() },
         });
       }}
     >

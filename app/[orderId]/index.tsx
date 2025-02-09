@@ -19,32 +19,32 @@ import { useTranslation } from "react-i18next";
 import OrderTasks from "@/components/order/OrderTasks";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 
-export default function OrderIdScreen() {
+export default function OrderIndexScreen() {
   const { colorScheme } = useColorScheme();
 
   const { t } = useTranslation();
 
   const pathname = usePathname();
 
-  let { id } = useLocalSearchParams<{ id: string }>();
+  let { orderId } = useLocalSearchParams<{ orderId: string }>();
 
   const userFromStore = useAppSelector(user);
 
   const { isLoading, error } = useOrders({
-    id: [id],
+    id: [orderId],
   });
 
   const allOrders = useQuery(OrderSchema);
   const allObjects = useQuery(ObjectsSchema);
 
   const currentOrder = useMemo(
-    () => allOrders.find((x) => x._id.toString() === id),
-    [id]
+    () => allOrders.find((x) => x._id.toString() === orderId),
+    [orderId]
   );
 
   const object = useMemo(
     () => allObjects.find((x) => x._id.toString() === currentOrder?.objectId),
-    [id, currentOrder?.objectId]
+    [orderId, currentOrder?.objectId]
   );
   const image = useMemo(
     () => null, //(userFromDB?.images ? userFromDB?.images[0] : null),
@@ -54,7 +54,7 @@ export default function OrderIdScreen() {
   return (
     <View className="flex-1">
       {/* <SafeAreaView className="flex-1"> */}
-      <ParallaxScrollView
+      {/* <ParallaxScrollView
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
         header={
           <View className="flex flex-row items-center">
@@ -75,36 +75,36 @@ export default function OrderIdScreen() {
             </>
           ) : null
         }
-      >
+      > */}
+      <ScrollView className="flex-1 bg-s-200 dark:bg-s-950">
         <View className="flex-1">
-          <ScrollView>
-            <View className="bg-s-200 dark:bg-s-950 p-4">
-              <Card className="mb-4">
-                <UILabel text={t("object")} />
-                {currentOrder?.objectId && (
-                  <OrderObject objectId={currentOrder.objectId} />
-                )}
-              </Card>
-
-              {currentOrder?.description && (
-                <Card className="mb-2">
-                  <UILabel text={t("notes")} />
-                  <Text className="text-xl text-g-700 dark:text-s-100 leading-6">
-                    {currentOrder.description}
-                  </Text>
-                </Card>
+          <View className="p-4">
+            <Card className="mb-4">
+              <UILabel text={t("object")} />
+              {currentOrder?.objectId && (
+                <OrderObject objectId={currentOrder.objectId} />
               )}
+            </Card>
 
+            {currentOrder?.description && (
               <Card className="mb-2">
-                <UILabel text={t("tasks")} />
-                {currentOrder && (
-                  <OrderTasks orderId={currentOrder._id.toString()} />
-                )}
+                <UILabel text={t("notes")} />
+                <Text className="text-xl text-g-700 dark:text-s-100 leading-6">
+                  {currentOrder.description}
+                </Text>
               </Card>
-            </View>
-          </ScrollView>
+            )}
+
+            <Card className="mb-2">
+              <UILabel text={t("tasks")} />
+              {currentOrder && (
+                <OrderTasks orderId={currentOrder._id.toString()} />
+              )}
+            </Card>
+          </View>
         </View>
-      </ParallaxScrollView>
+      </ScrollView>
+      {/* </ParallaxScrollView> */}
       {/* </SafeAreaView> */}
     </View>
   );

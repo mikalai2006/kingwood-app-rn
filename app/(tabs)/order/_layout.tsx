@@ -52,14 +52,14 @@ export default function Layout() {
           animation: "slide_from_right",
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="[id]"
         options={{
           headerShown: false,
           // presentation: "transparentModal",
           animation: "slide_from_right",
         }}
-      />
+      /> */}
       <Stack.Screen
         name="completed"
         options={{ headerShown: true, title: t("title.archiveOrder") }}

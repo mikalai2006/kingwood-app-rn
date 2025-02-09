@@ -377,15 +377,23 @@ export default function RootLayout() {
                             // animation: "slide_from_bottom",
                           }}
                         />
+                        <Stack.Screen
+                          name="modalmessage"
+                          options={{
+                            headerShown: false,
+                            // presentation: 'transparentModal',
+                            // animation: "slide_from_bottom",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="[orderId]"
+                          options={{
+                            headerShown: false,
+                            // presentation: 'transparentModal',
+                            // animation: "slide_from_bottom",
+                          }}
+                        />
                         {/* <Stack.Screen
-                  name="modalmessage"
-                  options={{
-                    headerShown: false,
-                    // presentation: 'transparentModal',
-                    // animation: "slide_from_bottom",
-                  }}
-                />
-                <Stack.Screen
                   name="modaldeal"
                   options={{
                     headerShown: false,

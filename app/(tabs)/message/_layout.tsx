@@ -9,7 +9,7 @@ import {
 import { ParamListBase, TabNavigationState } from "@react-navigation/native";
 
 import { Colors } from "@/utils/Colors";
-import { withLayoutContext } from "expo-router";
+import { Stack, withLayoutContext } from "expo-router";
 import { useColorScheme } from "nativewind";
 
 import LotsTabBar from "@/components/navigate/LotsTabBar";
@@ -35,62 +35,26 @@ export default function Layout() {
   return (
     <View className="flex-1 bg-s-100 dark:bg-s-800">
       <SafeAreaView style={{ flex: 1 }}>
-        {/* <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor:
-              colorScheme === "dark" ? Colors.s[950] : Colors.s[100],
-          },
-          headerTintColor:
-            colorScheme === "dark" ? Colors.s[200] : Colors.s[800],
-        }}
-        initialRouteName="notify"
-      >
-        <Stack.Screen
-          name="notify"
-          options={{
-            headerShown: false,
-            // presentation: "transparentModal",
-            animation: "slide_from_right",
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor:
+                colorScheme === "dark" ? Colors.s[950] : Colors.s[100],
+            },
+            headerTintColor:
+              colorScheme === "dark" ? Colors.s[200] : Colors.s[800],
           }}
-        />
-      </Stack> */}
-
-        <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
-          <MaterialTopTabs.Screen
-            name="order"
-            options={{
-              title: t("title.order"),
-              // tabBarIcon: ({ color, focused }) => (
-              //   <View className="absolute top-4 right-3">
-              //     <BadgeTabMessage />
-              //   </View>
-              // ),
-            }}
-          />
-          {/* <MaterialTopTabs.Screen
-            name="question"
-            options={{
-              title: "Вопросы",
-              tabBarIcon: ({ color, focused }) => (
-                <View className="absolute top-4 right-3">
-                  <BadgeTabQuestion />
-                </View>
-              ),
-            }}
-          /> */}
-          <MaterialTopTabs.Screen
+          initialRouteName="notify"
+        >
+          <Stack.Screen
             name="notify"
             options={{
-              title: t("title.message"),
-              // tabBarIcon: ({ color, focused }) => (
-              //   <View className="absolute top-4 right-3">
-              //     <BadgeTabNotify />
-              //   </View>
-              // ),
+              headerShown: false,
+              // presentation: "transparentModal",
+              animation: "slide_from_right",
             }}
           />
-        </MaterialTopTabs>
+        </Stack>
       </SafeAreaView>
     </View>
   );

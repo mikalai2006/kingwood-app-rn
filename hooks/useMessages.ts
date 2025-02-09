@@ -14,15 +14,14 @@ import { BSON, UpdateMode } from "realm";
 
 export interface IuseMessagesProps {
   userId?: string | undefined;
-  roomId?: string[] | undefined;
-  productId?: string;
+  orderId?: string[] | undefined;
   sort?: IFilterSort;
 }
 
 const useMessages = (props: IuseMessagesProps) => {
   const { t } = useTranslation();
 
-  const { userId, sort, roomId, productId } = props;
+  const { userId, sort, orderId } = props;
 
   // let query = "";
   // if (userId) {
@@ -48,7 +47,7 @@ const useMessages = (props: IuseMessagesProps) => {
   useFocusEffect(
     React.useCallback(() => {
       let ignore = false;
-      const onFindMessages = async () => {
+      const onFindItems = async () => {
         try {
           // console.log({
           //   userId: userId || undefined,
@@ -76,19 +75,7 @@ const useMessages = (props: IuseMessagesProps) => {
                 "Content-Type": "application/json",
               },
               // node(id: "${featureFromStore?.id}") {
-              body: JSON.stringify({
-                userId: userId || undefined,
-                productId: productId?.length ? productId : undefined,
-                roomId: roomId && roomId?.length > 0 ? roomId : undefined,
-                sort: sort
-                  ? [
-                      {
-                        key: sort.key,
-                        value: sort.value,
-                      },
-                    ]
-                  : [],
-              }),
+              body: JSON.stringify(props),
             }
           )
             .then((r) => r.json())
@@ -165,7 +152,7 @@ const useMessages = (props: IuseMessagesProps) => {
 
       if (!ignore) {
         // setTimeout(onGetNodeInfo, 100);
-        onFindMessages();
+        onFindItems();
       }
 
       return () => {

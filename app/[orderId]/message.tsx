@@ -185,13 +185,14 @@ export default function MessageOrderScreen() {
                         {/* <Text>{JSON.stringify(x.images)}</Text> */}
                         {x.images?.length ? (
                           <View className="flex flex-row flex-wrap gap-2 mb-4">
-                            {x.images.map((uri, index) => (
+                            {x.images.map((img, index) => (
                               <View
                                 className="h-20 w-auto aspect-square"
                                 key={index.toString()}
                               >
                                 <RImage
-                                  uri={`${hostSERVER}/images/${uri}`}
+                                  image={img}
+                                  // uri={`${hostSERVER}/images/${uri}`}
                                   className="w-full h-full object-contain rounded-lg"
                                 />
                               </View>

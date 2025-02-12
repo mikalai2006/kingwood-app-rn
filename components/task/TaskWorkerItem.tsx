@@ -14,7 +14,7 @@ import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 import { useObject, useQuery, useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
-import { ITaskWorker, IWorkHistory } from "@/types";
+import { ITaskWorker } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   activeTaskWorker,
@@ -22,14 +22,11 @@ import {
   workTime,
   user,
   workHistory,
-  setWorkHistory,
 } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import TaskIcon from "./TaskIcon";
 import dayjs from "@/utils/dayjs";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
-import TaskNotFound from "./TaskNotFound";
-import { useWork } from "@/hooks/useWork";
 import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
 export type TaskWorkerItemProps = {

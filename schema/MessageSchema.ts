@@ -5,7 +5,7 @@ export class MessageSchema extends Realm.Object<MessageSchema> {
   userId!: string;
   orderId!: string;
   message?: string;
-  images?: Realm.List<string>;
+  images?: any; //Realm.List<string>;
   status!: number;
   createdAt!: string;
   updatedAt!: string;
@@ -17,7 +17,7 @@ export class MessageSchema extends Realm.Object<MessageSchema> {
       userId: "string",
       orderId: "string",
       message: "string?",
-      images: "string?[]",
+      images: "mixed?", //"string?[]",
       status: "int",
       createdAt: { type: "string", optional: true },
       updatedAt: { type: "string", optional: true },

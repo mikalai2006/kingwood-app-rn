@@ -1,5 +1,5 @@
 export default {
-  name: "kingwood-app-rn",
+  name: "Кингвуд",
   slug: "kingwood-app-rn",
   version: "1.0.4",
   orientation: "portrait",
@@ -37,10 +37,10 @@ export default {
     userInterfaceStyle: "automatic",
   },
   android: {
-    adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
-      backgroundColor: "#ffffff",
-    },
+    // adaptiveIcon: {
+    //   foregroundImage: "./assets/images/adaptive-icon.png",
+    //   backgroundColor: "#ffffff",
+    // },
     package: "com.mikalai2006.kingwood",
     userInterfaceStyle: "automatic",
     googleServicesFile:

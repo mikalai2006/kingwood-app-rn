@@ -37,10 +37,10 @@ export default {
     userInterfaceStyle: "automatic",
   },
   android: {
-    // adaptiveIcon: {
-    //   foregroundImage: "./assets/images/adaptive-icon.png",
-    //   backgroundColor: "#ffffff",
-    // },
+    adaptiveIcon: {
+      // foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#ffdb4d",
+    },
     package: "com.mikalai2006.kingwood",
     userInterfaceStyle: "automatic",
     googleServicesFile:

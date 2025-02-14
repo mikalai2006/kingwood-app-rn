@@ -253,6 +253,8 @@ export interface INotify {
   userId: string;
   userTo: string;
   message: string;
+  link: string;
+  linkOption: any;
   status: number;
   images: string[];
 
@@ -458,4 +460,5 @@ export interface AppState {
   workTime: IWorkTime | null;
   workHistory: IWorkHistory | null;
   financyFilter: IFinancyFilter;
+  linkParams: any;
 }

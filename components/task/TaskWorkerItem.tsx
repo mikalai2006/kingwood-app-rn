@@ -461,7 +461,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
           </View>
           {taskStatus?.status &&
             !["finish", "autofinish"].includes(taskStatus?.status) && (
-              <View className="flex flex-row p-2 gap-4">
+              <View className="flex flex-row p-2 gap-1">
                 <View className="flex-auto flex items-start">
                   {/* <Text>{JSON.stringify(activeTaskFromStore)}</Text> */}
                   {taskStatus?.status === "process" ? (

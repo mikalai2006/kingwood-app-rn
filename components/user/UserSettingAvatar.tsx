@@ -23,6 +23,8 @@ const UserSettingAvatar = () => {
   const userFromStore = useAppSelector(user);
   const tokensFromStore = useAppSelector(tokens);
 
+  const [loading, setLoading] = useState(false);
+
   const handleUploadPhoto = useCallback(async (response: any) => {
     if (!userFromStore) {
       return;
@@ -48,6 +50,8 @@ const UserSettingAvatar = () => {
     }
     isWriteConsole && console.log("fetch: ", `${hostAPI}/image`);
 
+    setLoading(true);
+
     await fetch(`${hostAPI}/user/${userFromStore.id}`, {
       method: "PATCH",
       headers: {
@@ -63,6 +67,9 @@ const UserSettingAvatar = () => {
       })
       .catch((error) => {
         isWriteConsole && console.log("error", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -149,18 +156,22 @@ const UserSettingAvatar = () => {
               type="secondary"
               text={t("goPhoto")}
               icon="iCamera"
+              disabled={loading}
               onPress={goPhoto}
             />
             <UIButton
               type="secondary"
               text={t("pickImage")}
               icon="iImage"
+              disabled={loading}
               onPress={pickImage}
             />
             <UIButton
               type="link"
               text={t("button.cancel")}
               icon="iClose"
+              disabled={loading}
+              loading={loading}
               onPress={() => setModalVisible(false)}
             />
           </View>

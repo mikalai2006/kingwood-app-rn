@@ -24,6 +24,7 @@ const initialState: AppState = {
   activeTaskWorker: null,
   workTime: null,
   workHistory: null,
+  linkParams: null,
   financyFilter: {
     month: 0,
     monthText: "",
@@ -67,6 +68,9 @@ export const storeSlice = createSlice({
       //     state.tokens.expires_in =
       // }
       // console.log("setTokens:::", state.tokens);
+    },
+    setLinkParams: (state, action: PayloadAction<any | null>) => {
+      state.linkParams = action.payload;
     },
     setUser: (state, action: PayloadAction<IUser | null>) => {
       // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
@@ -161,6 +165,7 @@ export const {
   setWorkTime,
   setWorkHistory,
   setFinancyFilter,
+  setLinkParams,
 } = storeSlice.actions;
 // Функция ниже называется селектором и позволяет нам выбрать значение из
 // штат. Селекторы также могут быть определены встроенными, где они используются вместо
@@ -178,5 +183,6 @@ export const activeTaskWorker = (state: RootState) =>
 export const workTime = (state: RootState) => state.store.workTime;
 export const workHistory = (state: RootState) => state.store.workHistory;
 export const financyFilter = (state: RootState) => state.store.financyFilter;
+export const linkParams = (state: RootState) => state.store.linkParams;
 
 export default storeSlice.reducer;

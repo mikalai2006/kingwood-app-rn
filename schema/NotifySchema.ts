@@ -6,6 +6,8 @@ export class NotifySchema extends Realm.Object<NotifySchema> {
   userTo!: string;
   status!: number;
   message!: string;
+  link?: string;
+  linkOption?: any;
   images!: Realm.List<string>;
   readAt!: string;
   createdAt!: string;
@@ -19,6 +21,8 @@ export class NotifySchema extends Realm.Object<NotifySchema> {
       userTo: "string",
       status: "int",
       message: "string",
+      link: "string?",
+      linkOption: "mixed?",
       images: "string[]",
       readAt: { type: "string", optional: true },
       createdAt: { type: "string", optional: true },

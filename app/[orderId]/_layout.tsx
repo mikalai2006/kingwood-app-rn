@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 import {
   MaterialTopTabNavigationEventMap,
@@ -9,7 +9,11 @@ import {
 import { ParamListBase, TabNavigationState } from "@react-navigation/native";
 
 import { Colors } from "@/utils/Colors";
-import { useLocalSearchParams, withLayoutContext } from "expo-router";
+import {
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  withLayoutContext,
+} from "expo-router";
 import { useColorScheme } from "nativewind";
 
 import LotsTabBar from "@/components/navigate/LotsTabBar";
@@ -23,6 +27,7 @@ import { useQuery } from "@realm/react";
 import { OrderSchema } from "@/schema";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import ImageSlider from "@/components/image/ImageSlider";
+import useOrders from "@/hooks/useOrders";
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -37,19 +42,23 @@ export default function Layout() {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const userFromStore = useAppSelector(user);
-  let { orderId } = useLocalSearchParams<{ orderId: string }>();
+  const { orderId } = useLocalSearchParams<{ orderId: string }>();
 
   const allOrders = useQuery(OrderSchema);
   const allObjects = useQuery(ObjectsSchema);
 
+  const { isLoading, error } = useOrders({
+    id: [orderId],
+  });
+
   const currentOrder = useMemo(
     () => allOrders.find((x) => x._id.toString() === orderId),
-    [orderId]
+    [orderId, allOrders]
   );
 
   const object = useMemo(
     () => allObjects.find((x) => x._id.toString() === currentOrder?.objectId),
-    [orderId, currentOrder?.objectId]
+    [orderId, allObjects, currentOrder?.objectId]
   );
 
   return (
@@ -85,20 +94,23 @@ export default function Layout() {
             </Text>
           </View>
         </View>
-        <View className="flex-1 -mt-2">
-          <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
-            <MaterialTopTabs.Screen
-              name="index"
-              options={{
-                title: t("title.info"),
-                // tabBarIcon: ({ color, focused }) => (
-                //   <View className="absolute top-4 right-3">
-                //     <BadgeTabMessage />
-                //   </View>
-                // ),
-              }}
-            />
-            {/* <MaterialTopTabs.Screen
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <View className="flex-1">
+            <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
+              <MaterialTopTabs.Screen
+                name="index"
+                options={{
+                  title: t("title.info"),
+                  // tabBarIcon: ({ color, focused }) => (
+                  //   <View className="absolute top-4 right-3">
+                  //     <BadgeTabMessage />
+                  //   </View>
+                  // ),
+                }}
+              />
+              {/* <MaterialTopTabs.Screen
             name="question"
             options={{
               title: "Вопросы",
@@ -109,19 +121,20 @@ export default function Layout() {
               ),
             }}
           /> */}
-            <MaterialTopTabs.Screen
-              name="message"
-              options={{
-                title: t("title.message"),
-                // tabBarIcon: ({ color, focused }) => (
-                //   <View className="absolute top-4 right-3">
-                //     <BadgeTabNotify />
-                //   </View>
-                // ),
-              }}
-            />
-          </MaterialTopTabs>
-        </View>
+              <MaterialTopTabs.Screen
+                name="message"
+                options={{
+                  title: t("title.message"),
+                  // tabBarIcon: ({ color, focused }) => (
+                  //   <View className="absolute top-4 right-3">
+                  //     <BadgeTabNotify />
+                  //   </View>
+                  // ),
+                }}
+              />
+            </MaterialTopTabs>
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );

@@ -1,10 +1,19 @@
 import { Text, View } from "react-native";
-import { router } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { useAppSelector } from "@/store/hooks";
-import { activeTaskWorker, user } from "@/store/storeSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  activeTaskWorker,
+  linkParams,
+  setLinkParams,
+  user,
+} from "@/store/storeSlice";
 import UIButton from "@/components/ui/UIButton";
 import TaskWorkerTabs from "@/components/task/TaskWorkerTabs";
 import { useEffect, useState } from "react";
@@ -28,6 +37,8 @@ export interface IAdminOrder {
 
 export default function FollowScreen() {
   const userFromStore = useAppSelector(user);
+  const dispatch = useAppDispatch();
+  const linkParamsFromStore = useAppSelector(linkParams);
 
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
 
@@ -48,6 +59,15 @@ export default function FollowScreen() {
     }
   }, []);
 
+  useEffect(() => {
+    // console.log("linkParamsFromStore: ", linkParamsFromStore);
+
+    if (linkParamsFromStore) {
+      setObjectId(linkParamsFromStore?.objectId);
+      dispatch(setLinkParams(null));
+    }
+  }, [linkParamsFromStore]);
+
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       <SafeAreaView className="flex-1">
@@ -55,7 +75,9 @@ export default function FollowScreen() {
         {/* {userFromStore?.postObject?.name === "Монтажник" ? (
           <TaskMontajWorkerList />
         ) : ( */}
-        {/* <Text>{JSON.stringify(objectId)}</Text> */}
+        {/* <Text>
+          {JSON.stringify(linkParamsFromStore)}/{objectId}
+        </Text> */}
         {userFromStore &&
         ["admin", "boss"].includes(userFromStore?.roleObject.code) ? (
           <View className="flex-1">
@@ -79,7 +101,7 @@ export default function FollowScreen() {
             </View>
           </View>
         )}
-        {userFromStore &&
+        {/* {userFromStore &&
           !["admin", "boss"].includes(userFromStore?.roleObject.code) && (
             <UIButton
               type="link"
@@ -90,7 +112,7 @@ export default function FollowScreen() {
                 router.push("/(tabs)/order/completed");
               }}
             />
-          )}
+          )} */}
       </SafeAreaView>
     </View>
   );

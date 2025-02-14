@@ -109,6 +109,17 @@ export default function WidgetEvents() {
       Notifications.getNotificationChannelsAsync().then((value) =>
         setChannels(value ?? [])
       );
+      // Notifications.scheduleNotificationAsync({
+      //   content: {
+      //     title: "Time's up!",
+      //     body: "Change sides!",
+      //   },
+      //   trigger: {
+      //     hour: 13,
+      //     minute: 52,
+      //     repeats: true,
+      //   },
+      // });
     }
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -186,7 +197,7 @@ export default function WidgetEvents() {
         isWriteConsole && console.log("Close socket!");
         isWriteConsole && console.log(new Error("error.closeSocket"));
 
-        setErr(new Error("error.closeSocket"));
+        tokensFromStore.access_token && setErr(new Error("error.closeSocket"));
       };
 
       _socket.onmessage = function (event) {

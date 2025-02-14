@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { activeTaskWorker } from "@/store/storeSlice";
+import { activeTaskWorker, setLinkParams } from "@/store/storeSlice";
 import SIcon from "../ui/SIcon";
 import { Colors } from "@/utils/Colors";
 import { OrderSchema, TaskSchema, TaskStatusSchema } from "@/schema";
@@ -11,10 +11,13 @@ import UIButton from "../ui/UIButton";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import useOrders from "@/hooks/useOrders";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export type TaskWorkerNotifyActiveTaskProps = {};
 
 export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) {
+  const dispatch = useAppDispatch();
+
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
   // if (!activeTaskWorkerFromStore) {
   //   return null;
@@ -66,22 +69,33 @@ export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) 
   // }
 
   return activeTaskWorkerFromStore ? (
-    <View className="bg-s-300 dark:bg-s-700 rounded-lg p-2 px-4 flex flex-row items-center gap-4">
-      <View className="flex-auto">
-        <Text className="text-s-900 dark:text-white leading-5 text-lg font-bold">
-          {activeTaskStatus?.name} {activeTask?.name.toLowerCase()}
-        </Text>
-        <Text className="text-s-900 dark:text-white leading-5 text-base">
-          {"№"}
-          {/* {activeTask?.number} - {activeOrder?.name} ({activeObject?.name}) */}
-          {activeTaskWorkerFromStore?.order.number} -{" "}
-          {activeTaskWorkerFromStore?.order.name} (
-          {activeTaskWorkerFromStore?.object?.name})
-        </Text>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "/(tabs)/order",
+        });
+        dispatch(
+          setLinkParams({ objectId: activeTaskWorkerFromStore.objectId })
+        );
+      }}
+    >
+      <View className="bg-s-300 dark:bg-s-800 rounded-lg p-2 px-4 flex flex-row items-center gap-4">
+        <View className="flex-auto">
+          <Text className="text-s-900 dark:text-white leading-5 text-lg font-bold">
+            {activeTaskStatus?.name} {activeTask?.name.toLowerCase()}
+          </Text>
+          <Text className="text-s-900 dark:text-white leading-5 text-base">
+            {"№"}
+            {/* {activeTask?.number} - {activeOrder?.name} ({activeObject?.name}) */}
+            {activeTaskWorkerFromStore?.order.number} -{" "}
+            {activeTaskWorkerFromStore?.order.name} (
+            {activeTaskWorkerFromStore?.object?.name})
+          </Text>
+        </View>
+        <View className="">
+          <SIcon path="iChevronRight" size={25} color="white" />
+        </View>
       </View>
-      {/* <View className="">
-        <SIcon path="iChevronRight" size={25} color="white" />
-      </View> */}
-    </View>
+    </TouchableOpacity>
   ) : null;
 }

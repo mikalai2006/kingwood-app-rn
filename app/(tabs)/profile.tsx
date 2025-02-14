@@ -41,6 +41,8 @@ export default function TabProfileScreen() {
     dispatch(setActiveTaskWorker(null));
 
     onLogout();
+
+    router.replace("./modalauth");
   };
 
   const alertLogout = () => {

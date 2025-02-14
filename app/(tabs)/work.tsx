@@ -3,8 +3,10 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { activeTaskWorker } from "@/store/storeSlice";
+import { activeTaskWorker, setLinkParams } from "@/store/storeSlice";
 import { TaskWorkerNotify } from "@/components/task/TaskWorkerNotify";
+import UIButton from "@/components/ui/UIButton";
+import { router } from "expo-router";
 
 export default function TabWorkScreen() {
   const dispatch = useAppDispatch();
@@ -39,6 +41,37 @@ export default function TabWorkScreen() {
                 />;
               })}
             </View> */}
+          {/* <UIButton
+            type="primary"
+            text="[orderId]"
+            onPress={() => {
+              router.push({
+                pathname: "/[orderId]",
+                params: { orderId: "6793bcdb9094050b013e54dc" },
+              });
+            }}
+          />
+          <UIButton
+            type="primary"
+            text="[orderId]/message"
+            onPress={() => {
+              router.push({
+                pathname: "/[orderId]/message",
+                params: { orderId: "6793bcdb9094050b013e54dc" },
+              });
+            }}
+          />
+          <UIButton
+            type="primary"
+            text="/(tabs)/order"
+            onPress={() => {
+              router.push({
+                pathname: "/(tabs)/order",
+                params: { objectId: "6793c5c0913e9988797a39f8" },
+              });
+              dispatch(setLinkParams({ objectId: "6793c5c0913e9988797a39f8" }));
+            }}
+          /> */}
         </ScrollView>
       </SafeAreaView>
     </View>

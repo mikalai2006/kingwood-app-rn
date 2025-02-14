@@ -21,7 +21,7 @@ export default function Page() {
     <View className="bg-s-50 dark:bg-s-950 flex-1">
       <View className="flex-auto mb-24">
         <View className="flex-1 pt-8 pb-3 px-0 bg-white dark:bg-s-900">
-          Auth
+          <Text>Auth</Text>
         </View>
       </View>
     </View>

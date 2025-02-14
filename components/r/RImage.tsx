@@ -30,7 +30,7 @@ const RImage = (props: IImageProps) => {
           ? {
               uri:
                 image && !image.uri
-                  ? `${hostSERVER}/images/${image.service}/${image.serviceId}/${image.path}${image.ext}`
+                  ? `${hostSERVER}/images/${image.service}/${image.serviceId}/xs-${image.path}${image.ext}`
                   : image?.uri || props.uri,
             }
           : placeholder

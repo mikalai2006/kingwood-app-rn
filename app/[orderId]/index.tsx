@@ -1,7 +1,11 @@
 import { View, Text } from "react-native";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { useLocalSearchParams, usePathname } from "expo-router";
+import {
+  useLocalSearchParams,
+  useGlobalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
 import ImageSlider from "@/components/image/ImageSlider";
@@ -26,20 +30,19 @@ export default function OrderIndexScreen() {
 
   const pathname = usePathname();
 
-  let { orderId } = useLocalSearchParams<{ orderId: string }>();
-
+  // let { orderId } = useLocalSearchParams<{ orderId: string }>();
   const userFromStore = useAppSelector(user);
 
-  const { isLoading, error } = useOrders({
-    id: [orderId],
-  });
+  const { orderId } = useGlobalSearchParams<{
+    orderId: string;
+  }>();
 
   const allOrders = useQuery(OrderSchema);
   const allObjects = useQuery(ObjectsSchema);
 
   const currentOrder = useMemo(
     () => allOrders.find((x) => x._id.toString() === orderId),
-    [orderId]
+    [orderId, allOrders]
   );
 
   const object = useMemo(

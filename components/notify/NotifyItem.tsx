@@ -35,6 +35,10 @@ const NotifyItem = ({ notify }: NotifyItemProps) => {
   const [loading, setLoading] = useState(false);
 
   const onPatchNotify = async () => {
+    if (notify.status) {
+      return;
+    }
+
     setLoading(true);
 
     return await onFetchWithAuth(`${hostAPI}/notify/${notify._id.toString()}`, {

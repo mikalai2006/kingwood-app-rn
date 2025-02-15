@@ -170,8 +170,6 @@ export const useTaskWorkerUtils = () => {
               );
             }
             // dispatch(setActiveTaskWorker(null));
-            dispatch(setWorkTime(null));
-            ToastAndroid.show(t("info.successEndWorkTime"), ToastAndroid.LONG);
           });
         } catch (e) {
           isWriteConsole && console.log("onEndWorkTime error: ", e);
@@ -182,6 +180,8 @@ export const useTaskWorkerUtils = () => {
       })
       .finally(() => {
         setLoading(false);
+        dispatch(setWorkTime(null));
+        ToastAndroid.show(t("info.successEndWorkTime"), ToastAndroid.LONG);
       });
   };
 

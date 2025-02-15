@@ -59,7 +59,7 @@ export default function UIButton(props: UIButtonProps) {
   }, [props.disabled, props.twClass, props.type]);
 
   const classText = React.useMemo(() => {
-    let result = "text-lg px-2 leading-6 ";
+    let result = "text-lg px-0 leading-6 ";
 
     const disableClass = " text-s-300 dark:text-s-700 ";
 

@@ -5,7 +5,7 @@ import { hostAPI, isWriteConsole } from "@/utils/global";
 
 import { useFetchWithAuth } from "./useFetchWithAuth";
 import { useAppSelector } from "@/store/hooks";
-import { activeLanguage } from "@/store/storeSlice";
+import { activeLanguage, user } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import { useFocusEffect } from "expo-router";
 import { useRealm } from "@realm/react";
@@ -28,6 +28,8 @@ const useNotify = (props: IUseNotifyProps) => {
 
   const realm = useRealm();
 
+  const userFromStore = useAppSelector(user);
+
   const { onFetchWithAuth } = useFetchWithAuth();
 
   const activeLanguageFromStore = useAppSelector(activeLanguage);
@@ -44,6 +46,10 @@ const useNotify = (props: IUseNotifyProps) => {
       let ignore = false;
       const onFindItems = async () => {
         try {
+          if (!userFromStore) {
+            return;
+          }
+
           isWriteConsole && console.log("UseNotify props: ", props);
 
           // if (!workerId) {

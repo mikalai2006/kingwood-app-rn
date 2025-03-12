@@ -1,25 +1,25 @@
 import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
-import { WorkTimeSchema } from "@/schema";
 import dayjs, { formatDate, formatTime } from "@/utils/dayjs";
 import { useAppSelector } from "@/store/hooks";
-import { user, workTime } from "@/store/storeSlice";
+import { user, workHistory } from "@/store/storeSlice";
 import { TimerData } from "@/hooks/useTimer";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TaskWorkerTime } from "../task/TaskWorkerTime";
-import { IWorkTime } from "@/types";
+import { IWorkHistory } from "@/types";
 import Card from "../Card";
+import { FinancyDayItemOrderInfo } from "./FinancyDayItemOrderInfo";
 
 export type FinancyDayItemActiveProps = {
-  item: IWorkTime;
-  currentWorkTime: IWorkTime | null;
+  item: IWorkHistory;
+  currentWorkHistory: IWorkHistory | null;
   time: TimerData;
 };
 
 export function FinancyDayItemActive({
   item,
-  currentWorkTime,
+  currentWorkHistory,
   time,
 }: FinancyDayItemActiveProps) {
   const { colorScheme } = useColorScheme();
@@ -28,31 +28,36 @@ export function FinancyDayItemActive({
 
   const userFromStore = useAppSelector(user);
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
   const zp = useMemo(() => {
     if (!userFromStore) {
       return 0;
     }
     const to =
-      dayjs(workTimeFromStore?.to).year() > 1
-        ? workTimeFromStore?.to
+      dayjs(workHistoryFromStore?.to).year() > 1
+        ? workHistoryFromStore?.to
         : dayjs(new Date()).utc().format();
 
     const _timeWorkMinutes = dayjs(to).diff(
-      dayjs(workTimeFromStore?.from),
+      dayjs(workHistoryFromStore?.from),
       "minutes",
       true
     );
 
-    return workTimeFromStore
-      ? _timeWorkMinutes * (workTimeFromStore.oklad / 60)
+    return workHistoryFromStore
+      ? _timeWorkMinutes * (workHistoryFromStore.oklad / 60)
       : 0;
-  }, [time, currentWorkTime?.oklad, workTimeFromStore]);
+  }, [time, currentWorkHistory?.oklad, workHistoryFromStore]);
 
   return (
     <Card className="flex flex-row items-center mb-3 py-3">
       <View className="flex-auto">
+        {item && (
+          <FinancyDayItemOrderInfo
+            workHistory={JSON.parse(JSON.stringify(item))}
+          />
+        )}
         <View className=" flex flex-row gap-2">
           {/* <Text className="text-s-800 dark:text-s-200">
                     {t("from")}
@@ -78,7 +83,7 @@ export function FinancyDayItemActive({
           </View>
         </View>
         <Text className="text-md text-s-500 dark:text-s-500">
-          {t("worked")}:{" "}
+          {/* {t("worked")}:{" "} */}
           <TaskWorkerTime
             time={time}
             className="text-md text-s-500 dark:text-s-500"

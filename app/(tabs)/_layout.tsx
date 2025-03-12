@@ -11,6 +11,7 @@ import {
   activeTaskWorker,
   modeTheme,
   user,
+  workHistory,
   workTime,
 } from "@/store/storeSlice";
 import { useAppSelector } from "@/store/hooks";
@@ -25,6 +26,7 @@ import BadgeTabNotify from "@/components/badge/BadgeTabNotify";
 import useNotify from "@/hooks/useNotify";
 import { isWriteConsole } from "@/utils/global";
 import Updater from "@/components/update/Updater";
+import useWorkHistory from "@/hooks/useWorkHistory";
 
 export default function TabLayout() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -32,7 +34,10 @@ export default function TabLayout() {
   const { t } = useTranslation();
 
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
-  const activeWorkTimeFromStore = useAppSelector(workTime);
+
+  // const activeWorkTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
+
   const activeTaskStatus = useObject(
     TaskStatusSchema,
     new BSON.ObjectId(activeTaskWorkerFromStore?.statusId)
@@ -43,6 +48,14 @@ export default function TabLayout() {
   useNotify({
     userTo: userFromStore?.id ? [userFromStore.id] : undefined,
   });
+
+  useWorkHistory(
+    {
+      workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
+      status: 0,
+    },
+    [userFromStore]
+  );
   // if (userFromStore) {
   //   // const { messagesRooms } = useMessagesRooms({
   //   //   userId: userFromStore?.id,
@@ -60,6 +73,7 @@ export default function TabLayout() {
   // });
 
   const modeThemeFromStore = useAppSelector(modeTheme);
+
   useEffect(() => {
     isWriteConsole && console.log("modeThemeFromStore=", modeThemeFromStore);
 
@@ -159,7 +173,7 @@ export default function TabLayout() {
               title:
                 (activeTaskWorkerFromStore &&
                   activeTaskWorkerFromStore?.status == "process") ||
-                activeWorkTimeFromStore
+                workHistoryFromStore
                   ? ""
                   : t("title.work"),
               // activeTaskWorkerFromStore

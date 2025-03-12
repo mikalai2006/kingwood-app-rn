@@ -273,6 +273,7 @@ export interface ITaskWorker {
   orderId: string;
   taskId: string;
   workerId: string;
+  operationId: string;
   sortOrder: number;
   statusId: string;
   status: string;
@@ -286,8 +287,8 @@ export interface ITaskWorker {
   worker: IUser;
   object: IObject;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type ITaskWorkerPopulate = Partial<ITaskWorker> & {
@@ -403,13 +404,24 @@ export interface IWorkHistory {
   taskId: string;
   workerId: string;
   operationId: string;
+  taskWorkerId: string;
   status: string;
+  date: string;
   from: string;
   to: string;
   oklad: number;
+  total: number;
+  totalTime: number;
   createdAt: string;
   updatedAt: string;
 }
+
+export type IWorkHistoryPopulate = Partial<IWorkHistory> & {
+  // taskStatus: ITaskStatus;
+  // task: ITask;
+  object?: IObject;
+  order?: IOrder;
+};
 
 export interface IWorkTime {
   id: string;

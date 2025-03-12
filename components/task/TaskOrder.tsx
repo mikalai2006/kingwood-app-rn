@@ -10,6 +10,7 @@ import UIButton from "../ui/UIButton";
 import SIcon from "../ui/SIcon";
 import { Colors } from "@/utils/Colors";
 import { router } from "expo-router";
+import { getObjectId } from "@/utils/utils";
 
 export type TaskOrderProps = {
   orderId: string;
@@ -20,9 +21,11 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
 
   const { t } = useTranslation();
 
-  useOrders({
-    id: [orderId],
-  });
+  if (getObjectId(orderId) != "0") {
+    useOrders({
+      id: [orderId],
+    });
+  }
 
   const order = useObject(OrderSchema, new BSON.ObjectId(orderId));
   const object = useObject(ObjectsSchema, new BSON.ObjectId(order?.objectId));
@@ -32,10 +35,12 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
       type="link"
       className="p-2 flex flex-row items-center"
       onPress={() => {
-        router.push({
-          pathname: "/[orderId]",
-          params: { orderId: order._id.toString() },
-        });
+        if (getObjectId(order._id.toString()) != "0") {
+          router.push({
+            pathname: "/[orderId]",
+            params: { orderId: order._id.toString() },
+          });
+        }
       }}
     >
       <View className="flex-auto">
@@ -62,16 +67,19 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
 
         {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
         <Text className="text-xl font-medium leading-5 text-s-700 dark:text-s-100">
-          №{order.number} - {order.name}
+          {order.number ? `№${order.number} - ` : ""}
+          {order.name}
         </Text>
       </View>
-      <View>
-        <SIcon
-          path="iChevronRight"
-          size={20}
-          color={colorScheme === "dark" ? Colors.s[500] : Colors.s[300]}
-        />
-      </View>
+      {getObjectId(order._id.toString()) != "0" && (
+        <View>
+          <SIcon
+            path="iChevronRight"
+            size={20}
+            color={colorScheme === "dark" ? Colors.s[500] : Colors.s[300]}
+          />
+        </View>
+      )}
     </UIButton>
   ) : (
     <Text>Not found order</Text>

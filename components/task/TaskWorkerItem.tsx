@@ -14,7 +14,7 @@ import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 import { useObject, useQuery, useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
-import { ITaskWorker } from "@/types";
+import { ITaskWorker, IWorkHistory } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   activeTaskWorker,
@@ -28,6 +28,8 @@ import TaskIcon from "./TaskIcon";
 import dayjs from "@/utils/dayjs";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
+import { getObjectId } from "@/utils/utils";
+import { useWork } from "@/hooks/useWork";
 
 export type TaskWorkerItemProps = {
   // taskWorker: TaskWorkerSchema;
@@ -39,7 +41,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
   const userFromStore = useAppSelector(user);
 
-  const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
+  const taskWorkerFromStore = useAppSelector(activeTaskWorker);
 
   const { t } = useTranslation();
 
@@ -49,18 +51,43 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
   const dispatch = useAppDispatch();
 
-  const workTimeFromStore = useAppSelector(workTime);
+  // const workTimeFromStore = useAppSelector(workTime);
 
   const workHistoryFromStore = useAppSelector(workHistory);
 
-  const activeTaskFromStore = useAppSelector(activeTaskWorker);
+  // const activeTaskFromStore = useAppSelector(activeTaskWorker);
 
   const taskWorker = useObject(
     TaskWorkerSchema,
     new BSON.ObjectId(taskWorkerId)
   );
 
-  taskWorker?.taskId && useTask({ id: [taskWorker.taskId] });
+  const activeOrder = useObject(
+    OrderSchema,
+    new BSON.ObjectId(
+      workHistoryFromStore?.orderId
+      // taskWorkerFromStore?.id == taskWorkerId
+      //   ? workHistoryFromStore?.orderId
+      //   : taskWorker?.orderId
+    )
+  );
+  const activeTask = useObject(
+    TaskSchema,
+    new BSON.ObjectId(workHistoryFromStore?.taskId)
+  );
+
+  const activeObject = useObject(
+    ObjectsSchema,
+    new BSON.ObjectId(
+      workHistoryFromStore?.objectId
+      // taskWorkerFromStore?.id == taskWorkerId
+      //   ? workHistoryFromStore?.objectId
+      //   : taskWorker?.objectId
+    )
+  );
+  if (taskWorker?.taskId && getObjectId(taskWorker?.taskId) != "0") {
+    useTask({ id: [taskWorker.taskId] });
+  }
 
   const allTaskStatus = useQuery(TaskStatusSchema);
   const allOrders = useQuery(OrderSchema);
@@ -70,7 +97,9 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
   const taskStatus = useObject(
     TaskStatusSchema,
-    new BSON.ObjectId(taskWorker?.statusId)
+    taskWorkerFromStore?.id == taskWorkerId
+      ? new BSON.ObjectId(taskWorkerFromStore?.statusId)
+      : new BSON.ObjectId(taskWorker?.statusId)
   );
 
   const [loading, setLoading] = useState(false);
@@ -153,8 +182,6 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   // };
 
   const toggleTaskWorker = async (statusName: string) => {
-    setLoading(true);
-
     const _status = allTaskStatus.find((x) => x.status === statusName);
     if (!_status) {
       return;
@@ -165,13 +192,17 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
       return;
     }
 
+    setLoading(true);
+
     // pause prev task.
     if (
-      activeTaskFromStore != null &&
-      activeTaskFromStore.id != taskWorker?._id.toString()
+      workHistoryFromStore != null &&
+      workHistoryFromStore.id &&
+      workHistoryFromStore.id != taskWorker?._id.toString()
     ) {
+      // if (getObjectId(workHistoryFromStore.id) != "0") {
       await onFetchWithAuth(
-        `${hostAPI}/task_worker/${activeTaskFromStore.id}`,
+        `${hostAPI}/task_worker/${workHistoryFromStore.taskWorkerId}`,
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -216,9 +247,14 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         .catch((e) => {
           isWriteConsole && console.log("toggleTaskWorker prev Error", e);
         });
+      // } else {
+      //   // fake taskWorker.
+      //   taskWorker && (await onWriteWorkHistory("wait", taskWorker));
+      // }
     }
 
-    return await onFetchWithAuth(
+    // if (getObjectId(taskWorker?._id.toString()) != "0") {
+    await onFetchWithAuth(
       `${hostAPI}/task_worker/${taskWorker?._id.toString()}`,
       {
         method: "PATCH",
@@ -226,6 +262,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
           //productId: params.id,
           statusId: _status._id.toString(),
           status: statusName,
+          workerId: userFromStore?.id,
         }),
       }
     )
@@ -250,19 +287,33 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             }
 
             if (statusName === "process") {
-              ToastAndroid.show(
-                t("info.successProcessTask", {
-                  orderName: `№${res.order.number}-${res.order.name}`,
-                }),
-                ToastAndroid.SHORT
-              );
+              if (res.order.number) {
+                ToastAndroid.show(
+                  t("info.successProcessTask", {
+                    orderName: `№${res.order.number}-${res.order.name}`,
+                  }),
+                  ToastAndroid.SHORT
+                );
+              } else {
+                ToastAndroid.show(
+                  t("fake.successProcessFake"),
+                  ToastAndroid.SHORT
+                );
+              }
             } else if (statusName === "pause") {
-              ToastAndroid.show(
-                t("info.successPauseTask", {
-                  orderName: `№${res.order.number}-${res.order.name}`,
-                }),
-                ToastAndroid.SHORT
-              );
+              if (res.order.number) {
+                ToastAndroid.show(
+                  t("info.successPauseTask", {
+                    orderName: `№${res.order.number}-${res.order.name}`,
+                  }),
+                  ToastAndroid.SHORT
+                );
+              } else {
+                ToastAndroid.show(
+                  t("fake.successPauseFake"),
+                  ToastAndroid.SHORT
+                );
+              }
             }
 
             // onWriteWorkHistory(statusName, res);
@@ -281,6 +332,12 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
       .finally(() => {
         setLoading(false);
       });
+    // } else {
+    //   // fake taskWorker.
+    //   // TODO
+
+    //   setLoading(false);
+    // }
   };
 
   const order = useMemo(() => {
@@ -308,9 +365,11 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
     Alert.alert(
       t("info.taskPause"),
-      t("info.taskPauseDescription", {
-        orderName: `№${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
-      }),
+      getObjectId(orders[0]?._id.toString()) != "0"
+        ? t("info.taskPauseDescription", {
+            orderName: `${task.name} №${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
+          })
+        : t("fake.taskPauseDescription"),
       [
         // {
         //   text: "Ask me later",
@@ -323,15 +382,19 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         },
         {
           text: t("button.yes"),
-          onPress: () => {
-            toggleTaskWorker("pause");
+          onPress: async () => {
+            await toggleTaskWorker("pause");
+            // if (getObjectId(task._id.toString()) != "0") {
+            // } else {
+            //   taskWorker && (await onWriteWorkHistory("wait", taskWorker));
+            // }
           },
         },
       ]
     );
   }
 
-  const { onStartWorkTime } = useTaskWorkerUtils();
+  // const { onStartWorkTime } = useTaskWorkerUtils();
 
   async function onProcessTask(task: TaskSchema): Promise<void> {
     const orders = allOrders.filtered(
@@ -349,14 +412,22 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
     Alert.alert(
       t("info.taskProcess"),
-      activeTaskFromStore != null && workTimeFromStore != null
+      workHistoryFromStore != null
         ? t("info.taskProcessRunOtherDescription", {
-            orderName: `№${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
-            prevOrderName: `№${activeTaskFromStore.order?.number}: ${activeTaskFromStore.order?.name} (${activeTaskFromStore.object?.name})`,
+            orderName:
+              getObjectId(orders[0]?._id.toString()) == "0"
+                ? t("fake.nameOrder")
+                : `${task?.name} №${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
+            prevOrderName:
+              getObjectId(activeOrder?._id.toString()) == "0"
+                ? t("fake.nameOrder")
+                : `${activeTask?.name} №${activeOrder?.number}: ${activeOrder?.name} (${activeObject?.name})`,
           })
-        : t("info.taskProcessDescription", {
-            orderName: `№${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
-          }),
+        : getObjectId(orders[0]._id.toString()) != "0"
+        ? t("info.taskProcessDescription", {
+            orderName: `${task?.name} №${orders[0]?.number}: ${orders[0]?.name} (${objects[0].name})`,
+          })
+        : t("fake.taskProcessDescription"),
       [
         // {
         //   text: "Ask me later",
@@ -370,11 +441,14 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         {
           text: t("button.yes"),
           onPress: async () => {
-            if (workTimeFromStore == null) {
-              await onStartWorkTime();
-            }
-
+            // if (workTimeFromStore == null) {
+            //   await onStartWorkTime();
+            // }
             await toggleTaskWorker("process");
+            // if (getObjectId(task._id.toString()) != "0") {
+            // } else {
+            //   taskWorker && (await onWriteWorkHistory("process", taskWorker));
+            // }
           },
         },
       ]
@@ -415,6 +489,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
   return task && taskWorker ? (
     <View className="w-full p-2 px-4">
+      {/* <Text>{taskWorkerId}</Text> */}
       <View
         className="rounded-lg shadow-lg bg-white dark:bg-s-800"
         // style={{ backgroundColor: taskStatus?.color }}
@@ -469,8 +544,9 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                       type="primary"
                       text={t("button.pauseTask")}
                       loading={loading}
+                      disabled={loading}
                       onPress={() => onPauseTask(task)}
-                    ></UIButton>
+                    />
                   ) : (
                     <UIButton
                       type="secondary"
@@ -488,17 +564,20 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                         taskStatus?.status == "autofinish"
                       }
                       onPress={() => onProcessTask(task)}
-                    ></UIButton>
+                    />
                   )}
                 </View>
-                <UIButton
-                  type="secondary"
-                  text={t("button.finishTask")}
-                  disabled={
-                    activeTaskFromStore?.id !== taskWorker._id.toString()
-                  }
-                  onPress={() => onCompletedTask(task)}
-                ></UIButton>
+                {getObjectId(taskWorker?._id.toString()) != "0" && (
+                  <UIButton
+                    type="secondary"
+                    text={t("button.finishTask")}
+                    disabled={
+                      taskWorkerFromStore?.id !== taskWorker._id.toString() ||
+                      loading
+                    }
+                    onPress={() => onCompletedTask(task)}
+                  />
+                )}
               </View>
             )}
           {/* {numColumns === 1 && (
@@ -518,6 +597,99 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         </View>
       </View>
     </View>
-  ) : // <TaskNotFound />
+  ) : //  : taskWorker ? (
+  //   <View className="w-full p-2 px-4">
+  //     <View className="rounded-lg shadow-lg bg-white dark:bg-s-800">
+  //       <View className="flex-auto p-4">
+  //         <View className="flex flex-row items-center mb-1">
+  //           {/* <View className="flex flex-row">
+  //           <Text className="text-lg  text-s-500 dark:text-s-300 pr-1">
+  //             {t("order")} №{order.number},
+  //           </Text>
+  //         </View> */}
+  //           <View className="flex flex-row items-center">
+  //             <Text className="text-xl font-medium text-s-600 dark:text-s-300 pr-1">
+  //               Цех
+  //             </Text>
+  //             {/* <Text className="text-xl leading-5 font-medium text-s-500 dark:text-s-300">
+  //           {object?.name}
+  //         </Text> */}
+  //           </View>
+  //         </View>
+
+  //         {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
+  //         <Text className="text-xl font-medium leading-5 text-s-700 dark:text-s-100">
+  //           Хозяйственные работы
+  //         </Text>
+  //       </View>
+  //       {/* <View className="rounded-t-lg p-2 pb-0">
+  //         <View className="px-1">
+  //           <Text className="self-start p-1 rounded-sm text-base bg-red-300 dark:bg-red-400">
+  //             Хозяйственная работа
+  //           </Text>
+  //         </View>
+  //       </View> */}
+  //       <View className="p-2 pt-0 rounded-b-lg">
+  //         {taskStatus?.status &&
+  //           !["finish", "autofinish"].includes(taskStatus?.status) && (
+  //             <View className="flex flex-row p-2 gap-1">
+  //               <View className="flex-auto flex items-start">
+  //                 {/* <Text>{JSON.stringify(activeTaskFromStore)}</Text> */}
+  //                 {taskStatus?.status === "process" ? (
+  //                   <UIButton
+  //                     type="primary"
+  //                     text={t("button.pauseTask")}
+  //                     loading={loading}
+  //                     onPress={() => onPauseTask(task)}
+  //                   ></UIButton>
+  //                 ) : (
+  //                   <UIButton
+  //                     type="secondary"
+  //                     text={t("button.goTask")}
+  //                     loading={loading}
+  //                     disabled={
+  //                       // workTimeFromStore === null ||
+  //                       !dayjs(new Date()).isBetween(
+  //                         dayjs(taskWorker.from),
+  //                         dayjs(taskWorker.to),
+  //                         "day",
+  //                         "[]"
+  //                       ) ||
+  //                       order?.status < 1 || //!order?.stolyarComplete //activeTaskFromStore !== null ||
+  //                       taskStatus?.status == "autofinish"
+  //                     }
+  //                     onPress={() => onProcessTask(task)}
+  //                   ></UIButton>
+  //                 )}
+  //               </View>
+  //               {/* <UIButton
+  //                 type="secondary"
+  //                 text={t("button.finishTask")}
+  //                 disabled={
+  //                   activeTaskFromStore?.id !== taskWorker._id.toString()
+  //                 }
+  //                 onPress={() => onCompletedTask(task)}
+  //               ></UIButton> */}
+  //             </View>
+  //           )}
+  //         {/* {numColumns === 1 && (
+  //         <View className="px-4 pb-4 flex flex-row gap-2">
+  //           <View className="flex-auto flex flex-row flex-wrap items-start gap-2">
+  //             <View className="bg-p-500 py-0.5 px-1.5 rounded-lg">
+  //               <Text className="text-white">Отдам даром</Text>
+  //             </View>
+  //             <View className="bg-green-500 py-0.5 px-1.5 rounded-lg">
+  //               <Text className="text-white">Обмен</Text>
+  //             </View>
+  //           </View>
+
+  //           <View className="flex flex-row gap-4 items-end"></View>
+  //         </View>
+  //       )} */}
+  //       </View>
+  //     </View>
+  //   </View>
+  // )
+  null; // <TaskNotFound />
   null;
 }

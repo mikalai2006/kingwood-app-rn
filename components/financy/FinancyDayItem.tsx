@@ -1,15 +1,16 @@
 import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
-import { WorkTimeSchema } from "@/schema";
-import dayjs, { formatDate, formatDateTime, formatTime } from "@/utils/dayjs";
+import { WorkHistorySchema } from "@/schema";
+import dayjs, { formatDate, formatTime } from "@/utils/dayjs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { getObjectTime } from "@/hooks/useTimer";
 import { TaskWorkerTime } from "../task/TaskWorkerTime";
 import Card from "../Card";
+import { FinancyDayItemOrderInfo } from "./FinancyDayItemOrderInfo";
 
 export type FinancyDayItemItemProps = {
-  item: WorkTimeSchema;
+  item: WorkHistorySchema;
 };
 
 export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
@@ -43,24 +44,29 @@ export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
   return (
     <Card className="flex flex-row items-center mb-3 py-3">
       <View className="flex-auto">
-        <View className=" flex flex-row gap-2">
+        {item && (
+          <FinancyDayItemOrderInfo
+            workHistory={JSON.parse(JSON.stringify(item))}
+          />
+        )}
+        <View className="flex flex-row gap-2 items-center">
           {/* <Text className="text-s-800 dark:text-s-200">
             {dayjs("2025-01-14T21:01:59.742Z").utc(true).format(formatDate)}
           </Text> */}
           <View>
-            <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
+            {/* <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
               {dayjs(item.from).utc(true).format(formatDate)}
-            </Text>
+            </Text> */}
             <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
               {dayjs(item.from).utc(true).format(formatTime)}
             </Text>
           </View>
           <Text className="text-5xl text-s-800 dark:text-s-200">⇢</Text>
           <View>
-            <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
+            {/* <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
               {" "}
               {dayjs(item.to).utc(true).format(formatDate)}
-            </Text>
+            </Text> */}
             <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
               {" "}
               {dayjs(item.to).utc(true).format(formatTime)}
@@ -68,7 +74,7 @@ export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
           </View>
         </View>
         <Text className="text-md text-s-500 dark:text-s-500">
-          {t("worked")}:{" "}
+          {/* {t("worked")}:{" "} */}
           <TaskWorkerTime
             time={time}
             className="text-md text-s-500 dark:text-s-500"

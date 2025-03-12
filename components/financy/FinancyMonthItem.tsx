@@ -1,17 +1,17 @@
 import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
 import { useAppSelector } from "@/store/hooks";
-import { financyFilter, user, workTime } from "@/store/storeSlice";
+import { financyFilter, user, workHistory } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import UIButton from "../ui/UIButton";
 import { router } from "expo-router";
 import SIcon from "../ui/SIcon";
 import { useQuery } from "@realm/react";
-import { WorkTimeSchema } from "@/schema";
 import { useMemo } from "react";
 import dayjs from "@/utils/dayjs";
 import { getObjectTime, TimerData } from "@/hooks/useTimer";
 import { TaskWorkerTime } from "../task/TaskWorkerTime";
+import { WorkHistorySchema } from "@/schema";
 
 export type FinancyMonthItemProps = {
   date: string;
@@ -25,11 +25,11 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
 
   const userFromStore = useAppSelector(user);
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
   const financyFilterFromStore = useAppSelector(financyFilter);
 
-  const allWorkTime = useQuery(WorkTimeSchema, (items) =>
+  const allWorkHistory = useQuery(WorkHistorySchema, (items) =>
     items.filtered("workerId == $0", userFromStore?.id)
   );
 
@@ -42,23 +42,23 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
       return 0;
     }
     const to =
-      dayjs(workTimeFromStore?.to).year() > 1
-        ? workTimeFromStore?.to
+      dayjs(workHistoryFromStore?.to).year() > 1
+        ? workHistoryFromStore?.to
         : dayjs(new Date()).utc().format();
 
     const _timeWorkMinutes = dayjs(to).diff(
-      dayjs(workTimeFromStore?.from),
+      dayjs(workHistoryFromStore?.from),
       "minutes",
       true
     );
 
-    return workTimeFromStore
-      ? _timeWorkMinutes * (workTimeFromStore.oklad / 60)
+    return workHistoryFromStore
+      ? _timeWorkMinutes * (workHistoryFromStore.oklad / 60)
       : 0;
-  }, [time, workTimeFromStore?.oklad]);
+  }, [time, workHistoryFromStore?.oklad]);
 
-  const allWorkTimeToday = useMemo(() => {
-    return allWorkTime
+  const allWorkHistoryToday = useMemo(() => {
+    return allWorkHistory
       .filter(
         (x) =>
           dayjs(date).isBetween(dayjs(x.from), dayjs(x.to), "day", "[]") &&
@@ -73,18 +73,18 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
           dayjs(x.to).year() > 1
       )
       .sort((a, b) => a.from.localeCompare(b.from));
-  }, [allWorkTime]);
+  }, [allWorkHistory]);
 
   const total = useMemo(
     () =>
-      (allWorkTimeToday.length
-        ? allWorkTimeToday.reduce((a, b) => a + b.total, 0)
+      (allWorkHistoryToday.length
+        ? allWorkHistoryToday.reduce((a, b) => a + b.total, 0)
         : 0) + (isToday ? zp : 0),
     [time]
   );
 
   const totalTime = useMemo(() => {
-    const totalMs = allWorkTimeToday
+    const totalMs = allWorkHistoryToday
       .map((item) => {
         const to =
           dayjs(item.to).year() > 1 ? item.to : dayjs(new Date()).format();
@@ -95,11 +95,11 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
       })
       .reduce((a, b) => a + b, 0);
     const msActive =
-      isToday && workTimeFromStore
-        ? dayjs(new Date()).diff(dayjs(workTimeFromStore.from))
+      isToday && workHistoryFromStore
+        ? dayjs(new Date()).diff(dayjs(workHistoryFromStore.from))
         : 0;
     return totalMs + msActive;
-  }, [allWorkTimeToday, time]);
+  }, [allWorkHistoryToday, time]);
 
   return (
     <UIButton

@@ -20,11 +20,11 @@ export function TaskWorkerTime({
   return (
     <Text className={`${className}`}>
       {/* {JSON.stringify(time)} */}
-      {time.hours > 0 ? (!short ? time.hours0 : time.hours) : ""}
+      {time.hours > 0 ? (!short ? time.hours : time.hours0) : ""}
       {time.hours > 0 ? (!short ? t("time.hours") + " " : ":") : ""}
       {!short ? time.minutes : time.minutes0}
       {!short ? t("time.minutes") + " " : ":"}
-      {!hideSeconds ? time.seconds0 : ""}
+      {!hideSeconds ? (!short ? time.seconds : time.seconds0) : ""}
       {!hideSeconds ? (!short ? t("time.seconds") + " " : "") : ""}
     </Text>
   );

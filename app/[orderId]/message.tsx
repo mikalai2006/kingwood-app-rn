@@ -1,6 +1,10 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, Modal, Text, View } from "react-native";
 
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import {
   router,
   useGlobalSearchParams,
@@ -137,6 +141,15 @@ export default function MessageOrderScreen() {
 
   const scrollView = useRef(null);
 
+  const onZoomImage = (img: IImage) => {
+    console.log("Gogo");
+    setActiveImg(img);
+    setModalVisible(true);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [activeImg, setActiveImg] = useState<IImage | null>(null);
+
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       {order && (
@@ -186,16 +199,18 @@ export default function MessageOrderScreen() {
                         {x.images?.length ? (
                           <View className="flex flex-row flex-wrap gap-2 mb-4">
                             {x.images.map((img, index) => (
-                              <View
-                                className="h-20 w-auto aspect-square"
+                              <TouchableOpacity
                                 key={index.toString()}
+                                onPress={() => onZoomImage(img)}
                               >
-                                <RImage
-                                  image={img}
-                                  // uri={`${hostSERVER}/images/${uri}`}
-                                  className="w-full h-full object-contain rounded-lg"
-                                />
-                              </View>
+                                <View className="h-20 w-auto aspect-square">
+                                  <RImage
+                                    image={img}
+                                    // uri={`${hostSERVER}/images/${uri}`}
+                                    className="w-full h-full object-contain rounded-lg"
+                                  />
+                                </View>
+                              </TouchableOpacity>
                             ))}
                           </View>
                         ) : null}
@@ -303,6 +318,29 @@ export default function MessageOrderScreen() {
           </View>
         </>
       )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View className="flex-1">
+          <View>
+            <RImage
+              image={activeImg}
+              // uri={`${hostSERVER}/images/${uri}`}
+              className="w-auto h-full object-contain"
+            />
+            {/* <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>Hide Modal</Text>
+                    </Pressable> */}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

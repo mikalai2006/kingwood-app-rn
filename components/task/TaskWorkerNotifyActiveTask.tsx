@@ -3,7 +3,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { activeTaskWorker, setLinkParams } from "@/store/storeSlice";
 import SIcon from "../ui/SIcon";
 import { Colors } from "@/utils/Colors";
-import { OrderSchema, TaskSchema, TaskStatusSchema } from "@/schema";
+import {
+  OperationSchema,
+  OrderSchema,
+  TaskSchema,
+  TaskStatusSchema,
+} from "@/schema";
 import { useObject, useQuery } from "@realm/react";
 import { BSON } from "realm";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
@@ -68,6 +73,21 @@ export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) 
   //   });
   // }
 
+  const order = useObject(
+    OrderSchema,
+    new BSON.ObjectId(activeTaskWorkerFromStore?.orderId)
+  );
+
+  const operation = useObject(
+    OperationSchema,
+    new BSON.ObjectId(activeTaskWorkerFromStore?.operationId)
+  );
+
+  const object = useObject(
+    ObjectsSchema,
+    new BSON.ObjectId(activeTaskWorkerFromStore?.objectId)
+  );
+
   return activeTaskWorkerFromStore ? (
     <TouchableOpacity
       onPress={() => {
@@ -85,11 +105,9 @@ export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) 
             {activeTaskStatus?.name} {activeTask?.name.toLowerCase()}
           </Text>
           <Text className="text-s-900 dark:text-white leading-5 text-base">
-            {"№"}
             {/* {activeTask?.number} - {activeOrder?.name} ({activeObject?.name}) */}
-            {activeTaskWorkerFromStore?.order.number} -{" "}
-            {activeTaskWorkerFromStore?.order.name} (
-            {activeTaskWorkerFromStore?.object?.name})
+            {order?.number ? "№" + order.number + " - " : ""}
+            {order?.name} ({object?.name})
           </Text>
         </View>
         <View className="">

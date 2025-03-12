@@ -35,7 +35,7 @@ export default function Layout() {
   return (
     <View className="flex-1 bg-s-100 dark:bg-s-800">
       <SafeAreaView style={{ flex: 1 }}>
-        <Stack
+        {/* <Stack
           screenOptions={{
             headerStyle: {
               backgroundColor:
@@ -47,14 +47,49 @@ export default function Layout() {
           initialRouteName="notify"
         >
           <Stack.Screen
-            name="notify"
+            name="new"
             options={{
               headerShown: false,
               // presentation: "transparentModal",
               animation: "slide_from_right",
             }}
           />
-        </Stack>
+        </Stack> */}
+        <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
+          <MaterialTopTabs.Screen
+            name="new"
+            options={{
+              title: t("title.notifyNew"),
+              // tabBarIcon: ({ color, focused }) => (
+              //   <View className="absolute top-4 right-3">
+              //     <BadgeTabMessage />
+              //   </View>
+              // ),
+            }}
+          />
+          {/* <MaterialTopTabs.Screen
+                    name="question"
+                    options={{
+                      title: "Вопросы",
+                      tabBarIcon: ({ color, focused }) => (
+                        <View className="absolute top-4 right-3">
+                          <BadgeTabQuestion />
+                        </View>
+                      ),
+                    }}
+                  /> */}
+          <MaterialTopTabs.Screen
+            name="old"
+            options={{
+              title: t("title.notifyOld"),
+              // tabBarIcon: ({ color, focused }) => (
+              //   <View className="absolute top-4 right-3">
+              //     <BadgeTabNotify />
+              //   </View>
+              // ),
+            }}
+          />
+        </MaterialTopTabs>
       </SafeAreaView>
     </View>
   );

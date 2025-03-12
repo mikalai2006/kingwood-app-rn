@@ -4,8 +4,9 @@ import { Dayjs } from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type TimerProps = {
-  startTime?: number | string;
+  startTime?: string | number;
   durationDays: number;
+  addedMs?: number;
 };
 export type TimerData = {
   totalMinutes: number;
@@ -51,7 +52,7 @@ function getObjectTime(ms: number, now?: dayjs.Dayjs) {
   };
 }
 
-const useTimer = function ({ startTime, durationDays }: TimerProps) {
+const useTimer = function ({ startTime, durationDays, addedMs }: TimerProps) {
   //   console.log("timer");
 
   const [time, setTime] = useState<TimerData>({
@@ -80,6 +81,9 @@ const useTimer = function ({ startTime, durationDays }: TimerProps) {
     // };
   }
 
+  // if (addedMs) {
+  //   startTime = startTime + addedMs;
+  // }
   // if (!durationDays) {
   //   durationDays = 10;
   // }
@@ -89,7 +93,7 @@ const useTimer = function ({ startTime, durationDays }: TimerProps) {
 
   const setDate = () => {
     const now = dayjs(new Date()); //.utc(true);
-    const diff = now.diff(future);
+    const diff = now.diff(future) + (addedMs || 0);
     // console.log("now=", now, " future=", future);
 
     const diffTime = getObjectTime(diff, now);

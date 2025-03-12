@@ -3,23 +3,21 @@ import { View, ActivityIndicator } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppSelector } from "@/store/hooks";
-import { financyFilter, user, workTime } from "@/store/storeSlice";
+import { financyFilter, user, workHistory } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import { useTimer } from "@/hooks/useTimer";
 import { useEffect, useMemo } from "react";
-import { useQuery } from "@realm/react";
-import { WorkTimeSchema } from "@/schema";
-import UseWorkTime from "@/hooks/useWorkTime";
 import dayjs, { formatDate } from "@/utils/dayjs";
 import { FinancyDate } from "@/components/financy/FinancyDate";
 import { addStartNull } from "@/utils/utils";
 import { FinancyMonthItem } from "@/components/financy/FinancyMonthItem";
 import { FinancyMonthTotal } from "@/components/financy/FinancyMonthTotal";
+import useWorkHistory from "@/hooks/useWorkHistory";
 
 export default function Modal() {
   const { t } = useTranslation();
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
   const userFromStore = useAppSelector(user);
 
@@ -55,7 +53,7 @@ export default function Modal() {
     [financyFilterFromStore]
   );
 
-  const { isLoading } = UseWorkTime(
+  const { isLoading } = useWorkHistory(
     {
       from,
       to,
@@ -79,15 +77,15 @@ export default function Modal() {
   );
 
   const { time, onClearTimer } = useTimer({
-    startTime: workTimeFromStore?.from || 0,
+    startTime: workHistoryFromStore?.from || 0,
     durationDays: 0,
   });
 
   useEffect(() => {
-    if (!workTimeFromStore) {
+    if (!workHistoryFromStore) {
       onClearTimer();
     }
-  }, [workTimeFromStore]);
+  }, [workHistoryFromStore]);
 
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
@@ -99,7 +97,9 @@ export default function Modal() {
           </View>
         </View> */}
         <View className="px-4 mb-4">
-          <FinancyDate />
+          <View className="mb-1">
+            <FinancyDate />
+          </View>
           <FinancyMonthTotal time={time} from={from} to={to} />
         </View>
         <View className="flex-1 bg-s-200 dark:bg-s-950 mb-8">

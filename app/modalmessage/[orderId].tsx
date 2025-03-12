@@ -1,6 +1,10 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, Modal, Text, View } from "react-native";
 
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
@@ -132,6 +136,14 @@ export default function MessageOrderScreen() {
 
   const scrollView = useRef(null);
 
+  const onZoomImage = (arg0: string) => {
+    console.log("Gogo");
+
+    setModalVisible(true);
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View className="flex-1 bg-s-100 dark:bg-s-800">
       <SafeAreaView style={{ flex: 1 }}>
@@ -241,15 +253,18 @@ export default function MessageOrderScreen() {
                             {x.images?.length ? (
                               <View className="flex flex-row flex-wrap gap-2 mb-4">
                                 {x.images.map((uri, index) => (
-                                  <View
+                                  <TouchableOpacity
                                     className="h-20 w-auto aspect-square"
                                     key={index.toString()}
+                                    onPress={() =>
+                                      onZoomImage(`${hostSERVER}/images/${uri}`)
+                                    }
                                   >
                                     <RImage
                                       uri={`${hostSERVER}/images/${uri}`}
                                       className="w-full h-full object-contain rounded-lg"
                                     />
-                                  </View>
+                                  </TouchableOpacity>
                                 ))}
                               </View>
                             ) : null}
@@ -358,6 +373,26 @@ export default function MessageOrderScreen() {
             </>
           )}
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View className="flex-1">
+            <View>
+              <Text>Hello World!</Text>
+              {/* <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable> */}
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </View>
   );

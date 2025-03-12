@@ -3,17 +3,17 @@ import { View, Text, Alert, ActivityIndicator } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppSelector } from "@/store/hooks";
-import { user, workTime } from "@/store/storeSlice";
+import { user, workHistory } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import { useTimer } from "@/hooks/useTimer";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@realm/react";
-import { WorkTimeSchema } from "@/schema";
-import UseWorkTime from "@/hooks/useWorkTime";
 import dayjs from "@/utils/dayjs";
 import { useLocalSearchParams } from "expo-router";
 import UIButtonBack from "@/components/ui/UIButtonBack";
 import { FinancyDay } from "@/components/financy/FinancyDay";
+import useWorkHistory from "@/hooks/useWorkHistory";
+import { WorkHistorySchema } from "@/schema";
 
 export default function FinanceDay() {
   const { day: dayFromParams } = useLocalSearchParams<{ day: string }>();
@@ -22,14 +22,14 @@ export default function FinanceDay() {
 
   const userFromStore = useAppSelector(user);
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
-  const allWorkTime = useQuery(WorkTimeSchema);
+  const allWorkHistory = useQuery(WorkHistorySchema);
 
-  const { isLoading } = UseWorkTime(
+  const { isLoading } = useWorkHistory(
     {
       date: dayjs(dayFromParams).format(),
-      workerId: [userFromStore.id],
+      workerId: userFromStore?.id ? [userFromStore.id] : undefined,
     },
     []
   );
@@ -41,15 +41,15 @@ export default function FinanceDay() {
   // }, []);
 
   const { time, onClearTimer } = useTimer({
-    startTime: workTimeFromStore?.from || 0,
+    startTime: workHistoryFromStore?.from || 0,
     durationDays: 0,
   });
 
   useEffect(() => {
-    if (!workTimeFromStore) {
+    if (!workHistoryFromStore) {
       onClearTimer();
     }
-  }, [workTimeFromStore]);
+  }, [workHistoryFromStore]);
 
   const [dayWeek, day, year] = dayjs(dayFromParams)
     .locale("ru")
@@ -107,7 +107,7 @@ export default function FinanceDay() {
               <ActivityIndicator />
             ) : (
               <FinancyDay
-                currentWorkTime={workTimeFromStore}
+                currentWorkHistory={workHistoryFromStore}
                 time={time}
                 dayFromParams={dayFromParams}
               />

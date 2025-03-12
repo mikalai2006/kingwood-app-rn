@@ -31,8 +31,8 @@ const TaskWorkerList = (props: TaskWorkerListProps) => {
 
   const taskWorkers = useQuery(TaskWorkerSchema, (items) =>
     items.filtered(
-      "workerId == $0 AND objectId == $1 AND status != 'finish' AND status != 'autofinish'",
-      userFromStore?.id,
+      "workerId IN $0 AND objectId == $1 AND status != 'finish' AND status != 'autofinish'",
+      [userFromStore?.id, "000000000000000000000000"],
       props.objectId
     )
   ).filter((y) => {
@@ -43,12 +43,16 @@ const TaskWorkerList = (props: TaskWorkerListProps) => {
       dayjs(new Date()).isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
       dayjs(new Date())
         .add(1, "day")
-        .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]")
+        .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
+      y._id.toString() === "000000000000000000000000"
     );
   });
 
   return (
     <View className="flex-1">
+      {/* <Text>
+        {props.objectId}-{taskWorkers.length}
+      </Text> */}
       {/* isLoading ? (
         <View className="flex p-2">
           {[1, 2, 3, 4, 5].map((item) => (
@@ -67,8 +71,9 @@ const TaskWorkerList = (props: TaskWorkerListProps) => {
           )}
         />
       ) : (
-        <View className="px-4">
-          <Card>
+        <View className="px-4 mt-4">
+          <Card className="relative">
+            <View className="w-8 h-8 rotate-45 absolute -top-4 left-32 bg-white dark:bg-s-900"></View>
             <Text className="text-lg text-s-800 dark:text-s-200 leading-6">
               {t("info.taskForOrderNotFound")}
             </Text>

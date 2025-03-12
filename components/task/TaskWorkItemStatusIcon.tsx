@@ -1,21 +1,18 @@
-import { Animated, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
-import { OrderSchema, TaskStatusSchema } from "@/schema";
-import { useEffect } from "react";
-import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
-import { useObject, useQuery, useRealm } from "@realm/react";
+import { OrderSchema, TaskStatusSchema, TaskWorkerSchema } from "@/schema";
+import { useObject } from "@realm/react";
 import { BSON } from "realm";
 import SIcon from "../ui/SIcon";
-import { Easing } from "react-native-reanimated";
 import { Colors } from "@/utils/Colors";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { activeTaskWorker, user, workTime } from "@/store/storeSlice";
+import { activeTaskWorker, user, workHistory } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import { TaskWorkerNotify } from "./TaskWorkerNotify";
 import { TaskWorkerNotifyTimer } from "./TaskWorkerNotifyTimer";
-import { TaskWorkerNotifyActiveTaskNo } from "./TaskWorkerNotifyActiveTaskNo";
 import TaskIcon from "./TaskIcon";
 import { TaskWorkerNotifyActiveTaskNoModal } from "./TaskWorkerNotifyActiveTaskNoModal";
+import { getObjectId } from "@/utils/utils";
 
 export type TaskWorkItemStatusIconProps = {};
 
@@ -24,26 +21,26 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
 
   const { t } = useTranslation();
 
-  const { onFetchWithAuth } = useFetchWithAuth();
-
-  const realm = useRealm();
-
   const dispatch = useAppDispatch();
 
   const userFromStore = useAppSelector(user);
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
-  const activeTaskFromStore = useAppSelector(activeTaskWorker);
+  const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
 
-  // const { task } = useTask({ id: taskWorker.taskId });
-
-  const allTaskStatus = useQuery(TaskStatusSchema);
-  const allOrders = useQuery(OrderSchema);
+  const taskWorker = useObject(
+    TaskWorkerSchema,
+    new BSON.ObjectId(workHistoryFromStore?.taskWorkerId)
+  );
+  const activeOrder = useObject(
+    OrderSchema,
+    new BSON.ObjectId(workHistoryFromStore?.orderId)
+  );
 
   const taskStatus = useObject(
     TaskStatusSchema,
-    new BSON.ObjectId(activeTaskFromStore?.statusId)
+    new BSON.ObjectId(activeTaskWorkerFromStore?.statusId)
   );
 
   return (
@@ -68,31 +65,34 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
         </View>
       )}
       <View className="relative">
-        {activeTaskFromStore == null && workTimeFromStore !== null && (
+        {activeTaskWorkerFromStore == null && workHistoryFromStore == null && (
           <View className="absolute bottom-5 -left-36 w-80 p-0 m-0 rounded-md">
             {/* <TaskWorkerNotifyActiveTaskNo /> */}
             <TaskWorkerNotifyActiveTaskNoModal />
           </View>
         )}
-        {workTimeFromStore !== null ? (
-          <View className="absolute -bottom-8 -left-9 flex items-center w-[90px] rounded-lg bg-p-300 dark:bg-p-600 pt-1.5">
-            <Text className="text-base text-s-900 dark:text-white whitespace-nowrap leading-4 text-center">
-              {activeTaskFromStore
-                ? `${t(
-                    "order"
-                  )} №${activeTaskFromStore?.order.number.toString()}`
-                : t("title.work")}
-            </Text>
-            <TaskWorkerNotifyTimer
-              short
-              className="leading-4 font-medium text-s-900 dark:text-white text-base"
-            />
-          </View>
-        ) : (
-          <View className="absolute bottom-5 -left-36 w-80 p-0 rounded-md">
-            <TaskWorkerNotify short />
-          </View>
-        )}
+        {
+          workHistoryFromStore !== null ? (
+            <View className="absolute -bottom-8 -left-9 flex items-center w-[90px] rounded-lg bg-p-300 dark:bg-p-600 pt-1.5">
+              <Text className="text-base text-s-900 dark:text-white whitespace-nowrap leading-4 text-center">
+                {activeOrder
+                  ? getObjectId(activeOrder._id.toString()) == "0"
+                    ? t("fake.name")
+                    : `${t("order")} №${activeOrder?.number.toString()}`
+                  : t("title.work")}
+              </Text>
+              <TaskWorkerNotifyTimer
+                short
+                className="leading-4 font-medium text-s-900 dark:text-white text-base"
+              />
+            </View>
+          ) : null
+          // (
+          //   <View className="absolute bottom-5 -left-36 w-80 p-0 rounded-md">
+          //     <TaskWorkerNotify short />
+          //   </View>
+          // )
+        }
       </View>
     </View>
   );

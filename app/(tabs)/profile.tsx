@@ -5,7 +5,12 @@ import { Text, View, ScrollView, Alert } from "react-native";
 // import * as Linking from "expo-linking";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveTaskWorker, tokens, user } from "@/store/storeSlice";
+import {
+  setActiveTaskWorker,
+  setWorkHistory,
+  tokens,
+  user,
+} from "@/store/storeSlice";
 import UIButton from "@/components/ui/UIButton";
 import useAuth from "@/hooks/useAuth";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -39,6 +44,7 @@ export default function TabProfileScreen() {
     await onEndWorkTime();
 
     dispatch(setActiveTaskWorker(null));
+    dispatch(setWorkHistory(null));
 
     onLogout();
 

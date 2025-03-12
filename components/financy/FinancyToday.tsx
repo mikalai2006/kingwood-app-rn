@@ -1,11 +1,8 @@
 import { Text, View } from "react-native";
-import { useQuery } from "@realm/react";
 import { useColorScheme } from "nativewind";
-import { WorkTimeSchema } from "@/schema";
 import dayjs from "@/utils/dayjs";
 import { useAppSelector } from "@/store/hooks";
-import { user, workTime } from "@/store/storeSlice";
-import { useEffect, useMemo } from "react";
+import { user } from "@/store/storeSlice";
 
 export type FinancyTodayProps = {};
 
@@ -13,19 +10,6 @@ export function FinancyToday({}: FinancyTodayProps) {
   const { colorScheme } = useColorScheme();
 
   const userFromStore = useAppSelector(user);
-
-  // const allWorkTimeToday = useMemo(() => {
-  //   return allWorkTime.filter((x) =>
-  //     dayjs(new Date())
-  //       // .subtract(1, "day")
-  //       .isBetween(
-  //         dayjs(x.from).startOf("day"),
-  //         dayjs(x.to).endOf("day"),
-  //         "day",
-  //         "[]"
-  //       )
-  //   );
-  // }, []);
 
   const [dayWeek, day, year] = dayjs(new Date())
     .locale("ru")

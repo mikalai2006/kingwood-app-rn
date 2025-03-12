@@ -16,11 +16,14 @@ import useLanguage from "@/hooks/useLanguage";
 import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import dayjs from "@/utils/dayjs";
+import { useTranslation } from "react-i18next";
 
 export const WidgetInitApp = () => {
   const { onFetch } = useFetch();
 
   // const {isInternetReachable} = useNetInfo();
+
+  const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
   const realm = useRealm();
@@ -233,6 +236,107 @@ export const WidgetInitApp = () => {
             });
         };
         await onFindTaskStatus();
+
+        // добавление постоянных задач для преодоления
+        // того факта, что заказ может отсутствовать, а работник на рабочем месте
+        const onInitFakeData = () => {
+          realm.write(() => {
+            realm.create(
+              "ObjectsSchema",
+              {
+                _id: new BSON.ObjectId("000000000000000000000000"),
+                userId: "000000000000000000000000",
+                name: t("fake.nameObject"),
+                createdAt: dayjs().format(),
+                updatedAt: dayjs().format(),
+              },
+              UpdateMode.Modified
+            );
+            realm.create(
+              "TaskWorkerSchema",
+              {
+                _id: new BSON.ObjectId("000000000000000000000000"),
+                userId: "000000000000000000000000",
+                objectId: "000000000000000000000000",
+                orderId: "000000000000000000000000",
+                taskId: "000000000000000000000000",
+                workerId: "000000000000000000000000",
+                operationId: "000000000000000000000000",
+                sortOrder: 0,
+                statusId: "000000000000000000000000",
+                status: "wait",
+                from: dayjs().subtract(1, "year").format(),
+                to: dayjs().add(1, "year").format(),
+                typeGo: "default",
+                createdAt: dayjs().format(),
+                updatedAt: dayjs().format(),
+              },
+              UpdateMode.Modified
+            );
+            realm.create(
+              "TaskSchema",
+              {
+                _id: new BSON.ObjectId("000000000000000000000000"),
+                userId: "000000000000000000000000",
+                objectId: "000000000000000000000000",
+                orderId: "000000000000000000000000",
+                operationId: "000000000000000000000000",
+                taskId: "000000000000000000000000",
+                workerId: "000000000000000000000000",
+                name: t("fake.nameTask"),
+                sortOrder: 0,
+                statusId: "000000000000000000000000",
+                status: "wait",
+                active: 0,
+                autoCheck: 0,
+                startAt: dayjs().format(),
+                from: dayjs().subtract(1, "year").format(),
+                to: dayjs().add(1, "year").format(),
+                typeGo: "default",
+                createdAt: dayjs().format(),
+                updatedAt: dayjs().format(),
+              },
+              UpdateMode.Modified
+            );
+            realm.create(
+              "OrderSchema",
+              {
+                _id: new BSON.ObjectId("000000000000000000000000"),
+                userId: "000000000000000000000000",
+                number: t("fake.numberOrder"),
+                name: t("fake.nameOrder"),
+                description: t("fake.descriptionTask"),
+                constructorId: "000000000000000000000000",
+                objectId: "000000000000000000000000",
+                term: dayjs().add(1, "year").format(),
+                dateStart: dayjs().format(),
+                status: 1,
+                year: dayjs().year(),
+                createdAt: dayjs().format(),
+                updatedAt: dayjs().format(),
+              },
+              UpdateMode.Modified
+            );
+            realm.create(
+              "TaskStatusSchema",
+              {
+                _id: new BSON.ObjectId("000000000000000000000000"),
+                userId: "000000000000000000000000",
+                name: t("fake.nameTaskStatus"),
+                description: "",
+                color: "#c2c2c2",
+                enabled: 1,
+                icon: "M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z",
+                animate: "",
+                status: "wait",
+                createdAt: dayjs().format(),
+                updatedAt: dayjs().format(),
+              },
+              UpdateMode.Modified
+            );
+          });
+        };
+        onInitFakeData();
       } catch (e: any) {
         isWriteConsole && console.log("WidgetInitApp error: ", e.message);
       } finally {

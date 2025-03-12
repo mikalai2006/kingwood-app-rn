@@ -31,8 +31,15 @@ export const replaceRegexByArray = function (
   return _text;
 };
 
-export const getObjectId = (id: string) => {
-  return id === "000000000000000000000000" ? "0" : id;
+export const getObjectId = (id?: string) => {
+  return id ? (id === "000000000000000000000000" ? "0" : id) : "0";
+};
+
+export const groupBy = function (xs: any[], key: string) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] ??= []).push(x);
+    return rv;
+  }, {});
 };
 
 export const getNoun = (

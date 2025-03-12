@@ -120,7 +120,7 @@ export default function UIButton(props: UIButtonProps) {
         result = props.disabled ? disableColor : Colors.r[100];
         break;
       case "secondary":
-        result = props.disabled ? disableColor : Colors.s[400];
+        result = props.disabled ? disableColor : Colors.s[200];
         break;
       default:
         result = disableColor;

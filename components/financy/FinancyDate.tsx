@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { useColorScheme } from "nativewind";
 import { useAppSelector } from "@/store/hooks";
-import { financyFilter, user, workTime } from "@/store/storeSlice";
+import { financyFilter, user } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import UIButton from "../ui/UIButton";
 import { router } from "expo-router";
@@ -16,14 +16,13 @@ export function FinancyDate({}: FinancyDateProps) {
 
   const userFromStore = useAppSelector(user);
 
-  const workTimeFromStore = useAppSelector(workTime);
-
   const financyFilterFromStore = useAppSelector(financyFilter);
 
   return (
     <UIButton
-      type="secondary"
+      type="link"
       text="dataPicker"
+      className="p-2 py-3 rounded-lg bg-white dark:bg-s-900 "
       onPress={() => {
         router.push({
           pathname: "/modaldatepicker",
@@ -35,7 +34,7 @@ export function FinancyDate({}: FinancyDateProps) {
           {financyFilterFromStore?.monthText}, {financyFilterFromStore?.year}
         </Text>
         <View>
-          <SIcon path="iChevronDown" size={20} />
+          <SIcon path="iChevronRight" size={20} />
         </View>
       </View>
     </UIButton>

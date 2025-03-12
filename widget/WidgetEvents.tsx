@@ -10,8 +10,10 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   activeTaskWorker,
   setActiveTaskWorker,
+  setWorkHistory,
   tokens,
   user,
+  workHistory,
 } from "@/store/storeSlice";
 import { useQuery, useRealm } from "@realm/react";
 import { ITaskWorker, IWsMessage } from "@/types";
@@ -29,6 +31,7 @@ import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 
 import { useErrContext } from "@/components/ErrContext";
 import { useError } from "@/hooks/useError";
+import { getObjectId } from "@/utils/utils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,6 +62,8 @@ export default function WidgetEvents() {
   const tokensFromStore = useAppSelector(tokens);
   const activeTaskFromStore = useAppSelector(activeTaskWorker);
   const activeTaskFromStoreRef = useRef(activeTaskFromStore);
+  const activeWorkHistoryFromStore = useAppSelector(workHistory);
+  const activeWorkHistoryFromStoreRef = useRef(activeWorkHistoryFromStore);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
@@ -162,6 +167,33 @@ export default function WidgetEvents() {
     }
   }, []);
 
+  useEffect(() => {
+    activeWorkHistoryFromStoreRef.current = Object.assign(
+      {},
+      activeWorkHistoryFromStore
+    );
+  }, [activeWorkHistoryFromStore]);
+
+  const onDetectActiveWorkHistory = useCallback((data: IWsMessage) => {
+    console.log("onDetectActiveWorkHistory:");
+
+    // console.log(
+    //   "detect workHistory=",
+    //   activeWorkHistoryFromStoreRef.current?.id,
+    //   data.content.status
+    // );
+    if (data.method === "CREATE") {
+      if (data.content.status == 0) {
+        dispatch(setWorkHistory(data.content));
+      }
+    } else {
+      if (activeWorkHistoryFromStoreRef.current?.id === data.content.id) {
+        dispatch(setWorkHistory(null));
+        dispatch(setActiveTaskWorker(null));
+      }
+    }
+  }, []);
+
   const { setErr } = useErrContext();
 
   useEffect(() => {
@@ -197,7 +229,9 @@ export default function WidgetEvents() {
         isWriteConsole && console.log("Close socket!");
         isWriteConsole && console.log(new Error("error.closeSocket"));
 
-        tokensFromStore.access_token && setErr(new Error("error.closeSocket"));
+        if (userFromStore && tokensFromStore.access_token) {
+          setErr(new Error("error.closeSocket"));
+        }
       };
 
       _socket.onmessage = function (event) {
@@ -213,6 +247,31 @@ export default function WidgetEvents() {
         realm.write(() => {
           try {
             switch (data.service) {
+              case "workHistory":
+                nameOperation = "workHistory";
+                console.log("workHistory:", data.content.status);
+
+                if (method === "DELETE") {
+                  realm.delete(
+                    realm.objectForPrimaryKey(
+                      "WorkHistorySchema",
+                      new BSON.ObjectId(data.content.id)
+                    )
+                  );
+                } else {
+                  realm.create(
+                    "WorkHistorySchema",
+                    {
+                      ...data.content,
+                      _id: new BSON.ObjectId(data.content.id),
+                    },
+                    UpdateMode.Modified
+                  );
+                }
+
+                onDetectActiveWorkHistory(data);
+                break;
+
               case "user":
                 nameOperation = "user";
                 realm.create(
@@ -251,6 +310,7 @@ export default function WidgetEvents() {
                   );
                 }
                 break;
+
               case "notify":
                 nameOperation = "notify";
                 if (data.method === "DELETE") {
@@ -359,7 +419,10 @@ export default function WidgetEvents() {
                     UpdateMode.Modified
                   );
 
-                  if (data.content?.object) {
+                  if (
+                    data.content?.object &&
+                    getObjectId(data.content?.object?.id) != "0"
+                  ) {
                     realm.create(
                       "ObjectsSchema",
                       {
@@ -372,7 +435,10 @@ export default function WidgetEvents() {
                     );
                   }
 
-                  if (data.content?.order) {
+                  if (
+                    data.content?.order &&
+                    getObjectId(data.content?.order?.id) != "0"
+                  ) {
                     realm.create(
                       "OrderSchema",
                       {
@@ -523,7 +589,8 @@ export default function WidgetEvents() {
     onInitSocket().then((r) => (socket = r));
 
     return () => socket?.close();
-  }, [tokensFromStore]);
+  }, [tokensFromStore, userFromStore?.id]);
+
   isWriteConsole && console.log("token PUSHN: ", expoPushToken);
 
   async function registerForPushNotificationsAsync() {

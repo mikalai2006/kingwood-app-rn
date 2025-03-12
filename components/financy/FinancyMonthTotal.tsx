@@ -1,16 +1,20 @@
 import { Pressable, Text, View } from "react-native";
 import { useQuery } from "@realm/react";
 import { useColorScheme } from "nativewind";
-import { PaySchema, WorkTimeSchema } from "@/schema";
+import { OrderSchema, PaySchema, WorkHistorySchema } from "@/schema";
 import dayjs from "@/utils/dayjs";
 import { useAppSelector } from "@/store/hooks";
-import { financyFilter, user, workTime } from "@/store/storeSlice";
+import { financyFilter, user, workHistory } from "@/store/storeSlice";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Card from "../Card";
 import { TimerData } from "@/hooks/useTimer";
 import usePay from "@/hooks/usePay";
 import SIcon from "../ui/SIcon";
+import { groupBy } from "@/utils/utils";
+import { IOrder, IWorkHistory } from "@/types";
+import { BSON } from "realm";
+import { ObjectsSchema } from "@/schema/ObjectsSchema";
 
 export type FinancyMonthTotalProps = {
   from: string;
@@ -27,7 +31,10 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
 
   const financyFilterFromStore = useAppSelector(financyFilter);
 
-  const workTimeFromStore = useAppSelector(workTime);
+  const workHistoryFromStore = useAppSelector(workHistory);
+
+  const allOrders = useQuery(OrderSchema);
+  const allObjects = useQuery(ObjectsSchema);
 
   usePay({
     workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
@@ -55,12 +62,12 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
     return allPayMonth.reduce((a, b) => a + b.total, 0);
   }, [allPayMonth]);
 
-  const allWorkTime = useQuery(WorkTimeSchema, (items) =>
+  const allWorkHistory = useQuery(WorkHistorySchema, (items) =>
     items.filtered("workerId == $0", userFromStore?.id)
   );
 
-  const allWorkTimeMonth = useMemo(() => {
-    return allWorkTime
+  const allWorkHistoryMonth = useMemo(() => {
+    return allWorkHistory
       .filter(
         (x) =>
           dayjs(x.to).year() > 1 &&
@@ -72,50 +79,91 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
           )
       )
       .sort((a, b) => a.from.localeCompare(b.from));
-  }, [allWorkTime, to, from]);
+  }, [allWorkHistory, to, from]);
+
+  const groupsWorkHistoryMonth = useMemo(() => {
+    const _group: { [key: string]: IWorkHistory[] } = groupBy(
+      allWorkHistoryMonth,
+      "orderId"
+    );
+
+    const _result: {
+      orderId: string;
+      order: OrderSchema;
+      total: number;
+      object: ObjectsSchema;
+      totalTime: number;
+    }[] = [];
+
+    for (const orderId in _group) {
+      const _total = _group[orderId].reduce((ac, el) => {
+        return ac + el.total;
+      }, 0);
+      const _totalTime = _group[orderId].reduce((ac, el) => {
+        return ac + el.totalTime;
+      }, 0);
+      const _order = allOrders.filtered(
+        "_id == $0",
+        new BSON.ObjectId(orderId)
+      )[0];
+      const _object = allObjects.filtered(
+        "_id == $0",
+        new BSON.ObjectId(_order.objectId)
+      )[0];
+      _result.push({
+        orderId,
+        order: _order,
+        object: _object,
+        total: _total,
+        totalTime: _totalTime,
+      });
+    }
+
+    return _result;
+  }, [allWorkHistoryMonth]);
 
   const isToday = useMemo(() => {
     return (
-      dayjs(workTimeFromStore?.date).month() ===
+      dayjs(workHistoryFromStore?.date).month() ===
       financyFilterFromStore.monthIndex
     );
-  }, [workTimeFromStore, to, from]);
+  }, [workHistoryFromStore, to, from]);
 
   const zp = useMemo(() => {
     if (!userFromStore) {
       return 0;
     }
     const to =
-      dayjs(workTimeFromStore?.to).year() > 1
-        ? workTimeFromStore?.to
+      dayjs(workHistoryFromStore?.to).year() > 1
+        ? workHistoryFromStore?.to
         : dayjs(new Date()).utc().format();
 
     const _timeWorkMinutes = dayjs(to).diff(
-      dayjs(workTimeFromStore?.from),
+      dayjs(workHistoryFromStore?.from),
       "minutes",
       true
     );
 
-    return workTimeFromStore
-      ? _timeWorkMinutes * (workTimeFromStore.oklad / 60)
+    return workHistoryFromStore
+      ? _timeWorkMinutes * (workHistoryFromStore.oklad / 60)
       : 0;
   }, [time]);
 
   const zpFullDay = useMemo(() => {
-    // if (!allWorkTimeMonth.length) {
+    // if (!allWorkHistoryMonth.length) {
     //   return;
     // }
 
-    // return allWorkTimeToday.map((x) => {
+    // return allWorkHistoryToday.map((x) => {
     //   const to =
     //     dayjs(x.to).year() > 1 ? x.to : dayjs(new Date()).utc().format();
 
     //   const _timeWorkMinutes = dayjs(to).diff(dayjs(x.from), "minutes", true);
     //   return Math.ceil(_timeWorkMinutes) * (x.oklad / 60);
     // });
-    const totalFromDb = allWorkTimeMonth.reduce((a, b) => a + b.total, 0);
+    const totalFromDb = allWorkHistoryMonth.reduce((a, b) => a + b.total, 0);
     return totalFromDb + (isToday ? Math.ceil(zp) : 0);
-  }, [allWorkTimeMonth, zp, time]);
+  }, [allWorkHistoryMonth, zp, time]);
 
   const [open, setOpen] = useState(false);
 
@@ -123,8 +171,34 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
     <Pressable onPress={() => setOpen(!open)}>
       <Card className="mt-1">
         {open && (
-          <View className=" border-b border-s-200 dark:border-s-700 mb-2">
-            <View className="flex flex-row gap-2 mb-1">
+          <View className="border-b border-black/10 dark:border-white/10 mb-2">
+            {groupsWorkHistoryMonth.map((m) => (
+              <View key={m.orderId} className="flex flex-row gap-2 mb-1">
+                <Text
+                  className={
+                    "flex-auto " +
+                    (m.total > 0
+                      ? "text-s-800 dark:text-s-300 "
+                      : "text-r-600 dark:text-r-400")
+                  }
+                >
+                  {m.order.number ? "№" + m.order.number + " - " : ""}
+                  {m.order.name}
+                  <Text className="text-g-300">, {m.object.name}</Text>
+                </Text>
+                <Text
+                  className={
+                    m.total > 0
+                      ? "text-gr-600 dark:text-p-300"
+                      : "text-r-600 dark:text-r-400"
+                  }
+                >
+                  {(m.total || 0).toLocaleString("ru-RU")} ₽
+                </Text>
+              </View>
+            ))}
+
+            {/* <View className="flex flex-row gap-2 mb-1">
               <Text className="flex-auto text-s-800 dark:text-s-300">
                 {t("totalBy", {
                   date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
@@ -133,16 +207,29 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
               <Text className="text-p-600 dark:text-p-300">
                 {(zpFullDay || 0).toLocaleString("ru-RU")} ₽
               </Text>
-            </View>
+            </View> */}
             {allPayMonth.map((pay) => (
               <View
                 key={pay._id.toString()}
                 className="flex flex-row gap-2 mb-1"
               >
-                <Text className="flex-auto text-s-800 dark:text-s-300">
+                <Text
+                  className={
+                    "flex-auto " +
+                    (pay.total > 0
+                      ? "text-s-800 dark:text-s-300 "
+                      : "text-r-600 dark:text-r-400")
+                  }
+                >
                   {pay.name}
                 </Text>
-                <Text className="text-p-600 dark:text-p-300">
+                <Text
+                  className={
+                    pay.total > 0
+                      ? "text-p-600 dark:text-p-300"
+                      : "text-r-600 dark:text-r-400"
+                  }
+                >
                   {pay.total.toLocaleString("ru-RU")} ₽
                 </Text>
               </View>
@@ -160,7 +247,7 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
             {(zpFullDay + totalPay || 0).toLocaleString("ru-RU")} ₽
           </Text>
           <View>
-            <SIcon path={open ? "iChevronRight" : "iChevronDown"} size={20} />
+            <SIcon path={open ? "iChevronUp" : "iChevronDown"} size={20} />
           </View>
         </View>
         {/* {msFullDay && (

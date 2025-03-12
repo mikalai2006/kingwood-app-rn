@@ -22,7 +22,10 @@ export default function NotifyScreen() {
     NotifySchema,
     (items) =>
       items
-        .filtered("(userTo == $0 || userId == $0)", userFromStore?.id)
+        .filtered(
+          "(userTo == $0 || userId == $0) AND status == 1",
+          userFromStore?.id
+        )
         .sorted("createdAt", true),
     [userFromStore]
   );
@@ -31,8 +34,10 @@ export default function NotifyScreen() {
     // <SafeAreaView style={{ flex: 1 }} className="bg-s-200 dark:bg-s-950">
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       {!notifys.length ? (
-        <View>
-          <Text>{t("notFoundNotify")}</Text>
+        <View className="p-4">
+          <Text className="text-lg text-s-500 dark:text-s-300">
+            {t("notFoundNotify")}
+          </Text>
         </View>
       ) : (
         <FlatList

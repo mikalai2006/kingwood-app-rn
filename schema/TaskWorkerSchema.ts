@@ -7,6 +7,7 @@ export class TaskWorkerSchema extends Realm.Object<TaskWorkerSchema> {
   orderId!: string;
   taskId!: string;
   workerId!: string;
+  operationId!: string;
   sortOrder?: number;
   statusId?: string;
   status!: string;
@@ -25,6 +26,7 @@ export class TaskWorkerSchema extends Realm.Object<TaskWorkerSchema> {
       orderId: "string",
       taskId: "string",
       workerId: "string",
+      operationId: "string",
       sortOrder: "int?",
       statusId: "string?",
       status: "string",

@@ -69,8 +69,8 @@ export default function ModalDatePicker() {
         <ScrollView horizontal>
           <View className="flex flex-row gap-4">
             {[
-              currentDate.subtract(3, "year").year(),
-              currentDate.subtract(2, "year").year(),
+              // currentDate.subtract(3, "year").year(),
+              // currentDate.subtract(2, "year").year(),
               currentDate.subtract(1, "year").year(),
               currentDate.year(),
             ].map((item, index) => (

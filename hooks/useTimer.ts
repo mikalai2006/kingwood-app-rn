@@ -113,7 +113,7 @@ const useTimer = function ({ startTime, durationDays, addedMs }: TimerProps) {
     return () => {
       interval && clearInterval(interval);
     };
-  }, [startTime]);
+  }, [startTime, addedMs]);
 
   const onClearTimer = useCallback(() => {
     interval && clearInterval(interval);

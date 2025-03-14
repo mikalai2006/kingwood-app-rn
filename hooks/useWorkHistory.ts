@@ -76,7 +76,10 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
             .then((response) => {
               if (!ignore) {
                 isWriteConsole &&
-                  console.log("useWorkHistory response=", response);
+                  console.log(
+                    "useWorkHistory response=",
+                    response.data?.length
+                  );
                 // console.log("useObjects response: ", response);
 
                 const responseData: IWorkHistory[] = response.data;

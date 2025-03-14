@@ -65,12 +65,12 @@ export function TaskWorkerNotifyTimer({
   const totalTime = useMemo(() => {
     const totalMs = allWorkHistoryToday
       .map((item) => {
-        const to =
-          dayjs(item.to).year() > 1 ? item.to : dayjs(new Date()).format();
+        // const to =
+        //   dayjs(item.to).year() > 1 ? item.to : dayjs(new Date()).format();
 
-        const _timeWorkMs = dayjs(to).diff(dayjs(item.from));
+        // const _timeWorkMs = dayjs(to).diff(dayjs(item.from));
 
-        return _timeWorkMs;
+        return item.totalTime;
       })
       .reduce((a, b) => a + b, 0);
     // const msActive =

@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -106,7 +106,7 @@ export default function WidgetEvents() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      Alert.alert("token", token);
+      // Alert.alert("token", token);
       token && onSetExpoPushToken(token);
     });
 

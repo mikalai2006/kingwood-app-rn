@@ -150,6 +150,17 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
+                {userFromStore?.auth ? (
+                  <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
+                    <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
+                      {t(`pushToken`)}
+                    </Text>
+                    <Text className="text-xs text-p-800 dark:text-p-200">
+                      {userFromStore?.auth.pushToken}
+                    </Text>
+                  </View>
+                ) : null}
+
                 {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (

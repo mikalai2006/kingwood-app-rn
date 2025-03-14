@@ -27,6 +27,7 @@ import useNotify from "@/hooks/useNotify";
 import { isWriteConsole } from "@/utils/global";
 import Updater from "@/components/update/Updater";
 import useWorkHistory from "@/hooks/useWorkHistory";
+import dayjs from "@/utils/dayjs";
 
 export default function TabLayout() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -52,7 +53,8 @@ export default function TabLayout() {
   useWorkHistory(
     {
       workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
-      status: 0,
+      // status: 0,
+      date: dayjs().format(),
     },
     [userFromStore]
   );

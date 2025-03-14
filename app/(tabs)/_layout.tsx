@@ -90,7 +90,9 @@ export default function TabLayout() {
         <Tabs
           backBehavior="history"
           initialRouteName={
-            ["admin", "boss"].includes(userFromStore.roleObject.code)
+            ["admin", "boss", "designer", "superadmin"].includes(
+              userFromStore.roleObject.code
+            )
               ? "order"
               : "work"
           }
@@ -140,7 +142,9 @@ export default function TabLayout() {
           <Tabs.Screen
             name="finance"
             options={{
-              href: ["admin", "boss"].includes(userFromStore.roleObject.code)
+              href: ["admin", "boss", "designer", "superadmin"].includes(
+                userFromStore.roleObject.code
+              )
                 ? null
                 : "/(tabs)/finance",
               title: t("title.finance"),
@@ -167,7 +171,9 @@ export default function TabLayout() {
           <Tabs.Screen
             name="work"
             options={{
-              href: ["admin", "boss"].includes(userFromStore.roleObject.code)
+              href: ["admin", "boss", "designer", "superadmin"].includes(
+                userFromStore.roleObject.code
+              )
                 ? null
                 : "/(tabs)/work",
               title:

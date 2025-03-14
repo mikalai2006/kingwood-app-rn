@@ -14,7 +14,7 @@ const UILabel = ({ text, ...rest }: Props) => {
 
   return (
     <Text
-      className="self-start text-s-500 dark:text-s-500 -mt-2 mb-3"
+      className="self-start text-s-800 dark:text-s-500 -mt-2 mb-3"
       {...rest}
     >
       {text}

@@ -124,8 +124,8 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                   }
                   textClass={
                     item?._id.toString() == props.objectId
-                      ? "px-2 text-xl leading-6 text-white dark:text-white leading-5"
-                      : "px-2 text-xl leading-6 text-s-700 dark:text-s-400 leading-5"
+                      ? "px-2 text-xl leading-6 text-white dark:text-white"
+                      : "px-2 text-xl leading-6 text-s-700 dark:text-s-400"
                   }
                   onPress={() => {
                     props.setObjectId(item._id.toString());
@@ -133,12 +133,13 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                 />
                 {workHistoryFromStore?.objectId == item._id.toString() &&
                   statusProcess.length && (
-                    // <View className="absolute top-0 w-4 h-4 bg-s-500 rounded-full"></View>
-                    <TaskIcon
-                      key={"status"}
-                      statusId={statusProcess[0]._id.toString()}
-                      className="p-2 absolute -top-2 right-0"
-                    />
+                    <View className="p-1 absolute -top-3 -right-2 rounded-full bg-s-200 dark:bg-s-950">
+                      <TaskIcon
+                        key={"status"}
+                        statusId={statusProcess[0]._id.toString()}
+                        className="p-1"
+                      />
+                    </View>
                   )}
                 {/* <View
                   className={

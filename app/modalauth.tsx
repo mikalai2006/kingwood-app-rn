@@ -169,7 +169,7 @@ export default function Modal() {
           className="mb-6"
         />
         <Card>
-          <RTitle text={t("signin")} />
+          {/* <RTitle text={t("signin")} /> */}
           {/* <RText>
             Авторизируйтесь, чтобы открыть доступ ко всем функциям приложения
           </RText> */}

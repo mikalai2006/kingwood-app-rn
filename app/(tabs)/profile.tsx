@@ -115,7 +115,7 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                {!["admin", "boss"].includes(
+                {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (
                   <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
@@ -150,7 +150,7 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                {!["admin", "boss"].includes(
+                {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (
                   <View className="py-2">

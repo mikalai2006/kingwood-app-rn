@@ -79,7 +79,9 @@ export default function FollowScreen() {
           {JSON.stringify(linkParamsFromStore)}/{objectId}
         </Text> */}
         {userFromStore &&
-        ["admin", "boss"].includes(userFromStore?.roleObject.code) ? (
+        ["admin", "boss", "designer", "superadmin"].includes(
+          userFromStore?.roleObject.code
+        ) ? (
           <View className="flex-1">
             <View>
               {/* <Text>{JSON.stringify(tab)}</Text> */}
@@ -102,7 +104,7 @@ export default function FollowScreen() {
           </View>
         )}
         {/* {userFromStore &&
-          !["admin", "boss"].includes(userFromStore?.roleObject.code) && (
+          !["admin", "boss","designer", "superadmin"].includes(userFromStore?.roleObject.code) && (
             <UIButton
               type="link"
               text={t("button.completedTask")}

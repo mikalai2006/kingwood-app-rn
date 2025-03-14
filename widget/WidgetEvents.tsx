@@ -175,7 +175,7 @@ export default function WidgetEvents() {
   }, [activeWorkHistoryFromStore]);
 
   const onDetectActiveWorkHistory = useCallback((data: IWsMessage) => {
-    console.log("onDetectActiveWorkHistory:");
+    // console.log("onDetectActiveWorkHistory:");
 
     // console.log(
     //   "detect workHistory=",
@@ -244,22 +244,21 @@ export default function WidgetEvents() {
         }
 
         let nameOperation = "";
-        realm.write(() => {
+        realm.write(async () => {
           try {
             switch (data.service) {
               case "workHistory":
                 nameOperation = "workHistory";
-                console.log("workHistory:", data.content.status);
 
                 if (method === "DELETE") {
-                  realm.delete(
+                  await realm.delete(
                     realm.objectForPrimaryKey(
                       "WorkHistorySchema",
                       new BSON.ObjectId(data.content.id)
                     )
                   );
                 } else {
-                  realm.create(
+                  await realm.create(
                     "WorkHistorySchema",
                     {
                       ...data.content,

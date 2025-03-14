@@ -10,11 +10,19 @@ export default function Page() {
     return <Redirect href="/auth" />;
   }
 
-  if (["admin", "boss"].includes(userFromStore?.roleObject.code)) {
+  if (
+    ["admin", "boss", "designer", "superadmin"].includes(
+      userFromStore?.roleObject.code
+    )
+  ) {
     return <Redirect href="/(tabs)/order" />;
   }
 
-  if (!["admin", "boss"].includes(userFromStore?.roleObject.code)) {
+  if (
+    !["admin", "boss", "designer", "superadmin"].includes(
+      userFromStore?.roleObject.code
+    )
+  ) {
     return <Redirect href="/(tabs)/work" />;
   }
   return (

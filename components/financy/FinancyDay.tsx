@@ -99,18 +99,18 @@ export function FinancyDay({
   }, [dayFromParams]);
 
   const zpFullDay = useMemo(() => {
-    if (!allWorkHistoryToday.length) {
-      return;
-    }
+    // if (!allWorkHistoryToday.length) {
+    //   return;
+    // }
 
     const totalFromDb = allWorkHistoryToday.reduce((a, b) => a + b.total, 0);
     return totalFromDb + (isToday ? Math.ceil(zp) : 0);
   }, [time, allWorkHistoryToday, zp]);
 
   const msFullDay = useMemo(() => {
-    if (!allWorkHistoryToday.length) {
-      return;
-    }
+    // if (!allWorkHistoryToday.length) {
+    //   return;
+    // }
 
     const msCompleted = allWorkHistoryToday
       .map((x) => {
@@ -151,7 +151,7 @@ export function FinancyDay({
             {zpFullDay || 0} ₽
           </Text>
         </View>
-        {msFullDay && (
+        {msFullDay ? (
           <View className="flex flex-row gap-2">
             <Text className="flex-auto text-lg leading-6 text-s-600 dark:text-s-400">
               {t("totalTimeDay")}:
@@ -161,7 +161,7 @@ export function FinancyDay({
               time={getObjectTime(msFullDay)}
             />
           </View>
-        )}
+        ) : null}
       </View>
     </View>
   );

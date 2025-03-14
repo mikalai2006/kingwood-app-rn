@@ -12,6 +12,7 @@ import dayjs from "@/utils/dayjs";
 import { getObjectTime, TimerData } from "@/hooks/useTimer";
 import { TaskWorkerTime } from "../task/TaskWorkerTime";
 import { WorkHistorySchema } from "@/schema";
+import { Colors } from "@/utils/Colors";
 
 export type FinancyMonthItemProps = {
   date: string;
@@ -104,7 +105,12 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
   return (
     <UIButton
       type="secondary"
-      className="border-t border-black/10 dark:border-white/10 py-4 px-6"
+      className={
+        "border-t border-black/10 dark:border-white/10 py-4 px-6 " +
+        ([0, 6].includes(dayjs(date).day())
+          ? "bg-p-500/20 dark:bg-p-500/10"
+          : "")
+      }
       onPress={() => {
         router.push({
           pathname: "/finance/[day]",
@@ -117,7 +123,8 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
       <View className="flex flex-row items-center gap-2">
         <View className="flex flex-auto">
           <Text className="text-lg text-s-700 dark:text-s-400">
-            {dayjs(date).locale("ru").format("D")}
+            {dayjs(date).locale("ru").format("D")},{" "}
+            {dayjs(date).locale("ru").format("dd")}
           </Text>
         </View>
         {totalTime ? (
@@ -140,7 +147,11 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
           <Text className="text-s-300 dark:text-s-700">------</Text>
         )}
         <View>
-          <SIcon path="iChevronRight" size={20} />
+          <SIcon
+            path="iChevronRight"
+            size={20}
+            color={colorScheme == "dark" ? Colors.s[700] : Colors.s[300]}
+          />
         </View>
       </View>
     </UIButton>

@@ -1,6 +1,12 @@
 import { Text, View } from "react-native";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { activeTaskWorker, setLinkParams } from "@/store/storeSlice";
+import {
+  activeTaskWorker,
+  setActiveTaskWorker,
+  setLinkParams,
+  user,
+  workHistory,
+} from "@/store/storeSlice";
 import SIcon from "../ui/SIcon";
 import { Colors } from "@/utils/Colors";
 import {
@@ -8,20 +14,56 @@ import {
   OrderSchema,
   TaskSchema,
   TaskStatusSchema,
+  TaskWorkerSchema,
 } from "@/schema";
 import { useObject, useQuery } from "@realm/react";
 import { BSON } from "realm";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import UIButton from "../ui/UIButton";
 import { router } from "expo-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import useOrders from "@/hooks/useOrders";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import useTaskWorkers from "@/hooks/useTaskWorkers";
 
 export type TaskWorkerNotifyActiveTaskProps = {};
 
 export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) {
   const dispatch = useAppDispatch();
+
+  const userFromStore = useAppSelector(user);
+
+  const activeWorkHistoryFromStore = useAppSelector(workHistory);
+
+  const _activeTaskWorker = useObject(
+    TaskStatusSchema,
+    new BSON.ObjectId(activeWorkHistoryFromStore?.taskWorkerId)
+  );
+
+  const { isLoading, error } = useTaskWorkers({
+    workerId: userFromStore ? [userFromStore.id] : undefined,
+    status: ["process"],
+    $limit: 100,
+  });
+
+  // useEffect(() => {
+  //   async function checkTaskWorker() {
+  //     console.log(
+  //       "_activeTaskWorker: ",
+  //       _activeTaskWorker,
+  //       activeWorkHistoryFromStore?.taskWorkerId
+  //     );
+  //     const __activeTaskWorker = Object.assign(
+  //       {},
+  //       JSON.parse(JSON.stringify(_activeTaskWorker))
+  //     );
+  //     setActiveTaskWorker(__activeTaskWorker);
+  //   }
+
+  //   if (_activeTaskWorker) {
+  //     checkTaskWorker();
+  //   }
+  // }, [activeWorkHistoryFromStore, _activeTaskWorker]);
 
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
   // if (!activeTaskWorkerFromStore) {

@@ -93,7 +93,10 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
                 }
 
                 // устанавливаем активную запись выполняемой работы
-                if (props?.status === 0) {
+                if (
+                  props?.status === 0 &&
+                  responseData[0]?.workerId == userFromStore?.id
+                ) {
                   if (!responseData?.length) {
                     dispatch(setWorkHistory(null));
                     dispatch(setActiveTaskWorker(null));

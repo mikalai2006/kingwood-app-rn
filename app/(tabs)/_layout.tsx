@@ -53,8 +53,8 @@ export default function TabLayout() {
   useWorkHistory(
     {
       workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
-      // status: 0,
-      date: dayjs().format(),
+      status: 0,
+      //date: dayjs().format(),
     },
     [userFromStore]
   );

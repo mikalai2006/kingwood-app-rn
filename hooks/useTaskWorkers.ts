@@ -4,8 +4,13 @@ import React, { useState } from "react";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 
 import { useFetchWithAuth } from "./useFetchWithAuth";
-import { useAppSelector } from "@/store/hooks";
-import { activeLanguage } from "@/store/storeSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  activeLanguage,
+  activeTaskWorker,
+  setActiveTaskWorker,
+  workHistory,
+} from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import { useFocusEffect } from "expo-router";
 import { useRealm } from "@realm/react";
@@ -20,6 +25,7 @@ export interface IUseTaskWorkersProps {
   orderId?: string[];
   taskId?: string[];
   workerId?: string[];
+  status?: string[];
   $limit?: number;
 }
 
@@ -28,9 +34,15 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
 
   const realm = useRealm();
 
+  const dispatch = useAppDispatch();
+
   const { query, workerId, $limit } = props;
 
   const { onFetchWithAuth } = useFetchWithAuth();
+
+  const activeWorkHistoryFromStore = useAppSelector(workHistory);
+
+  const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
 
   const { onSendError } = useError();
 
@@ -46,7 +58,7 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
       let ignore = false;
       const onFindItems = async () => {
         try {
-          isWriteConsole && console.log("props: ", props);
+          isWriteConsole && console.log("useTaskWorkers props: ", props);
 
           // if (!workerId) {
           //   return;
@@ -136,6 +148,24 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
                           listDataForRealm[i],
                           UpdateMode.Modified
                         );
+
+                        if (
+                          (activeTaskWorkerFromStore == null ||
+                            activeTaskWorkerFromStore?.id !=
+                              activeWorkHistoryFromStore?.taskWorkerId) &&
+                          listDataForRealm[i].id ==
+                            activeWorkHistoryFromStore?.taskWorkerId
+                        ) {
+                          dispatch(
+                            setActiveTaskWorker(
+                              Object.assign(
+                                {},
+                                JSON.parse(JSON.stringify(listDataForRealm[i]))
+                              )
+                            )
+                          );
+                        }
+
                         if (listDataForRealm[i].task) {
                           realm.create(
                             "TaskSchema",
@@ -143,6 +173,7 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
                             UpdateMode.Modified
                           );
                         }
+
                         if (listDataForRealm[i].taskStatus) {
                           realm.create(
                             "TaskStatusSchema",
@@ -160,6 +191,7 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
                             UpdateMode.Modified
                           );
                         }
+
                         if (listDataForRealm[i].order) {
                           realm.create(
                             "OrderSchema",
@@ -167,6 +199,7 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
                             UpdateMode.Modified
                           );
                         }
+
                         if (listDataForRealm[i].object) {
                           realm.create(
                             "ObjectsSchema",

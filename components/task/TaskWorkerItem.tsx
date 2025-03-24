@@ -30,6 +30,7 @@ import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 import { getObjectId } from "@/utils/utils";
 import { useWork } from "@/hooks/useWork";
+import { router } from "expo-router";
 
 export type TaskWorkerItemProps = {
   // taskWorker: TaskWorkerSchema;
@@ -92,6 +93,10 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   const allTaskStatus = useQuery(TaskStatusSchema);
   const allOrders = useQuery(OrderSchema);
   const allObjects = useQuery(ObjectsSchema);
+  const defaultTask = useObject(
+    TaskSchema,
+    new BSON.ObjectId("000000000000000000000000")
+  );
 
   const task = useObject(TaskSchema, new BSON.ObjectId(taskWorker?.taskId));
 
@@ -479,8 +484,35 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         },
         {
           text: t("button.yes"),
-          onPress: () => {
-            toggleTaskWorker("finish");
+          onPress: async () => {
+            await toggleTaskWorker("finish");
+
+            Alert.alert(
+              t("info.completedMessage"),
+              t("info.completedMessageText"),
+              [
+                {
+                  text: t("button.no"),
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                {
+                  text: t("button.yes"),
+                  onPress: async () => {
+                    if (defaultTask) {
+                      await onProcessTask(defaultTask);
+                    }
+
+                    router.push({
+                      pathname: "/[orderId]/message",
+                      params: {
+                        orderId: orders[0]._id.toString(),
+                      },
+                    });
+                  },
+                },
+              ]
+            );
           },
         },
       ]

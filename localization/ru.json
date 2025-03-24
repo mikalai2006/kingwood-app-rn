@@ -35,6 +35,8 @@
     "taskNotFound": "Не найдено заданий!",
     "taskObjectIdNotFound": "Нажмите одну из кнопок выше этого сообщения, чтобы просмотреть доступные задания для объекта!",
     "taskCompleted": "Задание выполнено",
+    "completedMessage": "Сообщение к выполненному заказу",
+    "completedMessageText": "Вы хотите добавить сообщение к выполненному заказу?",
     "taskCompletedDescription": "Вы действительно хотите пометить задание: {{taskName}} {{orderName}} как выполненное? \r\n\r\n",
     "taskPause": "Пауза для задания",
     "taskPauseDescription": "Вы хотите поставить на паузу задание - {{orderName}}?",

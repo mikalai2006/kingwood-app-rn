@@ -192,7 +192,7 @@ export default function RootLayout() {
               </View>
             ) : (
               <ErrContext.Provider value={{ err, setErr }}>
-                <View className="flex-1">
+                <View className="flex-1 bg-s-100 dark:bg-s-900">
                   <WidgetInitApp />
                   <GestureHandlerRootView style={styles.root}>
                     <StatusBar translucent backgroundColor="transparent" />
@@ -453,7 +453,10 @@ export default function RootLayout() {
               </ErrContext.Provider>
             )
           ) : (
-            <GestureHandlerRootView style={styles.root}>
+            <GestureHandlerRootView
+              style={styles.root}
+              className="flex-1 bg-s-200 dark:bg-s-900"
+            >
               <StatusBar translucent backgroundColor="transparent" />
               <SafeAreaView className="flex-1 bg-s-200 dark:bg-s-900">
                 <View className="flex-1 p-4">

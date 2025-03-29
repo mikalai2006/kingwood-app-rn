@@ -1,6 +1,6 @@
 import { OrderSchema, TaskStatusSchema } from "@/schema";
 import { useQuery, useRealm } from "@realm/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useFetchWithAuth } from "./useFetchWithAuth";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -16,9 +16,12 @@ import { BSON, UpdateMode } from "realm";
 import dayjs from "@/utils/dayjs";
 import { Alert, ToastAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
+import useAuth from "./useAuth";
 
 export const useTaskWorkerUtils = () => {
   const { t } = useTranslation();
+
+  const { onLogout } = useAuth();
 
   const dispatch = useAppDispatch();
 
@@ -90,7 +93,7 @@ export const useTaskWorkerUtils = () => {
   //     });
   // };
 
-  const onEndWorkTime = async () => {
+  const onEndWorkTime = useCallback(async () => {
     const _status = allTaskStatus.find((x) => x.status === "pause");
     if (!_status || workHistoryFromStore === null) {
       return;
@@ -112,11 +115,11 @@ export const useTaskWorkerUtils = () => {
       }
     )
       .then((res) => res.json())
-      .then((res: ITaskWorker) => {
+      .then(async (res: ITaskWorker) => {
         try {
           isWriteConsole && console.log("onEndWorkTime res: ", res);
 
-          realm.write(() => {
+          await realm.write(() => {
             if (res.id) {
               realm.create(
                 "TaskWorkerSchema",
@@ -185,7 +188,104 @@ export const useTaskWorkerUtils = () => {
     //     dispatch(setWorkTime(null));
     //     ToastAndroid.show(t("info.successEndWorkTime"), ToastAndroid.LONG);
     //   });
-  };
+  }, [workHistoryFromStore]);
+
+  const onEndWorkTimeForBlocked = useCallback(async () => {
+    const _status = allTaskStatus.find((x) => x.status === "autofinish");
+    if (!_status || workHistoryFromStore === null) {
+      return;
+    }
+    // console.log("onEndWorkTime:", activeTaskWorkerFromStore);
+
+    setLoading(true);
+    // dispatch(setTimeWorkEnd(new Date().getTime()));
+    await onFetchWithAuth(
+      `${hostAPI}/task_worker/${workHistoryFromStore.taskWorkerId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          // statusId: "6749ffe3d6b4324345382aed",
+          statusId: _status._id.toString(),
+          status: _status.status,
+          workerId: userFromStore?.id,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then(async (res: ITaskWorker) => {
+        try {
+          isWriteConsole && console.log("onEndWorkTimeForBlocked res: ", res);
+
+          await realm.write(() => {
+            if (res.id) {
+              realm.create(
+                "TaskWorkerSchema",
+                {
+                  ...res,
+                  _id: new BSON.ObjectId(res.id),
+                  sortOrder: res.sortOrder || 0,
+                },
+                UpdateMode.Modified
+              );
+              dispatch(setActiveTaskWorker(null));
+              dispatch(setWorkHistory(null));
+              onLogout();
+              // _status.status && onWriteWorkHistory(_status.status, res);
+            }
+          });
+        } catch (e) {
+          isWriteConsole && console.log("onEndWorkTimeForBlocked error: ", e);
+        }
+      })
+      .catch((e) => {
+        isWriteConsole && console.log("onEndWorkTimeForBlocked Error", e);
+      })
+      .finally(() => {
+        setLoading(false);
+        // dispatch(clearTimeWork());
+      });
+
+    // const timeDate = dayjs(new Date()).utc();
+
+    // await onFetchWithAuth(`${hostAPI}/work_time/${workHistoryFromStore.id}`, {
+    //   method: "PATCH",
+    //   body: JSON.stringify({
+    //     // statusId: "6749ffe3d6b4324345382aed",
+    //     to: timeDate.format(),
+    //     status: 1,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res: IWorkTime) => {
+    //     try {
+    //       isWriteConsole && console.log("onEndWorkTime res: ", res);
+
+    //       realm.write(() => {
+    //         if (res.id) {
+    //           realm.create(
+    //             "WorkTimeSchema",
+    //             {
+    //               ...res,
+    //               _id: new BSON.ObjectId(res.id),
+    //             },
+    //             UpdateMode.Modified
+    //           );
+    //         }
+    //         // dispatch(setActiveTaskWorker(null));
+    //       });
+    //     } catch (e) {
+    //       isWriteConsole && console.log("onEndWorkTime error: ", e);
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     isWriteConsole && console.log("onEndWorkTime Error", e);
+    //   })
+    //   .finally(() => {
+    //     setLoading(false);
+    //     dispatch(setWorkTime(null));
+    //     ToastAndroid.show(t("info.successEndWorkTime"), ToastAndroid.LONG);
+    //   });
+  }, [workHistoryFromStore, allTaskStatus]);
 
   // const onStartWorkTime = async () => {
   //   if (!userFromStore) {
@@ -274,5 +374,6 @@ export const useTaskWorkerUtils = () => {
     // onStartPrevTask,
     // onStartWorkTime,
     onEndWorkTime,
+    onEndWorkTimeForBlocked,
   };
 };

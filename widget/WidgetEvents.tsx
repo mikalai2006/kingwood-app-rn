@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -32,6 +32,7 @@ import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 import { useErrContext } from "@/components/ErrContext";
 import { useError } from "@/hooks/useError";
 import { getObjectId } from "@/utils/utils";
+import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -42,7 +43,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function WidgetEvents() {
-  const { onSyncToken, isAccessTokenExpired } = useAuth();
+  const { onSyncToken, onLogout } = useAuth();
   const { t } = useTranslation();
 
   const { onSendError } = useError();
@@ -200,6 +201,17 @@ export default function WidgetEvents() {
     [userFromStore?.id]
   );
 
+  const onDetectUser = useCallback(
+    async (data: IWsMessage) => {
+      if (data.method === "PATCH" && data.content.blocked) {
+        await onLogout();
+
+        Alert.alert(t("title.info"), t("error.youIsBlocked"));
+      }
+    },
+    [userFromStore, onLogout]
+  );
+
   const { setErr } = useErrContext();
 
   useEffect(() => {
@@ -290,6 +302,8 @@ export default function WidgetEvents() {
                   },
                   UpdateMode.Modified
                 );
+
+                onDetectUser(data);
                 break;
 
               case "pay":
@@ -597,7 +611,7 @@ export default function WidgetEvents() {
     return () => socket?.close();
   }, [tokensFromStore, userFromStore?.id]);
 
-  isWriteConsole && console.log("token PUSHN: ", expoPushToken);
+  // isWriteConsole && console.log("token PUSHN: ", expoPushToken);
 
   async function registerForPushNotificationsAsync() {
     let token;

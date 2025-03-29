@@ -92,11 +92,12 @@ export default function TabLayout() {
         <Tabs
           backBehavior="history"
           initialRouteName={
-            ["admin", "boss", "designer", "superadmin"].includes(
-              userFromStore.roleObject.code
-            )
-              ? "order"
-              : "work"
+            "work"
+            // ["admin", "boss", "designer", "superadmin"].includes(
+            //   userFromStore.roleObject.code
+            // )
+            //   ? "order"
+            //   : "work"
           }
           screenOptions={{
             tabBarStyle: {

@@ -176,21 +176,23 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
               <View key={m.orderId} className="flex flex-row gap-2 mb-1">
                 <Text
                   className={
-                    "flex-auto " +
+                    "flex-auto font-medium " +
                     (m.total > 0
                       ? "text-s-800 dark:text-s-300 "
                       : "text-r-600 dark:text-r-400")
                   }
                 >
-                  {m.order.number ? "№" + m.order.number + " - " : ""}
+                  {m.order.number ? "№" + m.order.number + " " : ""}
                   {m.order.name}
-                  <Text className="text-g-300">, {m.object.name}</Text>
+                  <Text className="text-g-300 dark:text-g-500">
+                    , {m.object.name}
+                  </Text>
                 </Text>
                 <Text
                   className={
                     m.total > 0
-                      ? "text-gr-600 dark:text-p-300"
-                      : "text-r-600 dark:text-r-400"
+                      ? "text-gr-600 dark:text-p-300 font-medium"
+                      : "text-r-600 dark:text-r-400 font-medium"
                   }
                 >
                   {(m.total || 0).toLocaleString("ru-RU")} ₽
@@ -226,8 +228,8 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
                 <Text
                   className={
                     pay.total > 0
-                      ? "text-p-600 dark:text-p-300"
-                      : "text-r-600 dark:text-r-400"
+                      ? "text-p-600 dark:text-p-300 font-medium"
+                      : "text-r-600 dark:text-r-400 font-medium"
                   }
                 >
                   {pay.total.toLocaleString("ru-RU")} ₽

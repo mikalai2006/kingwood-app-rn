@@ -1,6 +1,12 @@
 import { hostAPI, timeoutMaxRequest } from "@/utils/global";
 
-import { tokens, setTokens, setUser } from "@/store/storeSlice";
+import {
+  tokens,
+  setTokens,
+  setUser,
+  setActiveTaskWorker,
+  setWorkHistory,
+} from "@/store/storeSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import useFetch from "@/hooks/useFetch";
 import { ITokens, IUser } from "@/types";
@@ -223,10 +229,42 @@ export default function useAuth() {
   });
 
   const onLogout = async () => {
+    dispatch(setActiveTaskWorker(null));
+    dispatch(setWorkHistory(null));
+
     dispatch(setTokens(null));
     dispatch(setUser(null));
   };
 
+  const onBlock = async (id: string) => {
+    if (!tokenFromStore?.access_token || isAccessTokenExpired() || !id) {
+      return;
+    }
+
+    await onFetch(`${hostAPI}/user/block/${id}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenFromStore.access_token}`,
+      },
+      // body: JSON.stringify({
+      //   id
+      // }),
+    })
+      .then((r) => r.json())
+      .then((response: IUser) => {
+        dispatch(setActiveTaskWorker(null));
+        dispatch(setWorkHistory(null));
+
+        dispatch(setTokens(null));
+        dispatch(setUser(null));
+      })
+      .catch((e) => {
+        onSendError(e);
+        throw e;
+      });
+  };
   // const onLogin = async ({email, password}: ISign) => {
   //     const d = await fetch(HOST_API + '/auth/sign-in', {
   //         method: 'POST',
@@ -311,5 +349,6 @@ export default function useAuth() {
     isAccessTokenExpired,
     onSyncToken,
     onLogout,
+    onBlock,
   };
 }

@@ -360,7 +360,8 @@ export interface IUser {
   phone: string;
   online: boolean;
   hidden: number;
-  blocked: boolean;
+  blocked: number;
+  archive: number;
   birthday: string;
   roleId: string;
   roleObject: IRole;

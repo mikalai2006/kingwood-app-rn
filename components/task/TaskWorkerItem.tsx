@@ -519,9 +519,14 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
     );
   }
 
+  const isBlocked = useMemo(
+    () => !!userFromStore?.blocked || !!userFromStore?.archive,
+    [userFromStore]
+  );
+
   return task && taskWorker ? (
     <View className="w-full p-2 px-4">
-      {/* <Text>{taskWorkerId}</Text> */}
+      {/* <Text>{JSON.stringify(isBlocked)}</Text> */}
       <View
         className="rounded-lg shadow-lg bg-white dark:bg-s-800"
         // style={{ backgroundColor: taskStatus?.color }}
@@ -593,7 +598,8 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                           "[]"
                         ) ||
                         order?.status < 1 || //!order?.stolyarComplete //activeTaskFromStore !== null ||
-                        taskStatus?.status == "autofinish"
+                        taskStatus?.status == "autofinish" ||
+                        isBlocked
                       }
                       onPress={() => onProcessTask(task)}
                     />
@@ -605,7 +611,8 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                     text={t("button.finishTask")}
                     disabled={
                       taskWorkerFromStore?.id !== taskWorker._id.toString() ||
-                      loading
+                      loading ||
+                      isBlocked
                     }
                     onPress={() => onCompletedTask(task)}
                   />

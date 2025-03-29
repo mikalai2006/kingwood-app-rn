@@ -10,13 +10,13 @@ export default function Page() {
     return <Redirect href="/auth" />;
   }
 
-  if (
-    ["admin", "boss", "designer", "superadmin"].includes(
-      userFromStore?.roleObject.code
-    )
-  ) {
-    return <Redirect href="/(tabs)/order" />;
-  }
+  // if (
+  //   ["admin", "boss", "designer", "superadmin"].includes(
+  //     userFromStore?.roleObject.code
+  //   )
+  // ) {
+  //   return <Redirect href="/(tabs)/order" />;
+  // }
 
   if (
     !["admin", "boss", "designer", "superadmin"].includes(
@@ -26,8 +26,8 @@ export default function Page() {
     return <Redirect href="/(tabs)/work" />;
   }
   return (
-    <View>
-      <Text>Welcome Back!</Text>
+    <View className="flex-1 bg-s-200 dark:bg-s-950">
+      {/* <Text>Welcome Back!</Text> */}
     </View>
   );
 }

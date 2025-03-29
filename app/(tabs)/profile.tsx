@@ -43,8 +43,8 @@ export default function TabProfileScreen() {
   const logout = async () => {
     await onEndWorkTime();
 
-    dispatch(setActiveTaskWorker(null));
-    dispatch(setWorkHistory(null));
+    // dispatch(setActiveTaskWorker(null));
+    // dispatch(setWorkHistory(null));
 
     onLogout();
 
@@ -141,7 +141,7 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
+                <View className="py-2 flex-row gap-4 items-center">
                   <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                     {t(`phone`)}
                   </Text>
@@ -150,7 +150,7 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                {userFromStore?.auth ? (
+                {/* {userFromStore?.auth ? (
                   <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
                     <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                       {t(`pushToken`)}
@@ -159,19 +159,20 @@ export default function TabProfileScreen() {
                       {userFromStore?.auth.pushToken}
                     </Text>
                   </View>
-                ) : null}
-
+                ) : null} */}
+              </Card>
+              <Card className="my-4">
                 {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (
-                  <View className="py-2">
+                  <View className="py-0 border-b border-s-100 dark:border-s-800">
                     <UIButton
                       type="link"
                       onPress={() => {
                         router.push("/(tabs)/order/completed");
                       }}
                     >
-                      <View className="flex-row gap-4">
+                      <View className="-mx-1 flex-row gap-4">
                         <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
                           {t("button.completedTask")}
                         </Text>
@@ -199,14 +200,14 @@ export default function TabProfileScreen() {
                   </View>
                 )}
 
-                <View className="py-2">
+                <View className="py-0">
                   <UIButton
                     type="link"
                     onPress={() => {
                       router.push("/userpassword");
                     }}
                   >
-                    <View className="flex-row gap-4">
+                    <View className="-mx-1 flex-row gap-4">
                       <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
                         {t("button.resetPassword")}
                       </Text>

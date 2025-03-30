@@ -23,7 +23,7 @@ export default function Page() {
       userFromStore?.roleObject.code
     )
   ) {
-    return <Redirect href="/(tabs)/work" />;
+    return <Redirect href="/(tabs)/order" />;
   }
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">

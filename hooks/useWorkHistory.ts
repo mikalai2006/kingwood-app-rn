@@ -80,27 +80,28 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
                     "useWorkHistory response=",
                     response.data?.length
                   );
-                // console.log("useObjects response: ", response);
+                // console.log(
+                //   "useObjects response: ",
+                //   response,
+                //   !response.data?.length
+                // );
 
                 const responseData: IWorkHistory[] = response.data;
 
-                if (!responseData) {
-                  // dispatch(setActiveNode(null));
+                // устанавливаем активную запись выполняемой
+                if (!responseData?.length) {
+                  dispatch(setWorkHistory(null));
+                  dispatch(setActiveTaskWorker(null));
+
                   setTimeout(() => {
                     setLoading(false);
                   }, 300);
                   return;
-                }
-
-                // устанавливаем активную запись выполняемой работы
-                if (
-                  props?.status === 0 &&
-                  responseData[0]?.workerId == userFromStore?.id
-                ) {
-                  if (!responseData?.length) {
-                    dispatch(setWorkHistory(null));
-                    dispatch(setActiveTaskWorker(null));
-                  } else {
+                } else {
+                  if (
+                    props?.status === 0 &&
+                    responseData[0]?.workerId == userFromStore?.id
+                  ) {
                     dispatch(setWorkHistory(responseData[0]));
                   }
                 }

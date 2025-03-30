@@ -1,4 +1,4 @@
-import { Alert, Modal, Text, View } from "react-native";
+import { Alert, Image, Modal, Text, View } from "react-native";
 
 import {
   ScrollView,
@@ -66,12 +66,18 @@ export default function MessageOrderScreen() {
   // );
 
   const messagesByRoom = useQuery(MessageSchema, (items) =>
-    items.filtered("orderId == $0", orderId)
+    items.filtered("orderId == $0", orderId).sorted("createdAt", false)
   );
 
   const [newMessage, setNewMessage] = useState("");
 
-  useMessages({ orderId: [orderId] });
+  const [skip, setSkip] = useState(0);
+
+  const { total, onQuery } = useMessages({
+    orderId: [orderId],
+    $sort: [{ key: "createdAt", value: -1 }],
+    $skip: skip,
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -80,7 +86,9 @@ export default function MessageOrderScreen() {
   const { onFetchWithAuth } = useFetchWithAuth();
 
   useEffect(() => {
-    scrollView.current?.scrollToEnd({ animated: true });
+    if (skip === 0) {
+      scrollView.current?.scrollToEnd({ animated: true });
+    }
   }, [messagesByRoom]);
 
   const onRemoveImage = async (
@@ -94,7 +102,7 @@ export default function MessageOrderScreen() {
   };
 
   const onAddMessage = async () => {
-    if (newMessage.trim() === "") {
+    if (newMessage.trim() === "" && !images.length) {
       Alert.alert("Введите текст сообщения ");
       return;
     }
@@ -155,6 +163,15 @@ export default function MessageOrderScreen() {
       {order && (
         <>
           <View className="flex-auto">
+            <View>
+              {total > messagesByRoom.length ? (
+                <UIButton
+                  type="primary"
+                  text="more"
+                  onPress={() => setSkip(messagesByRoom.length - 1)}
+                />
+              ) : null}
+            </View>
             <ScrollView
               className="flex-1"
               ref={(ref) => {
@@ -234,7 +251,7 @@ export default function MessageOrderScreen() {
             </ScrollView>
           </View>
           {images.length > 0 && (
-            <View className="flex flex-row gap-2 bg-s-50 p-2 pb-0">
+            <View className="flex flex-row gap-2 bg-s-50 dark:bg-s-700 p-2 pb-0">
               {images.map((img, index) => (
                 <View className="h-20 w-auto aspect-square" key={index}>
                   <RImage
@@ -327,12 +344,18 @@ export default function MessageOrderScreen() {
         }}
       >
         <View className="flex-1">
-          <View>
-            <RImage
-              image={activeImg}
-              // uri={`${hostSERVER}/images/${uri}`}
-              className="w-auto h-full object-contain"
+          <View className="flex-1 bg-s-100 dark:bg-s-800">
+            <Image
+              className={""}
+              source={{
+                uri: `${hostSERVER}/images/${activeImg?.service}/${activeImg?.serviceId}/${activeImg?.path}${activeImg?.ext}`,
+              }}
+              style={{ width: "100%", height: "100%", resizeMode: "contain" }}
             />
+            {/* <RImage
+              image={activeImg}
+              className="w-auto h-full object-contain"
+            /> */}
             {/* <Pressable
                       style={[styles.button, styles.buttonClose]}
                       onPress={() => setModalVisible(!modalVisible)}>

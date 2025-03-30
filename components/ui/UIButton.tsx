@@ -138,7 +138,7 @@ export default function UIButton(props: UIButtonProps) {
       className={props?.className || classBtn}
     >
       {props.children || (
-        <View className="flex flex-row items-center justify-center">
+        <View className="flex flex-row gap-2 items-center justify-center">
           {props.startText && props.text && (
             <Text className={classText}>{props.text}</Text>
           )}

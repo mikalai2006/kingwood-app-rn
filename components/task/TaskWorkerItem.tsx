@@ -520,7 +520,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   }
 
   const isBlocked = useMemo(
-    () => !!userFromStore?.blocked || !!userFromStore?.archive,
+    () => userFromStore?.blocked == 1 || userFromStore?.archive == 1,
     [userFromStore]
   );
 

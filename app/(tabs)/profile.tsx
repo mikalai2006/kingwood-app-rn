@@ -74,38 +74,36 @@ export default function TabProfileScreen() {
       <SafeAreaView>
         <View className="flex-1 p-4">
           <SwitchMode />
+          <View className="absolute right-3 top-3">
+            <UIButton
+              type="link"
+              onPress={() => {
+                router.navigate({
+                  pathname: "/usersettingform",
+                });
+              }}
+            >
+              <View className="flex-row items-center gap-4">
+                <SIcon path="iCog" size={30} />
+              </View>
+            </UIButton>
+          </View>
           {userFromStore && tokensFromStore?.access_token ? (
             <View>
               <UserSettingAvatar />
 
               <Card className="my-4">
                 <View className="py-2 border-b border-s-100 dark:border-s-800">
-                  <UIButton
-                    type="link"
-                    onPress={() => {
-                      router.navigate({
-                        pathname: "/usersettingform",
-                      });
-                    }}
+                  <Text
+                    lineBreakMode="middle"
+                    numberOfLines={1}
+                    textBreakStrategy="balanced"
+                    className="flex-auto text-xl font-bold text-p-800 dark:text-p-200"
                   >
-                    <View className="flex-row items-center gap-4">
-                      {/* <View className="flex-auto">
-                      </View> */}
-                      {/* <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
-                        Ваше имя
-                      </Text> */}
-                      <Text
-                        lineBreakMode="middle"
-                        numberOfLines={1}
-                        textBreakStrategy="balanced"
-                        className="flex-auto text-xl font-bold text-p-800 dark:text-p-200"
-                      >
-                        {userFromStore.name}
-                      </Text>
-                      <SIcon path="iCog" size={20} />
-                    </View>
-                  </UIButton>
+                    {userFromStore.name}
+                  </Text>
                 </View>
+
                 <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
                   <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                     {t(`post`)}
@@ -169,6 +167,43 @@ export default function TabProfileScreen() {
                     <UIButton
                       type="link"
                       onPress={() => {
+                        router.push("/finance");
+                      }}
+                    >
+                      <View className="-mx-1 flex-row gap-4">
+                        <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                          {t("title.finance")}
+                        </Text>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
+                    </UIButton>
+                    {/* <UIButton
+                    type="link"
+                    onPress={() => {
+                      router.navigate({
+                        pathname: "/address/[userId]",
+                        params: {
+                          userId: userFromStore.id,
+                        },
+                      });
+                    }}
+                  >
+                    <View className="flex-row gap-4">
+                      <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                        Мои подписки
+                      </Text>
+                      <SIcon path="iChevronRight" size={20} />
+                    </View>
+                  </UIButton> */}
+                  </View>
+                )}
+                {!["admin", "boss", "designer", "superadmin"].includes(
+                  userFromStore.roleObject?.code
+                ) && (
+                  <View className="py-0 ">
+                    <UIButton
+                      type="link"
+                      onPress={() => {
                         router.push("/(tabs)/order/completed");
                       }}
                     >
@@ -199,22 +234,6 @@ export default function TabProfileScreen() {
                   </UIButton> */}
                   </View>
                 )}
-
-                <View className="py-0">
-                  <UIButton
-                    type="link"
-                    onPress={() => {
-                      router.push("/userpassword");
-                    }}
-                  >
-                    <View className="-mx-1 flex-row gap-4">
-                      <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
-                        {t("button.resetPassword")}
-                      </Text>
-                      <SIcon path="iChevronRight" size={20} />
-                    </View>
-                  </UIButton>
-                </View>
               </Card>
 
               {/* <UserSettingForm />
@@ -223,6 +242,21 @@ export default function TabProfileScreen() {
               </Card> */}
               <View className="mt-4">
                 <Card>
+                  <View className="py-0 border-b border-s-100 dark:border-s-800">
+                    <UIButton
+                      type="link"
+                      onPress={() => {
+                        router.push("/userpassword");
+                      }}
+                    >
+                      <View className="-mx-1 flex-row gap-4">
+                        <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                          {t("button.resetPassword")}
+                        </Text>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
+                    </UIButton>
+                  </View>
                   <UIButton type="link" onPress={alertLogout}>
                     <View className="flex flex-row items-center gap-4">
                       <Text className="text-red-800 dark:text-red-200 text-center text-xl">

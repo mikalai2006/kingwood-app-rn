@@ -15,7 +15,7 @@
     "completedTask": "Выполненные заказы",
     "startWorkTime": "Начать рабочее время",
     "endWorkTime": "Завершить работу",
-    "checkTask": "Чтобы начать работу, выберите одно из доступных заданий",
+    "checkTask": "Выберите задание, начните работу",
     "goTask": "Старт",
     "signin": "Войти",
     "pauseTask": "Пауза",
@@ -68,7 +68,8 @@
     "order": "Задания",
     "today": "Сегодня",
     "changeAva": "Изменение аватара",
-    "workTimeToday": "Рабочие сессии за {{dateToday}}"
+    "workTimeToday": "Рабочие сессии за {{dateToday}}",
+    "financyByMonth": "Фин. отчет за {{dateToday}}"
   },
   "orderTabs": {
     "all": "Все изделия",
@@ -134,7 +135,7 @@
   "newPassword": "Новый пароль",
   "newPasswordSecond": "Новый пароль еще раз",
   "settings": "Настройки пользователя ",
-  "notFoundNotify": "Нет уведомлений",
+  "notFoundNotify": "Нет новых уведомлений",
   "minLenghtPassword": "Минимальное количество символов в пароле 6 символов",
   "noty": "Уведомление",
   "okNewPassword": "Новый пароль успешно установлен!",

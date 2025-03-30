@@ -44,47 +44,56 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
   );
 
   return (
-    <View>
-      {taskStatus?._id ? (
-        <View>
-          {taskStatus?.icon && (
-            <TaskIcon
-              key={taskStatus._id.toString()}
-              statusId={taskStatus._id.toString()}
-              size={30}
-            />
-          )}
-        </View>
-      ) : (
-        <View>
-          <SIcon
-            path={"iTimer"}
-            size={30}
-            color={colorScheme === "dark" ? Colors.white : Colors.white}
-          />
-        </View>
-      )}
+    <View className="flex-1 flex-row items-center">
       <View className="relative">
         {activeTaskWorkerFromStore == null && workHistoryFromStore == null && (
-          <View className="absolute bottom-5 -left-36 w-80 p-0 m-0 rounded-md">
+          <View className="w-[200] h-[70] p-0 mt-7 rounded-md">
             {/* <TaskWorkerNotifyActiveTaskNo /> */}
             <TaskWorkerNotifyActiveTaskNoModal />
           </View>
         )}
         {
           workHistoryFromStore !== null ? (
-            <View className="absolute -bottom-8 -left-9 flex items-center w-[90px] rounded-lg bg-p-300 dark:bg-p-600 pt-1.5">
-              <Text className="text-base text-s-900 dark:text-white whitespace-nowrap leading-4 text-center">
-                {activeOrder
-                  ? getObjectId(activeOrder._id.toString()) == "0"
-                    ? t("fake.name")
-                    : `${t("order")} №${activeOrder?.number.toString()}`
-                  : t("title.work")}
-              </Text>
-              <TaskWorkerNotifyTimer
-                short
-                className="leading-4 font-medium text-s-900 dark:text-white text-base"
-              />
+            <View className="flex-row items-center gap-2 w-[180] h-[70] p-0 mt-7">
+              <View className="flex-auto rounded-lg pt-1.5">
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-white whitespace-nowrap leading-4"
+                >
+                  {activeOrder
+                    ? getObjectId(activeOrder._id.toString()) == "0"
+                      ? t("fake.name")
+                      : `№${activeOrder?.number.toString()} ${activeOrder.name}`
+                    : t("title.work")}
+                </Text>
+                <View className="flex flex-row gap-2">
+                  {taskStatus?._id ? (
+                    <View>
+                      {taskStatus?.icon && (
+                        <TaskIcon
+                          key={taskStatus._id.toString()}
+                          statusId={taskStatus._id.toString()}
+                          size={20}
+                        />
+                      )}
+                    </View>
+                  ) : (
+                    <View>
+                      <SIcon
+                        path={"iTimer"}
+                        size={20}
+                        color={
+                          colorScheme === "dark" ? Colors.white : Colors.white
+                        }
+                      />
+                    </View>
+                  )}
+                  <TaskWorkerNotifyTimer
+                    short
+                    className="leading-6 font-medium text-white text-xl"
+                  />
+                </View>
+              </View>
             </View>
           ) : null
           // (

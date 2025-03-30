@@ -1,4 +1,4 @@
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +13,7 @@ import { addStartNull } from "@/utils/utils";
 import { FinancyMonthItem } from "@/components/financy/FinancyMonthItem";
 import { FinancyMonthTotal } from "@/components/financy/FinancyMonthTotal";
 import useWorkHistory from "@/hooks/useWorkHistory";
+import UIButtonBack from "@/components/ui/UIButtonBack";
 
 export default function Modal() {
   const { t } = useTranslation();
@@ -90,19 +91,23 @@ export default function Modal() {
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       <SafeAreaView style={{ flex: 1 }}>
-        {/* <View className="flex flex-row gap-2 px-4 mb-2">
+        <View className="flex flex-row items-center gap-2 px-4 mb-2">
           <UIButtonBack />
           <View className="flex-auto">
-            {product && !isLoading && <OrderShortInfo id={id} />}
+            <Text className="text-lg leading-5 text-s-800 dark:text-s-300 font-medium">
+              {t("title.financyByMonth", {
+                dateToday: `${dayjs(from).month()} ${dayjs(from).year()}`,
+              })}
+            </Text>
           </View>
-        </View> */}
+        </View>
         <View className="px-4 mb-4">
           <View className="mb-1">
             <FinancyDate />
           </View>
           <FinancyMonthTotal time={time} from={from} to={to} />
         </View>
-        <View className="flex-1 bg-s-200 dark:bg-s-950 mb-8">
+        <View className="flex-1 bg-s-200 dark:bg-s-950">
           <View
             className="flex-1"
             key={`${financyFilterFromStore?.year}-${financyFilterFromStore?.month}`}

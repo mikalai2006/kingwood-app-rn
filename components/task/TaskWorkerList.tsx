@@ -74,7 +74,7 @@ const TaskWorkerList = (props: TaskWorkerListProps) => {
         <View className="px-4 mt-4">
           <View className="relative p-4 bg-s-500 dark:bg-s-500 rounded-lg">
             <View className="w-8 h-8 rotate-45 absolute -top-4 left-3 bg-s-500 dark:bg-s-500"></View>
-            <Text className="text-lg text-white dark:text-black leading-6">
+            <Text className="text-lg text-white dark:text-white leading-6">
               {t("info.taskForOrderNotFound")}
             </Text>
           </View>

@@ -92,7 +92,7 @@ export default function TabLayout() {
         <Tabs
           backBehavior="history"
           initialRouteName={
-            "work"
+            "order"
             // ["admin", "boss", "designer", "superadmin"].includes(
             //   userFromStore.roleObject.code
             // )
@@ -126,7 +126,7 @@ export default function TabLayout() {
             headerShown: false,
           }}
         >
-          <Tabs.Screen
+          {/* <Tabs.Screen
             name="order"
             options={{
               title: t("title.order"),
@@ -137,12 +137,11 @@ export default function TabLayout() {
                     size={20}
                     color={color} //focused ? Colors.white : Colors.white
                   />
-                  {/* <BadgeTabLots /> */}
                 </View>
               ),
             }}
-          />
-          <Tabs.Screen
+          /> */}
+          {/* <Tabs.Screen
             name="finance"
             options={{
               href: ["admin", "boss", "designer", "superadmin"].includes(
@@ -170,8 +169,8 @@ export default function TabLayout() {
                 <SIcon path={"iRubl"} size={30} color={color} />
               ),
             }}
-          />
-          <Tabs.Screen
+          /> */}
+          {/* <Tabs.Screen
             name="work"
             options={{
               href: ["admin", "boss", "designer", "superadmin"].includes(
@@ -234,11 +233,14 @@ export default function TabLayout() {
                 <TaskWorkerItemStatusIcon />
               ),
             }}
-          />
+          /> */}
           <Tabs.Screen
             name="message"
             options={{
               title: t("title.noty"),
+              tabBarItemStyle: {
+                maxWidth: 90,
+              },
               tabBarIcon: ({ color, focused }) => (
                 <View>
                   <SIcon
@@ -249,6 +251,70 @@ export default function TabLayout() {
                   {/* <BadgeTabMessage /> */}
                   <BadgeTabNotify />
                 </View>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="order"
+            options={{
+              href: ["admin", "boss", "designer", "superadmin"].includes(
+                userFromStore.roleObject.code
+              )
+                ? null
+                : "/(tabs)/order",
+              title:
+                (activeTaskWorkerFromStore &&
+                  activeTaskWorkerFromStore?.status == "process") ||
+                workHistoryFromStore
+                  ? ""
+                  : "", //t("title.order"),
+              // activeTaskWorkerFromStore
+              //   ? `${t(
+              //       "order"
+              //     )} №${activeTaskWorkerFromStore?.order.number.toString()}`
+              //   : t("title.work"),
+              tabBarActiveTintColor: activeTaskWorkerFromStore
+                ? Colors.white
+                : colorScheme === "dark"
+                ? Colors.r[200]
+                : Colors.white,
+              tabBarActiveBackgroundColor: "transparent",
+              // tabBarInactiveTintColor: activeTaskWorkerFromStore
+              //   ? Colors.white
+              //   : colorScheme === "dark"
+              //   ? Colors.p[300]
+              //   : Colors.p[700],
+              tabBarItemStyle: {
+                borderRadius: 20,
+                backgroundColor: !activeTaskWorkerFromStore
+                  ? colorScheme === "dark"
+                    ? Colors.p[700]
+                    : Colors.p[600]
+                  : colorScheme === "dark"
+                  ? activeTaskStatus?.color
+                  : activeTaskStatus?.color,
+                // maxWidth: "fit",
+                height: 74,
+                // paddingHorizontal: 5,
+                // paddingVertical: 15,
+                paddingTop: 2,
+                marginTop: -20,
+                borderColor:
+                  colorScheme === "dark" ? Colors.s[900] : Colors.s[100],
+                borderWidth: 5,
+                padding: 5,
+                zIndex: 100,
+              },
+              tabBarIcon: ({ color, focused }) => (
+                // <SIcon
+                //   path={"iTimer"}
+                //   // path={activeTaskStatus?.icon ? undefined : "iTimer"}
+                //   // pathText={activeTaskStatus?.icon}
+                //   size={30}
+                //   color={color}
+                //   // className={activeTaskStatus?.animate}
+                // />
+                <TaskWorkerItemStatusIcon />
               ),
             }}
           />
@@ -265,6 +331,9 @@ export default function TabLayout() {
               // tabBarLabel(props) {
               //   return null;
               // },
+              tabBarItemStyle: {
+                maxWidth: 90,
+              },
               tabBarIcon: ({ color, focused }) =>
                 !userFromStore?.images ? (
                   <SIcon

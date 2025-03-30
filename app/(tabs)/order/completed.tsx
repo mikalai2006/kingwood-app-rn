@@ -27,7 +27,7 @@ export default function FollowScreen() {
 
   const { isLoading, error } = useTaskWorkers({
     workerId: userFromStore ? [userFromStore.id] : undefined,
-    $limit: 100,
+    $limit: 30,
     // statusId: startStatus?._id ? [startStatus?._id.toString()] : [],
   });
 

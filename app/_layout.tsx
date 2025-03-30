@@ -287,6 +287,14 @@ export default function RootLayout() {
                             headerShown: false,
                           }}
                         />
+                        <Stack.Screen
+                          name="finance"
+                          options={{
+                            // presentation: "transparentModal",
+                            // animation: "slide_from_right",
+                            headerShown: false,
+                          }}
+                        />
                         {/* <Stack.Screen
                   name="modaloffer"
                   options={{

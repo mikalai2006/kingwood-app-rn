@@ -108,7 +108,7 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
       className={
         "border-t border-black/10 dark:border-white/10 py-4 px-6 " +
         ([0, 6].includes(dayjs(date).day())
-          ? "bg-p-500/20 dark:bg-p-500/10"
+          ? "bg-r-500/20 dark:bg-r-500/10"
           : "")
       }
       onPress={() => {
@@ -122,7 +122,14 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
     >
       <View className="flex flex-row items-center gap-2">
         <View className="flex flex-auto">
-          <Text className="text-lg text-s-700 dark:text-s-400">
+          <Text
+            className={
+              "text-lg " +
+              ([0, 6].includes(dayjs(date).day())
+                ? "text-p-700 dark:text-r-300"
+                : " text-s-700 dark:text-s-400")
+            }
+          >
             {dayjs(date).locale("ru").format("D")},{" "}
             {dayjs(date).locale("ru").format("dd")}
           </Text>

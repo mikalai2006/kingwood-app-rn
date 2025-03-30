@@ -15,13 +15,14 @@ import { BSON, UpdateMode } from "realm";
 export interface IuseMessagesProps {
   userId?: string | undefined;
   orderId?: string[] | undefined;
-  sort?: IFilterSort;
+  $sort?: IFilterSort;
+  $skip?: number;
 }
 
 const useMessages = (props: IuseMessagesProps) => {
   const { t } = useTranslation();
 
-  const { userId, sort, orderId } = props;
+  // const { userId, orderId } = props;
 
   // let query = "";
   // if (userId) {
@@ -43,128 +44,137 @@ const useMessages = (props: IuseMessagesProps) => {
 
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [total, setTotal] = useState(0);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      let ignore = false;
-      const onFindItems = async () => {
-        try {
-          // console.log({
-          //   userId: userId || undefined,
-          //   roomId: roomId || undefined,
-          //   productId: productId?.length ? productId : undefined,
-          //   sort: sort
-          //     ? [
-          //         {
-          //           key: sort.key,
-          //           value: sort.value,
-          //         },
-          //       ]
-          //     : [],
-          // });
+  const onQuery = React.useCallback(() => {
+    let ignore = false;
+    const onFindItems = async () => {
+      try {
+        isWriteConsole && console.log("useMessages props: ", props);
+        // console.log({
+        //   userId: userId || undefined,
+        //   roomId: roomId || undefined,
+        //   productId: productId?.length ? productId : undefined,
+        //   sort: sort
+        //     ? [
+        //         {
+        //           key: sort.key,
+        //           value: sort.value,
+        //         },
+        //       ]
+        //     : [],
+        // });
 
-          await onFetchWithAuth(
-            `${hostAPI}/message/find?` +
-              new URLSearchParams({
-                lang: activeLanguageFromStore?.code || "en",
-              }),
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              // node(id: "${featureFromStore?.id}") {
-              body: JSON.stringify(props),
-            }
-          )
-            .then((r) => r.json())
-            .then((response: IResponseData<IMessage>) => {
-              if (!ignore) {
-                // console.log("useMessages response: ", response);
+        await onFetchWithAuth(
+          `${hostAPI}/message/find?` +
+            new URLSearchParams({
+              lang: activeLanguageFromStore?.code || "en",
+            }),
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            // node(id: "${featureFromStore?.id}") {
+            body: JSON.stringify(props),
+          }
+        )
+          .then((r) => r.json())
+          .then((response: IResponseData<IMessage>) => {
+            if (!ignore) {
+              isWriteConsole &&
+                console.log("useMessages response: ", response?.data?.length);
 
-                const responseData = response;
-                if (!responseData) {
-                  // dispatch(setActiveNode(null));
-                  // setProducts([]);
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, 300);
-                  return;
-                }
+              if (response?.total) {
+                setTotal(response.total);
+              }
 
-                const responseItems = responseData.data;
-
-                const listDataForRealm = responseItems.map((x) => {
-                  return {
-                    ...x,
-                    _id: new BSON.ObjectId(x.id),
-                  };
-                });
-
-                // console.log("listDataForRealm: ", listDataForRealm);
-                if (listDataForRealm?.length) {
-                  realm.write(() => {
-                    try {
-                      for (
-                        let i = 0, total = listDataForRealm.length;
-                        i < total;
-                        i++
-                      ) {
-                        realm.create(
-                          "MessageSchema",
-                          {
-                            ...listDataForRealm[i],
-                          },
-                          UpdateMode.Modified
-                        );
-                      }
-                    } catch (e) {
-                      isWriteConsole && console.log("useMessages error: ", e);
-                    }
-                  });
-                }
-                // setProducts(responseProductsData);
-
+              const responseData = response;
+              if (!responseData) {
+                // dispatch(setActiveNode(null));
+                // setProducts([]);
                 setTimeout(() => {
                   setLoading(false);
-                }, 100);
-                // console.log('activeMarker=', response);
-                // dispatch(setActiveNode(responseNode));
+                }, 300);
+                return;
               }
-            })
-            .catch((e) => {
+
+              const responseItems = responseData.data;
+
+              const listDataForRealm = responseItems.map((x) => {
+                return {
+                  ...x,
+                  _id: new BSON.ObjectId(x.id),
+                };
+              });
+
+              // console.log("listDataForRealm: ", listDataForRealm);
+              if (listDataForRealm?.length) {
+                realm.write(() => {
+                  try {
+                    for (
+                      let i = 0, total = listDataForRealm.length;
+                      i < total;
+                      i++
+                    ) {
+                      realm.create(
+                        "MessageSchema",
+                        {
+                          ...listDataForRealm[i],
+                        },
+                        UpdateMode.Modified
+                      );
+                    }
+                  } catch (e) {
+                    isWriteConsole && console.log("useMessages error: ", e);
+                  }
+                });
+              }
+              // setProducts(responseProductsData);
+
               setTimeout(() => {
                 setLoading(false);
-              }, 300);
-              throw e;
-            });
-        } catch (e: any) {
-          // ToastAndroid.showWithGravity(
-          //     `${t('general:alertAdviceTitle')}: ${e?.message}`,
-          //     ToastAndroid.LONG,
-          //     ToastAndroid.TOP,
-          // );
-          setError(e.message);
-          // console.log('UseNode error: ', e?.message);
-        }
-      };
-
-      if (!ignore) {
-        // setTimeout(onGetNodeInfo, 100);
-        onFindItems();
+              }, 100);
+              // console.log('activeMarker=', response);
+              // dispatch(setActiveNode(responseNode));
+            }
+          })
+          .catch((e) => {
+            setTimeout(() => {
+              setLoading(false);
+            }, 300);
+            throw e;
+          });
+      } catch (e: any) {
+        // ToastAndroid.showWithGravity(
+        //     `${t('general:alertAdviceTitle')}: ${e?.message}`,
+        //     ToastAndroid.LONG,
+        //     ToastAndroid.TOP,
+        // );
+        setError(e.message);
+        // console.log('UseNode error: ', e?.message);
       }
+    };
 
-      return () => {
-        ignore = true;
-      };
-    }, []) //productId, userId, sort
-  );
+    if (!ignore) {
+      // setTimeout(onGetNodeInfo, 100);
+      onFindItems();
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [props?.$skip]); //productId, userId, sort
+
+  useFocusEffect(onQuery);
 
   return {
     isLoading,
     // messages: messages || [],
     error,
+    total,
+    onQuery,
   };
 };
 

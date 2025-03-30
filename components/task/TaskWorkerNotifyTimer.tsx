@@ -6,7 +6,10 @@ import { useQuery } from "@realm/react";
 import { WorkHistorySchema } from "@/schema";
 import { useMemo } from "react";
 import dayjs from "@/utils/dayjs";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
+import SIcon from "../ui/SIcon";
+import { useColorScheme } from "nativewind";
+import { Colors } from "@/utils/Colors";
 
 export type TaskWorkerNotifyTimerProps = {
   className?: string;
@@ -17,6 +20,8 @@ export function TaskWorkerNotifyTimer({
   className,
   short,
 }: TaskWorkerNotifyTimerProps) {
+  const { colorScheme } = useColorScheme();
+
   const workHistoryFromStore = useAppSelector(workHistory);
 
   const userFromStore = useAppSelector(user);
@@ -87,7 +92,14 @@ export function TaskWorkerNotifyTimer({
   });
 
   return (
-    <TaskWorkerTime time={time} className={className} short={short} />
+    <View className="flex-row items-center gap-1">
+      <SIcon
+        path={"iTimer"}
+        size={15}
+        color={colorScheme === "dark" ? Colors.s[300] : Colors.s[200]}
+      />
+      <TaskWorkerTime time={time} className={className} short={short} />
+    </View>
     // <Text className={`${className}`}>
     //   {hours}
     //   {!short ? t("time.hours") + " " : ":"}

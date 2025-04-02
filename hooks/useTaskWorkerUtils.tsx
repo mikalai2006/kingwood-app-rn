@@ -1,5 +1,10 @@
-import { OrderSchema, TaskStatusSchema } from "@/schema";
-import { useQuery, useRealm } from "@realm/react";
+import {
+  OrderSchema,
+  TaskSchema,
+  TaskStatusSchema,
+  TaskWorkerSchema,
+} from "@/schema";
+import { useObject, useQuery, useRealm } from "@realm/react";
 import { useCallback, useState } from "react";
 import { useFetchWithAuth } from "./useFetchWithAuth";
 import { hostAPI, isWriteConsole } from "@/utils/global";
@@ -17,6 +22,7 @@ import dayjs from "@/utils/dayjs";
 import { Alert, ToastAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
 import useAuth from "./useAuth";
+import { router } from "expo-router";
 
 export const useTaskWorkerUtils = () => {
   const { t } = useTranslation();
@@ -40,6 +46,16 @@ export const useTaskWorkerUtils = () => {
   const { onFetchWithAuth } = useFetchWithAuth();
 
   const [loading, setLoading] = useState(false);
+
+  const defaultTask = useObject(
+    TaskSchema,
+    new BSON.ObjectId("000000000000000000000000")
+  );
+
+  const defaultTaskWorker = useObject(
+    TaskWorkerSchema,
+    new BSON.ObjectId("000000000000000000000000")
+  );
 
   // const onStartPrevTask = async () => {
   //   const _status = allTaskStatus.find((x) => x.status === "process");
@@ -369,10 +385,169 @@ export const useTaskWorkerUtils = () => {
   //     });
   // };
 
+  const onCompletedTask = useCallback(
+    (task: TaskSchema, taskWorker: TaskWorkerSchema | null): void => {
+      if (!taskWorker) {
+        return;
+      }
+
+      const orders = allOrders.filtered(
+        "_id=$0",
+        new BSON.ObjectId(task.orderId)
+      );
+
+      if (!orders.length) {
+        return;
+      }
+
+      Alert.alert(
+        t("info.taskCompleted"),
+        t("info.taskCompletedDescription", {
+          orderName: `№${orders[0]?.number}: ${orders[0]?.name}`,
+          taskName: task.name,
+        }),
+        [
+          {
+            text: t("button.no"),
+            onPress: () => {},
+            style: "cancel",
+          },
+          {
+            text: t("button.yes"),
+            onPress: async () => {
+              // await toggleTaskWorker("finish");
+
+              const _status = allTaskStatus.find((x) => x.status === "finish");
+              if (!_status) {
+                return;
+              }
+
+              // if (getObjectId(taskWorker?._id.toString()) != "0") {
+              await onFetchWithAuth(
+                `${hostAPI}/task_worker/${taskWorker?._id.toString()}`,
+                {
+                  method: "PATCH",
+                  body: JSON.stringify({
+                    //productId: params.id,
+                    statusId: _status._id.toString(),
+                    status: _status.status,
+                    workerId: userFromStore?.id,
+                  }),
+                }
+              )
+                .then((res) => res.json())
+                .then((res: ITaskWorker) => {
+                  realm.write(async () => {
+                    try {
+                      await realm.create(
+                        "TaskWorkerSchema",
+                        {
+                          ...res,
+                          _id: new BSON.ObjectId(res.id),
+                          sortOrder: res.sortOrder || 0,
+                        },
+                        UpdateMode.Modified
+                      );
+
+                      dispatch(setActiveTaskWorker(null));
+                    } catch (e) {
+                      isWriteConsole &&
+                        console.log("onCompletedTask error: ", e);
+                    }
+                  });
+                  return res;
+                })
+                .catch((e) => {
+                  isWriteConsole && console.log("onCompletedTask Error", e);
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+
+              // начинаем хоз работы как заглушку, пока не выберется новое задание
+              const _statusProcess = allTaskStatus.find(
+                (x) => x.status === "process"
+              );
+              if (!_statusProcess) {
+                return;
+              }
+
+              await onFetchWithAuth(
+                `${hostAPI}/task_worker/${defaultTaskWorker?._id.toString()}`,
+                {
+                  method: "PATCH",
+                  body: JSON.stringify({
+                    //productId: params.id,
+                    statusId: _statusProcess._id.toString(),
+                    status: _statusProcess.status,
+                    workerId: userFromStore?.id,
+                  }),
+                }
+              )
+                .then((res) => res.json())
+                .then(async (res: ITaskWorker) => {
+                  await realm.write(() => {
+                    try {
+                      realm.create(
+                        "TaskWorkerSchema",
+                        {
+                          ...res,
+                          _id: new BSON.ObjectId(res.id),
+                          sortOrder: res.sortOrder || 0,
+                        },
+                        UpdateMode.Modified
+                      );
+
+                      dispatch(setActiveTaskWorker(Object.assign({}, res)));
+                    } catch (e) {
+                      isWriteConsole &&
+                        console.log("onCompletedTask2 error: ", e);
+                    }
+                  });
+                })
+                .catch((e) => {
+                  isWriteConsole && console.log("onCompletedTask2 Error", e);
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+
+              // предлагаем оставить сообщения для выполненного заказа.
+              Alert.alert(
+                t("info.completedMessage"),
+                t("info.completedMessageText"),
+                [
+                  {
+                    text: t("button.no"),
+                    onPress: () => {},
+                    style: "cancel",
+                  },
+                  {
+                    text: t("button.yes"),
+                    onPress: async () => {
+                      router.push({
+                        pathname: "/[orderId]/message",
+                        params: {
+                          orderId: orders[0]._id.toString(),
+                        },
+                      });
+                    },
+                  },
+                ]
+              );
+            },
+          },
+        ]
+      );
+    },
+    []
+  );
+
   return {
     loading,
     // onStartPrevTask,
     // onStartWorkTime,
+    onCompletedTask,
     onEndWorkTime,
     onEndWorkTimeForBlocked,
   };

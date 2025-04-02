@@ -407,7 +407,7 @@ export interface IWorkHistory {
   workerId: string;
   operationId: string;
   taskWorkerId: string;
-  status: string;
+  status: number;
   date: string;
   from: string;
   to: string;

@@ -65,6 +65,7 @@ export default function WidgetEvents() {
   const activeTaskFromStoreRef = useRef(activeTaskFromStore);
   const activeWorkHistoryFromStore = useAppSelector(workHistory);
   const activeWorkHistoryFromStoreRef = useRef(activeWorkHistoryFromStore);
+  const userRef = useRef(userFromStore);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
@@ -215,6 +216,10 @@ export default function WidgetEvents() {
   const { setErr } = useErrContext();
 
   useEffect(() => {
+    userRef.current = userFromStore;
+  }, [userFromStore]);
+
+  useEffect(() => {
     const onInitSocket = async () => {
       if (!tokensFromStore?.access_token) {
         return;
@@ -243,11 +248,13 @@ export default function WidgetEvents() {
           console.log("Open websocket: ", tokensFromStore?.access_token);
       };
 
-      _socket.onclose = function () {
+      _socket.onclose = () => {
         isWriteConsole && console.log("Close socket!");
         isWriteConsole && console.log(new Error("error.closeSocket"));
+        // isWriteConsole && console.log("userFromStore:", userFromStore);
+        // isWriteConsole && console.log("userRef:", userRef);
 
-        if (userFromStore && tokensFromStore.access_token) {
+        if (userRef.current) {
           setErr(new Error("error.closeSocket"));
         }
       };
@@ -258,7 +265,7 @@ export default function WidgetEvents() {
         const data: IWsMessage = JSON.parse(event.data);
         const { method } = data;
 
-        if (!userFromStore) {
+        if (!userRef.current) {
           return;
         }
 
@@ -609,7 +616,7 @@ export default function WidgetEvents() {
     onInitSocket().then((r) => (socket = r));
 
     return () => socket?.close();
-  }, [tokensFromStore, userFromStore?.id]);
+  }, [tokensFromStore]);
 
   // isWriteConsole && console.log("token PUSHN: ", expoPushToken);
 

@@ -319,6 +319,11 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                   ToastAndroid.SHORT
                 );
               }
+            } else if (statusName === "finish") {
+              // если задание отмечается как выполненное, запускаем хоз работы
+              if (defaultTask) {
+                onProcessTask(defaultTask);
+              }
             }
 
             // onWriteWorkHistory(statusName, res);
@@ -399,7 +404,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
     );
   }
 
-  // const { onStartWorkTime } = useTaskWorkerUtils();
+  const { onCompletedTask } = useTaskWorkerUtils();
 
   async function onProcessTask(task: TaskSchema): Promise<void> {
     const orders = allOrders.filtered(
@@ -454,65 +459,6 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             // } else {
             //   taskWorker && (await onWriteWorkHistory("process", taskWorker));
             // }
-          },
-        },
-      ]
-    );
-  }
-
-  function onCompletedTask(task: TaskSchema): void {
-    const orders = allOrders.filtered(
-      "_id=$0",
-      new BSON.ObjectId(task.orderId)
-    );
-
-    if (!orders.length) {
-      return;
-    }
-
-    Alert.alert(
-      t("info.taskCompleted"),
-      t("info.taskCompletedDescription", {
-        orderName: `№${orders[0]?.number}: ${orders[0]?.name}`,
-        taskName: task.name,
-      }),
-      [
-        {
-          text: t("button.no"),
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: t("button.yes"),
-          onPress: async () => {
-            await toggleTaskWorker("finish");
-
-            Alert.alert(
-              t("info.completedMessage"),
-              t("info.completedMessageText"),
-              [
-                {
-                  text: t("button.no"),
-                  onPress: () => {},
-                  style: "cancel",
-                },
-                {
-                  text: t("button.yes"),
-                  onPress: async () => {
-                    if (defaultTask) {
-                      await onProcessTask(defaultTask);
-                    }
-
-                    router.push({
-                      pathname: "/[orderId]/message",
-                      params: {
-                        orderId: orders[0]._id.toString(),
-                      },
-                    });
-                  },
-                },
-              ]
-            );
           },
         },
       ]
@@ -614,7 +560,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                       loading ||
                       isBlocked
                     }
-                    onPress={() => onCompletedTask(task)}
+                    onPress={() => onCompletedTask(task, taskWorker)}
                   />
                 )}
               </View>

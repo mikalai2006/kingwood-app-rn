@@ -25,6 +25,7 @@ export interface IUseWorkHistoryProps {
   date?: string;
   from?: string;
   to?: string;
+  $limit?: number;
 }
 
 const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
@@ -98,11 +99,12 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
                   }, 300);
                   return;
                 } else {
-                  if (
-                    props?.status === 0 &&
-                    responseData[0]?.workerId == userFromStore?.id
-                  ) {
-                    dispatch(setWorkHistory(responseData[0]));
+                  // ищем активную workhistory (status===0)
+                  const runWorkHistory = responseData.find(
+                    (x) => x.status === 0 && x.workerId == userFromStore?.id
+                  );
+                  if (runWorkHistory) {
+                    dispatch(setWorkHistory(runWorkHistory));
                   }
                 }
 

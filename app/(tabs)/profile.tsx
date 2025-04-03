@@ -18,7 +18,7 @@ import Card from "@/components/Card";
 import SIcon from "@/components/ui/SIcon";
 import UserSettingAvatar from "@/components/user/UserSettingAvatar";
 import SwitchMode from "@/components/SwitchMode";
-import { getNoun } from "@/utils/utils";
+import { addStartNull, getNoun } from "@/utils/utils";
 import { router } from "expo-router";
 import UILabel from "@/components/ui/UILabel";
 import { useTranslation } from "react-i18next";
@@ -166,13 +166,43 @@ export default function TabProfileScreen() {
                   <View className="py-0 border-b border-s-100 dark:border-s-800">
                     <UIButton
                       type="link"
+                      className={""}
+                      onPress={() => {
+                        router.push({
+                          pathname: "/finance/[day]",
+                          params: {
+                            day: dayjs(
+                              `${dayjs()?.year()}-${dayjs()?.month() + 1}-${
+                                dayjs().day() - 1
+                              }`
+                            ).format(),
+                          },
+                        });
+                      }}
+                    >
+                      <View className="-mx-1 flex-row gap-4">
+                        <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                          {t("title.financeToday")}
+                        </Text>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
+                    </UIButton>
+                  </View>
+                )}
+
+                {!["admin", "boss", "designer", "superadmin"].includes(
+                  userFromStore.roleObject?.code
+                ) && (
+                  <View className="py-0 border-b border-s-100 dark:border-s-800">
+                    <UIButton
+                      type="link"
                       onPress={() => {
                         router.push("/finance");
                       }}
                     >
                       <View className="-mx-1 flex-row gap-4">
                         <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
-                          {t("title.finance")}
+                          {t("title.financeMonth")}
                         </Text>
                         <SIcon path="iChevronRight" size={20} />
                       </View>

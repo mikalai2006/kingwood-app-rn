@@ -58,6 +58,8 @@
   "title": {
     "archiveOrder": "Выполненные заказы",
     "finance": "Финансы",
+    "financeToday": "Финансы сегодня",
+    "financeMonth": "Финансы месяц",
     "info": "Информация",
     "noty": "Уведомления",
     "message": "Сообщения",

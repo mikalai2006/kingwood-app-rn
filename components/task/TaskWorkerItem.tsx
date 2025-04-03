@@ -319,12 +319,13 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                   ToastAndroid.SHORT
                 );
               }
-            } else if (statusName === "finish") {
-              // если задание отмечается как выполненное, запускаем хоз работы
-              if (defaultTask) {
-                onProcessTask(defaultTask);
-              }
             }
+            // else if (statusName === "finish") {
+            //   // если задание отмечается как выполненное, запускаем хоз работы
+            //   if (defaultTask) {
+            //     onProcessTask(defaultTask);
+            //   }
+            // }
 
             // onWriteWorkHistory(statusName, res);
             // if (res.statusId === "6749ffa6d6b4324345382aec") {

@@ -67,7 +67,7 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
                     : t("title.work")}
                 </Text>
                 <View className="flex flex-row gap-2">
-                  {taskStatus?._id ? (
+                  {/* {taskStatus?._id ? (
                     <View>
                       {taskStatus?.icon && (
                         <TaskIcon
@@ -87,7 +87,7 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
                         }
                       />
                     </View>
-                  )}
+                  )} */}
                   <TaskWorkerNotifyTimer
                     short
                     className="leading-6 font-medium text-white text-xl"

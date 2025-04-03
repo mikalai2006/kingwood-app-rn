@@ -180,16 +180,23 @@ export default function WidgetEvents() {
     (data: IWsMessage) => {
       // console.log("onDetectActiveWorkHistory:");
 
-      // console.log(
-      //   "detect workHistory=",
-      //   activeWorkHistoryFromStoreRef.current?.id,
-      //   data.content.status
-      // );
+      // isWriteConsole &&
+      //   console.log(
+      //     "onDetectActiveWorkHistory: ",
+      //     // activeWorkHistoryFromStoreRef.current?.id,
+      //     data.content.status,
+      //     userRef.current?.id,
+      //     userFromStore?.id,
+      //     data.content?.workerId
+      //   );
       if (data.method === "CREATE") {
+        // isWriteConsole && console.log("Set workHistory CREATE ");
         if (
           data.content.status == 0 &&
-          data.content?.workerId == userFromStore?.id
+          data.content?.workerId == userRef.current?.id //userFromStore?.id
         ) {
+          isWriteConsole && console.log("Set workHistory: ", data.content?.id);
+
           dispatch(setWorkHistory(data.content));
         }
       } else {
@@ -260,10 +267,9 @@ export default function WidgetEvents() {
       };
 
       _socket.onmessage = function (event) {
-        isWriteConsole &&
-          console.log("event.data: ", event.data?.method, event.data?.service);
         const data: IWsMessage = JSON.parse(event.data);
-        const { method } = data;
+        const { method, service } = data;
+        isWriteConsole && console.log("event.data: ", service, method);
 
         if (!userRef.current) {
           return;

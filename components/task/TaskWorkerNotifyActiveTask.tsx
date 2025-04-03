@@ -157,5 +157,7 @@ export function TaskWorkerNotifyActiveTask({}: TaskWorkerNotifyActiveTaskProps) 
         </View>
       </View>
     </TouchableOpacity>
-  ) : null;
+  ) : (
+    <Text>not found taskWorker</Text>
+  );
 }

@@ -6,6 +6,7 @@ export default {
   icon: "./assets/images/icon.png",
   scheme: "kingwood",
   userInterfaceStyle: "automatic",
+  permissions: ["android.permission.SCHEDULE_EXACT_ALARM"],
   splash: {
     image: "./assets/images/splash.png",
     resizeMode: "contain",

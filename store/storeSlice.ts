@@ -5,6 +5,7 @@ import {
   IFinancyFilter,
   ILang,
   IRole,
+  ISchedule,
   ITaskWorkerPopulate,
   IUser,
   IWorkHistory,
@@ -31,6 +32,7 @@ const initialState: AppState = {
     year: 0,
     monthIndex: 0,
   },
+  schedules: [],
 };
 
 // Приведенная ниже функция называется thunk и позволяет нам выполнять асинхронную логику. Это
@@ -75,6 +77,12 @@ export const storeSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser | null>) => {
       // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
       state.user = action.payload ? { ...action.payload } : null;
+    },
+    setSchedules: (state, action: PayloadAction<ISchedule[]>) => {
+      // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
+      if (action.payload) {
+        state.schedules = [...action.payload];
+      }
     },
     // setFeature: (state, action: PayloadAction<IFeature | null>) => {
     //     console.log('setFeature: ', JSON.stringify(action?.payload?.osmId));
@@ -166,6 +174,7 @@ export const {
   setWorkHistory,
   setFinancyFilter,
   setLinkParams,
+  setSchedules,
 } = storeSlice.actions;
 // Функция ниже называется селектором и позволяет нам выбрать значение из
 // штат. Селекторы также могут быть определены встроенными, где они используются вместо
@@ -184,5 +193,6 @@ export const workTime = (state: RootState) => state.store.workTime;
 export const workHistory = (state: RootState) => state.store.workHistory;
 export const financyFilter = (state: RootState) => state.store.financyFilter;
 export const linkParams = (state: RootState) => state.store.linkParams;
+export const schedules = (state: RootState) => state.store.schedules;
 
 export default storeSlice.reducer;

@@ -6,6 +6,7 @@ import { Text, View, ScrollView, Alert } from "react-native";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
+  schedules,
   setActiveTaskWorker,
   setWorkHistory,
   tokens,
@@ -35,6 +36,7 @@ export default function TabProfileScreen() {
 
   const userFromStore = useAppSelector(user);
   const tokensFromStore = useAppSelector(tokens);
+  const schedulesFromStore = useAppSelector(schedules);
 
   const { onLogout } = useAuth();
 
@@ -159,6 +161,43 @@ export default function TabProfileScreen() {
                   </View>
                 ) : null} */}
               </Card>
+
+              <Card className="my-4">
+                <View className="py-0">
+                  <UIButton
+                    type="link"
+                    className={""}
+                    onPress={() => {
+                      router.push({
+                        pathname: "/modalschedule",
+                      });
+                    }}
+                  >
+                    <View className="-mx-1 flex flex-row items-center gap-4">
+                      <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                        {t("title.schedule")}
+                      </Text>
+                      <View className="rounded-full bg-green-500">
+                        <Text
+                          numberOfLines={1}
+                          className={`text-sm text-white leading-4 p-1 ${
+                            schedulesFromStore?.length > 9 ? "" : "px-2"
+                          }`}
+                        >
+                          {schedulesFromStore?.length}
+                        </Text>
+                      </View>
+                      {/* <View className="bg-gr-500 rounded-full py-2 px-3">
+                        <Text className="text-black leading-4 font-medium m-0 p-0">
+                          {schedulesFromStore?.length}
+                        </Text>
+                      </View> */}
+                      <SIcon path="iChevronRight" size={20} />
+                    </View>
+                  </UIButton>
+                </View>
+              </Card>
+
               <Card className="my-4">
                 {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code

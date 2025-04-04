@@ -58,24 +58,24 @@ export function FinancyDayItemActive({
             workHistory={JSON.parse(JSON.stringify(item))}
           />
         )}
-        <View className=" flex flex-row gap-2">
+        <View className="flex flex-row gap-2 items-center">
           {/* <Text className="text-s-800 dark:text-s-200">
                     {t("from")}
                   </Text> */}
           <View>
-            <Text className="text-base leading-5 text-s-500 dark:text-s-200">
+            {/* <Text className="text-base leading-5 text-s-500 dark:text-s-200">
               {dayjs(item.from).format(formatDate)}
-            </Text>
+            </Text> */}
             <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
               {dayjs(item.from).format(formatTime)}
             </Text>
           </View>
           <Text className="text-5xl text-s-800 dark:text-s-200">⇢</Text>
           <View>
-            <Text className="text-base leading-5 text-s-500 dark:text-s-200">
+            {/* <Text className="text-base leading-5 text-s-500 dark:text-s-200">
               {" "}
               {dayjs(time.date).format(formatDate)}
-            </Text>
+            </Text> */}
             <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
               {" "}
               {dayjs(time.date).format(formatTime)}

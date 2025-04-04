@@ -54,7 +54,7 @@ export default function TabLayout() {
     {
       workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
       // status: 0,
-      date: dayjs().format(),
+      // date: dayjs().format(),
       $limit: 100,
     },
     [userFromStore]

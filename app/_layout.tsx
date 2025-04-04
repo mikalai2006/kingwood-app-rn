@@ -331,6 +331,15 @@ export default function RootLayout() {
                             headerShown: true,
                           }}
                         />
+                        <Stack.Screen
+                          name="modalschedule"
+                          options={{
+                            title: t("title.schedule"),
+                            presentation: "transparentModal",
+                            animation: "slide_from_right",
+                            headerShown: true,
+                          }}
+                        />
                         {/* <Stack.Screen
                   name="modaldarom"
                   options={{

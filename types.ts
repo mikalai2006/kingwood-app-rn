@@ -1,6 +1,8 @@
 import * as icons from "@/utils/icons";
 import { NetInfoState } from "@react-native-community/netinfo";
 
+import * as Notifications from "expo-notifications";
+
 export interface IWsMessage {
   type: string;
   sender: string;
@@ -457,6 +459,11 @@ export type IOperationInput = {
   [Property in keyof IOperation]?: IOperation[Property];
 };
 
+export interface ISchedule {
+  trigger: Notifications.NotificationTriggerInput;
+  id: number;
+}
+
 export interface AppState {
   modeTheme: "dark" | "light" | "system";
   tokens: ITokens | null;
@@ -474,5 +481,6 @@ export interface AppState {
   workTime: IWorkTime | null;
   workHistory: IWorkHistory | null;
   financyFilter: IFinancyFilter;
+  schedules: ISchedule[];
   linkParams: any;
 }

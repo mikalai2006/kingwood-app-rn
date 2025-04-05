@@ -6,7 +6,6 @@ export default {
   icon: "./assets/images/icon.png",
   scheme: "kingwood",
   userInterfaceStyle: "automatic",
-  permissions: ["android.permission.SCHEDULE_EXACT_ALARM"],
   splash: {
     image: "./assets/images/splash.png",
     resizeMode: "contain",
@@ -38,6 +37,7 @@ export default {
     userInterfaceStyle: "automatic",
   },
   android: {
+    permissions: ["android.permission.SCHEDULE_EXACT_ALARM"],
     adaptiveIcon: {
       // foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffdb4d",

@@ -35,10 +35,10 @@ export default {
   ios: {
     supportsTablet: true,
     userInterfaceStyle: "automatic",
-    permissions: ["android.permission.SCHEDULE_EXACT_ALARM"],
+    permissions: ["SCHEDULE_EXACT_ALARM"],
   },
   android: {
-    permissions: ["android.permission.SCHEDULE_EXACT_ALARM"],
+    permissions: ["SCHEDULE_EXACT_ALARM"],
     adaptiveIcon: {
       // foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffdb4d",

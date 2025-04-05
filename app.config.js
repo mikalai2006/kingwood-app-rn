@@ -53,6 +53,7 @@ export default {
     favicon: "./assets/images/favicon.png",
   },
   plugins: [
+    "react-native-permissions",
     "expo-router",
     "expo-asset",
     [

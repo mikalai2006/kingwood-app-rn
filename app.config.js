@@ -1,7 +1,7 @@
 export default {
-  name: "Кингвуд",
+  name: "КингВуд",
   slug: "kingwood-app-rn",
-  version: "1.0.5",
+  version: "1.0.10",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "kingwood",

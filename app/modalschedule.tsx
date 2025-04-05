@@ -11,7 +11,7 @@ import { Platform, TextInput, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import ScheduleItem from "@/components/schedule/ScheduleItem";
 import { isWriteConsole } from "@/utils/global";
-import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
+// import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 
 export default function ModalSchedule() {
   const dispatch = useAppDispatch();
@@ -20,31 +20,31 @@ export default function ModalSchedule() {
 
   const schedulesFromStore = useAppSelector(schedules);
 
-  const checkAndRequestExactAlarmPermission = async () => {
-    if (Platform.OS === "android" && Platform.Version >= 31) {
-      // Check if permission is already granted
-      const result = await check(PERMISSIONS.ANDROID.SCHEDULE_EXACT_ALARM);
+  // const checkAndRequestExactAlarmPermission = async () => {
+  //   if (Platform.OS === "android" && Platform.Version >= 31) {
+  //     // Check if permission is already granted
+  //     const result = await check(PERMISSIONS.ANDROID.SCHEDULE_EXACT_ALARM);
 
-      if (result === RESULTS.DENIED) {
-        // Request the permission
-        const requestResult = await request(
-          PERMISSIONS.ANDROID.SCHEDULE_EXACT_ALARM
-        );
+  //     if (result === RESULTS.DENIED) {
+  //       // Request the permission
+  //       const requestResult = await request(
+  //         PERMISSIONS.ANDROID.SCHEDULE_EXACT_ALARM
+  //       );
 
-        if (requestResult === RESULTS.GRANTED) {
-          console.log("Exact alarm permission granted");
-        } else {
-          console.log("Exact alarm permission denied");
-        }
-      } else if (result === RESULTS.GRANTED) {
-        console.log("Exact alarm permission already granted");
-      }
-    }
-  };
+  //       if (requestResult === RESULTS.GRANTED) {
+  //         console.log("Exact alarm permission granted");
+  //       } else {
+  //         console.log("Exact alarm permission denied");
+  //       }
+  //     } else if (result === RESULTS.GRANTED) {
+  //       console.log("Exact alarm permission already granted");
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     const _go = async () => {
-      checkAndRequestExactAlarmPermission();
+      // checkAndRequestExactAlarmPermission();
 
       if (Platform.OS === "android") {
         // отменяем все события.

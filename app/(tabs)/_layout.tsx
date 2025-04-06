@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 
 import React, { useEffect, useMemo } from "react";
 
@@ -28,6 +28,7 @@ import { isWriteConsole } from "@/utils/global";
 import Updater from "@/components/update/Updater";
 import useWorkHistory from "@/hooks/useWorkHistory";
 import dayjs from "@/utils/dayjs";
+import UIButton from "@/components/ui/UIButton";
 
 export default function TabLayout() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -258,11 +259,11 @@ export default function TabLayout() {
           <Tabs.Screen
             name="order"
             options={{
-              href: ["admin", "boss", "designer", "superadmin"].includes(
-                userFromStore.roleObject.code
-              )
-                ? null
-                : "/(tabs)/order",
+              // href: ["admin", "boss", "designer", "superadmin"].includes(
+              //   userFromStore.roleObject.code
+              // )
+              //   ? null
+              //   : "/(tabs)/order",
               title:
                 (activeTaskWorkerFromStore &&
                   activeTaskWorkerFromStore?.status == "process") ||
@@ -298,15 +299,15 @@ export default function TabLayout() {
                 height: 74,
                 // paddingHorizontal: 5,
                 // paddingVertical: 15,
-                paddingTop: 2,
+                padding: 0,
+                margin: 0,
                 marginTop: -20,
                 borderColor:
                   colorScheme === "dark" ? Colors.s[900] : Colors.s[100],
                 borderWidth: 5,
-                padding: 5,
                 zIndex: 100,
               },
-              tabBarIcon: ({ color, focused }) => (
+              tabBarButton: () => (
                 // <SIcon
                 //   path={"iTimer"}
                 //   // path={activeTaskStatus?.icon ? undefined : "iTimer"}
@@ -315,8 +316,27 @@ export default function TabLayout() {
                 //   color={color}
                 //   // className={activeTaskStatus?.animate}
                 // />
-                <TaskWorkerItemStatusIcon />
+                <UIButton
+                  type="link"
+                  className="p-1 px-2 m-0"
+                  onPress={() => {
+                    router.push("/(tabs)/order");
+                  }}
+                >
+                  <TaskWorkerItemStatusIcon />
+                </UIButton>
               ),
+              // tabBarIcon: ({ color, focused }) => (
+              //   // <SIcon
+              //   //   path={"iTimer"}
+              //   //   // path={activeTaskStatus?.icon ? undefined : "iTimer"}
+              //   //   // pathText={activeTaskStatus?.icon}
+              //   //   size={30}
+              //   //   color={color}
+              //   //   // className={activeTaskStatus?.animate}
+              //   // />
+              //   <TaskWorkerItemStatusIcon />
+              // ),
             }}
           />
           <Tabs.Screen

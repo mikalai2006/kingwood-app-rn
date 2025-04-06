@@ -44,18 +44,18 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
   );
 
   return (
-    <View className="flex-1 flex-row items-center">
-      <View className="relative">
+    <View className="flex flex-col items-start justify-start">
+      <View className="flex items-start justify-start ">
         {activeTaskWorkerFromStore == null && workHistoryFromStore == null && (
-          <View className="w-[200] h-[70] p-0 mt-7 rounded-md">
+          <View className="p-0 rounded-md">
             {/* <TaskWorkerNotifyActiveTaskNo /> */}
             <TaskWorkerNotifyActiveTaskNoModal />
           </View>
         )}
         {
           workHistoryFromStore !== null ? (
-            <View className="flex-row items-center gap-2 w-[180] h-[70] p-0 mt-7">
-              <View className="flex-auto rounded-lg pt-1.5">
+            <View className="flex-1 flex-row items-stretch justify-start gap-2 p-0">
+              <View className="flex-auto self-center rounded-lg pt-1.5 ">
                 <Text
                   numberOfLines={2}
                   className="text-base text-white whitespace-nowrap leading-4"

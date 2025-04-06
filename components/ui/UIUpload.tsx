@@ -113,7 +113,7 @@ const UIUpload = ({
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [1, 1],
       selectionLimit: 1,
       quality: 1,
@@ -134,7 +134,7 @@ const UIUpload = ({
   const goPhoto = async () => {
     const { assets } = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [1, 1],
       quality: 1,
       // videoQuality: 1,

@@ -1,4 +1,11 @@
-import { Alert, Image, Modal, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Modal,
+  Text,
+  View,
+} from "react-native";
 
 import {
   ScrollView,
@@ -160,6 +167,21 @@ export default function MessageOrderScreen() {
 
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={loading}
+        onRequestClose={() => {}}
+      >
+        <View className="flex-1 bg-s-100/70 dark:bg-s-800/70 dark: p-6">
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator
+              size={30}
+              color={colorScheme == "dark" ? Colors.white : Colors.black}
+            />
+          </View>
+        </View>
+      </Modal>
       {order && (
         <>
           <View className="flex-auto">
@@ -320,16 +342,17 @@ export default function MessageOrderScreen() {
                 type="link"
                 loading={loading}
                 disabled={loading}
+                icon="iChevronRightDouble"
                 className="flex-1 m-0 p-4 bg-s-500"
                 onPress={() => {
                   onAddMessage();
                 }}
               >
-                <SIcon
+                {/* <SIcon
                   path="iChevronRightDouble"
                   size={25}
                   color={Colors.white}
-                />
+                /> */}
               </UIButton>
             </View>
           </View>

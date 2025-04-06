@@ -64,11 +64,11 @@ export default function FollowScreen() {
 
       if (linkParamsFromStore) {
         setObjectId(linkParamsFromStore?.objectId);
-        console.log("set objectId from params");
+        // console.log("set objectId from params");
       } else {
         if (activeTaskWorkerFromStore?.objectId) {
           setObjectId(activeTaskWorkerFromStore.objectId);
-          console.log("set objectId from store");
+          // console.log("set objectId from store");
         }
         // }, []);
 

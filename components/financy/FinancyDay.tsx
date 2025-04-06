@@ -143,7 +143,7 @@ export function FinancyDay({
         />
       ) : null}
       <View className="mt-4 pt-4 flex gap-2">
-        <View className="flex flex-row gap-2 border-b border-black/10 dark:border-white/10 pb-2">
+        <View className="flex flex-row gap-2 border-b border-black/10 dark:border-white/5 pb-2">
           <Text className="flex-auto text-lg leading-6 text-s-600 dark:text-s-400">
             {t("totalZpDay")}:
           </Text>
@@ -157,7 +157,7 @@ export function FinancyDay({
               {t("totalTimeDay")}:
             </Text>
             <TaskWorkerTime
-              className="text-lg leading-6 text-s-800 dark:text-s-200"
+              className="text-lg leading-6 text-gr-800 dark:text-gr-400"
               time={getObjectTime(msFullDay)}
             />
           </View>

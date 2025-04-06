@@ -75,20 +75,25 @@ export default function TabProfileScreen() {
     <ScrollView className="bg-s-200 dark:bg-s-950">
       <SafeAreaView>
         <View className="flex-1 p-4">
-          <SwitchMode />
-          <View className="absolute right-3 top-3">
-            <UIButton
-              type="link"
-              onPress={() => {
-                router.navigate({
-                  pathname: "/usersettingform",
-                });
-              }}
-            >
-              <View className="flex-row items-center gap-4">
-                <SIcon path="iCog" size={30} />
-              </View>
-            </UIButton>
+          <View className="flex flex-row items-center">
+            <View>
+              <SwitchMode />
+            </View>
+            <View className="flex-auto"></View>
+            <View className="">
+              <UIButton
+                type="link"
+                onPress={() => {
+                  router.navigate({
+                    pathname: "/usersettingform",
+                  });
+                }}
+              >
+                <View className="flex-row items-center gap-4">
+                  <SIcon path="iCog" size={30} />
+                </View>
+              </UIButton>
+            </View>
           </View>
           {userFromStore && tokensFromStore?.access_token ? (
             <View>
@@ -210,11 +215,7 @@ export default function TabProfileScreen() {
                         router.push({
                           pathname: "/finance/[day]",
                           params: {
-                            day: dayjs(
-                              `${dayjs()?.year()}-${dayjs()?.month() + 1}-${
-                                dayjs().day() - 1
-                              }`
-                            ).format(),
+                            day: dayjs().format(),
                           },
                         });
                       }}

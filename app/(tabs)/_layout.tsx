@@ -292,8 +292,8 @@ export default function TabLayout() {
                     ? Colors.p[700]
                     : Colors.p[600]
                   : colorScheme === "dark"
-                  ? activeTaskStatus?.color
-                  : activeTaskStatus?.color,
+                  ? Colors.gr[700] // activeTaskStatus?.color
+                  : Colors.gr[600], //activeTaskStatus?.color,
                 // maxWidth: "fit",
                 height: 74,
                 // paddingHorizontal: 5,

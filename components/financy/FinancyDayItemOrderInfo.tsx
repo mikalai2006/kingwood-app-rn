@@ -31,7 +31,7 @@ export function FinancyDayItemOrderInfo({
 
   return (
     <View>
-      <Text className="text-s-500 dark:text-s-300">
+      <Text className="text-s-500 dark:text-s-300 text-lg leading-5">
         {operation?.name ? operation.name + ", " : ""}
         {order?.number ? "№" + order.number + " - " : ""}
         {order?.name} ({object?.name})

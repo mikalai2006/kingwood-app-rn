@@ -66,17 +66,17 @@ export function FinancyDayItemActive({
             {/* <Text className="text-base leading-5 text-s-500 dark:text-s-200">
               {dayjs(item.from).format(formatDate)}
             </Text> */}
-            <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
+            <Text className="text-xl font-medium leading-6 text-g-800 dark:text-s-200">
               {dayjs(item.from).format(formatTime)}
             </Text>
           </View>
-          <Text className="text-5xl text-s-800 dark:text-s-200">⇢</Text>
+          <Text className="text-5xl text-g-300 dark:text-s-700">⇢</Text>
           <View>
             {/* <Text className="text-base leading-5 text-s-500 dark:text-s-200">
               {" "}
               {dayjs(time.date).format(formatDate)}
             </Text> */}
-            <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
+            <Text className="text-xl font-medium leading-6 text-g-800 dark:text-s-200">
               {" "}
               {dayjs(time.date).format(formatTime)}
             </Text>
@@ -86,7 +86,7 @@ export function FinancyDayItemActive({
           {/* {t("worked")}:{" "} */}
           <TaskWorkerTime
             time={time}
-            className="text-md text-s-500 dark:text-s-500"
+            className="text-md  text-gr-800 dark:text-gr-400"
             short={false}
           />
           {/* {time.hours ? time.hours + ":" : ""}

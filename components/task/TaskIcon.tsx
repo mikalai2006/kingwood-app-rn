@@ -48,16 +48,27 @@ const TaskIcon = (props: ITaskIconProps) => {
         taskStatus.status === "process"
           ? {
               transform: [{ rotate: spin }],
-              backgroundColor: taskStatus.color,
+              // backgroundColor: taskStatus.color,
+              backgroundColor: Colors.gr[600],
             }
-          : { backgroundColor: taskStatus.color }
+          : {
+              // backgroundColor: taskStatus.color
+              backgroundColor:
+                colorScheme === "dark" ? Colors.s[600] : Colors.s[100],
+            }
       }
       className={`rounded-full ${props.className}`}
     >
       <SIcon
         pathText={taskStatus.icon}
         size={props.size || 15}
-        color={colorScheme === "dark" ? Colors.white : Colors.white}
+        color={
+          taskStatus.status === "process"
+            ? colorScheme === "dark"
+              ? Colors.white
+              : Colors.white
+            : Colors.s[400]
+        }
       />
     </Animated.View>
   ) : null;

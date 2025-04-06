@@ -42,7 +42,7 @@ export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
   }, [zp]);
 
   return (
-    <Card className="flex flex-row items-center mb-3 py-3">
+    <Card className="flex flex-row items-end mb-3 py-3">
       <View className="flex-auto">
         {item && (
           <FinancyDayItemOrderInfo
@@ -57,17 +57,17 @@ export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
             {/* <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
               {dayjs(item.from).utc(true).format(formatDate)}
             </Text> */}
-            <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
+            <Text className="text-xl font-medium leading-6 text-g-800 dark:text-s-200">
               {dayjs(item.from).utc(true).format(formatTime)}
             </Text>
           </View>
-          <Text className="text-5xl text-s-800 dark:text-s-200">⇢</Text>
+          <Text className="text-5xl text-g-300 dark:text-s-700">⇢</Text>
           <View>
             {/* <Text className="text-xs leading-5 text-s-500 dark:text-s-400">
               {" "}
               {dayjs(item.to).utc(true).format(formatDate)}
             </Text> */}
-            <Text className="text-xl font-medium leading-6 text-s-800 dark:text-s-200">
+            <Text className="text-xl font-medium leading-6 text-g-800 dark:text-s-200">
               {" "}
               {dayjs(item.to).utc(true).format(formatTime)}
             </Text>
@@ -77,7 +77,7 @@ export function FinancyDayItemItem({ item }: FinancyDayItemItemProps) {
           {/* {t("worked")}:{" "} */}
           <TaskWorkerTime
             time={time}
-            className="text-md text-s-500 dark:text-s-500"
+            className="text-md text-gr-800 dark:text-gr-400"
             short={false}
           />
           {/* {time.hours ? time.hours + ":" : ""}

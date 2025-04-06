@@ -44,14 +44,19 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
       }}
     >
       <View className="flex-auto">
-        <View className="flex flex-row items-center mb-1">
+        {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
+        <Text className="text-xl font-medium leading-5 text-s-700 dark:text-s-100 pt-2">
+          {order.number ? `№${order.number} - ` : ""}
+          {order.name}
+        </Text>
+        <View className="flex flex-row items-center">
           {/* <View className="flex flex-row">
             <Text className="text-lg  text-s-500 dark:text-s-300 pr-1">
               {t("order")} №{order.number},
             </Text>
           </View> */}
           <View className="flex flex-row items-center">
-            <Text className="text-xl font-medium text-s-600 dark:text-s-300 pr-1">
+            <Text className="text-xl font-medium text-s-500 dark:text-s-300 pr-1">
               {object?.name}
             </Text>
             {order.priority ? (
@@ -64,12 +69,6 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
           </Text> */}
           </View>
         </View>
-
-        {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
-        <Text className="text-xl font-medium leading-5 text-s-700 dark:text-s-100">
-          {order.number ? `№${order.number} - ` : ""}
-          {order.name}
-        </Text>
       </View>
       {getObjectId(order._id.toString()) != "0" && (
         <View>

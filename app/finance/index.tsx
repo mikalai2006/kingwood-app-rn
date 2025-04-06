@@ -15,7 +15,7 @@ import { FinancyMonthTotal } from "@/components/financy/FinancyMonthTotal";
 import useWorkHistory from "@/hooks/useWorkHistory";
 import UIButtonBack from "@/components/ui/UIButtonBack";
 
-export default function Modal() {
+export default function FinanceIndex() {
   const { t } = useTranslation();
 
   const workHistoryFromStore = useAppSelector(workHistory);
@@ -88,6 +88,11 @@ export default function Modal() {
     }
   }, [workHistoryFromStore]);
 
+  const [dayWeek, month, year] = dayjs(from)
+    .locale("ru")
+    .format("dddd, MMMM, YYYY")
+    .split(",");
+
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">
       <SafeAreaView style={{ flex: 1 }}>
@@ -96,7 +101,7 @@ export default function Modal() {
           <View className="flex-auto">
             <Text className="text-lg leading-5 text-s-800 dark:text-s-300 font-medium">
               {t("title.financyByMonth", {
-                dateToday: `${dayjs(from).month()} ${dayjs(from).year()}`,
+                dateToday: `${month} ${dayjs(from).year()}`,
               })}
             </Text>
           </View>

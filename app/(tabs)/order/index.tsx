@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import {
   router,
+  useFocusEffect,
   useGlobalSearchParams,
   useLocalSearchParams,
 } from "expo-router";
@@ -16,7 +17,7 @@ import {
 } from "@/store/storeSlice";
 import UIButton from "@/components/ui/UIButton";
 import TaskWorkerTabs from "@/components/task/TaskWorkerTabs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TaskWorkerList from "@/components/task/TaskWorkerList";
 import OrderAdminTabs from "@/components/order/admin/OrderAdminTabs";
 import OrderAdminList from "@/components/order/admin/OrderAdminList";
@@ -53,20 +54,35 @@ export default function FollowScreen() {
     },
   });
 
-  useEffect(() => {
-    if (!objectId && activeTaskWorkerFromStore?.objectId) {
-      setObjectId(activeTaskWorkerFromStore.objectId);
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // console.log(
+      //   "hello: linkParamsFromStore : ",
+      //   linkParamsFromStore,
+      //   objectId
+      // );
 
-  useEffect(() => {
-    // console.log("linkParamsFromStore: ", linkParamsFromStore);
+      if (linkParamsFromStore) {
+        setObjectId(linkParamsFromStore?.objectId);
+        console.log("set objectId from params");
+      } else {
+        if (activeTaskWorkerFromStore?.objectId) {
+          setObjectId(activeTaskWorkerFromStore.objectId);
+          console.log("set objectId from store");
+        }
+        // }, []);
 
-    if (linkParamsFromStore) {
-      setObjectId(linkParamsFromStore?.objectId);
-      dispatch(setLinkParams(null));
-    }
-  }, [linkParamsFromStore]);
+        // useEffect(() => {
+        // console.log("linkParamsFromStore: ", linkParamsFromStore);
+      }
+      return () => {
+        if (linkParamsFromStore) {
+          dispatch(setLinkParams(null));
+        }
+        setObjectId("");
+      };
+    }, [linkParamsFromStore])
+  );
 
   return (
     <View className="flex-1 bg-s-200 dark:bg-s-950">

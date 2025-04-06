@@ -184,7 +184,7 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
                 >
                   {m.order.number ? "№" + m.order.number + " " : ""}
                   {m.order.name}
-                  <Text className="text-g-300 dark:text-g-500">
+                  <Text className="text-g-300 dark:text-s-500">
                     , {m.object.name}
                   </Text>
                 </Text>

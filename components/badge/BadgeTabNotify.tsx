@@ -19,7 +19,7 @@ const BadgeTabNotify = () => {
   );
 
   return newNotify?.length ? (
-    <View className="rounded-full bg-green-500 absolute -top-1 -right-4 border-2  border-s-100 dark:border-s-800">
+    <View className="rounded-full bg-gr-600 dark:bg-gr-600 absolute -top-1 -right-4 border-2  border-s-100 dark:border-s-800">
       <Text
         numberOfLines={1}
         className={`text-sm text-white leading-4 p-1 ${

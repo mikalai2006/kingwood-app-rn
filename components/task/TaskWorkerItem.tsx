@@ -31,6 +31,7 @@ import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 import { getObjectId } from "@/utils/utils";
 import { useWork } from "@/hooks/useWork";
 import { router } from "expo-router";
+import { Colors } from "@/utils/Colors";
 
 export type TaskWorkerItemProps = {
   // taskWorker: TaskWorkerSchema;
@@ -475,7 +476,11 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
     <View className="w-full p-2 px-4">
       {/* <Text>{JSON.stringify(isBlocked)}</Text> */}
       <View
-        className="rounded-lg shadow-lg bg-white dark:bg-s-800"
+        className={
+          (taskStatus?.status === "process"
+            ? " bg-gr-100 dark:bg-gr-900"
+            : " bg-white dark:bg-s-800") + " rounded-lg shadow-lg "
+        }
         // style={{ backgroundColor: taskStatus?.color }}
       >
         <View className="rounded-t-lg p-2 pb-0">
@@ -507,15 +512,26 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             <View className="p-2">
               {/* <Text className="text-s-500 leading-5 mb-1">Задача</Text> */}
               <Text
-                className="text-base leading-6 text-s-700 dark:text-s-300"
+                className="text-base leading-6 text-s-700 dark:text-s-100"
                 numberOfLines={2}
                 lineBreakMode="tail"
               >
-                {t("yourTask")}: {task.name}
+                <Text className="text-s-400">{t("yourTask")}: </Text>
+                <Text className="font-medium">{task.name}</Text>
               </Text>
-              <Text className="text-s-400 dark:text-s-400 leading-5 mb-1">
-                {taskStatus?.name}{" "}
-              </Text>
+              <View className="leading-5 flex flex-row gap-0">
+                <Text className="text-s-400">{t("taskStatus")}: </Text>
+                <Text
+                  className={
+                    (taskStatus?.status === "process"
+                      ? "bg-gr-600 dark:bg-gr-600 text-white"
+                      : "text-s-800 dark:text-s-100") +
+                    " px-2 rounded-lg leading-6 font-medium"
+                  }
+                >
+                  {taskStatus?.name}
+                </Text>
+              </View>
             </View>
           </View>
           {taskStatus?.status &&

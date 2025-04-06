@@ -148,9 +148,12 @@ export default function MessageOrderScreen() {
       .then((res: any) => {
         setNewMessage("");
         setImages([]);
+        if (!res?.id) {
+          Alert.alert(t("error.title"), JSON.stringify(res));
+        }
       })
       .catch((e) => {
-        isWriteConsole && console.log("onAddMessage Error", e);
+        isWriteConsole && console.log("onAddMessage Error", e.toString());
 
         Alert.alert(t("error.title"), e.toString());
       })

@@ -1,4 +1,4 @@
-import { Modal, Text, View } from "react-native";
+import { Alert, Modal, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 
 import * as ImagePicker from "expo-image-picker";
@@ -14,6 +14,7 @@ import { tokens, user } from "@/store/storeSlice";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 import { router, useGlobalSearchParams, useNavigation } from "expo-router";
 import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
+import { useTranslation } from "react-i18next";
 
 export type UIUploadProps = {
   serviceId: string | undefined;
@@ -62,6 +63,8 @@ const UIUpload = ({
     };
   }, [glob]);
 
+  const { t } = useTranslation();
+
   const onUploadImage = useCallback(async (assets: ImagePickerAsset[]) => {
     // console.log("assets: ", assets, userFromStore, serviceId);
     if (!userFromStore || !serviceId) {
@@ -103,9 +106,12 @@ const UIUpload = ({
       .then((response) => {
         // console.log("response", response);
         // dispatch(setUser({ ...userFromStore, images: [...response] }));
+        Alert.alert(t("title.noty"), t("info.successUploadImage"));
       })
       .catch((error) => {
         isWriteConsole && console.log("error", error);
+
+        Alert.alert(t("error.title"), error.toString());
       });
   }, []);
 

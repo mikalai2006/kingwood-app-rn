@@ -27,6 +27,7 @@
     "go": "Перейти"
   },
   "info": {
+    "successUploadImage": "Изображение успешно добавлено!",
     "successEndWorkTime": "Рабочее время завершено!",
     "successStartWorkTime": "Началось рабочее время!",
     "successProcessTask": "Заказ {{orderName}} запущен для выполнения!",

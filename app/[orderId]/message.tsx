@@ -40,6 +40,7 @@ import { IImage } from "@/types";
 import UIUpload from "@/components/ui/UIUpload";
 import RImage from "@/components/r/RImage";
 import { OrderSchema } from "@/schema";
+import { useTranslation } from "react-i18next";
 // import OrderShortInfo from "@/components/order/OrderShortInfo";
 
 export default function MessageOrderScreen() {
@@ -108,6 +109,8 @@ export default function MessageOrderScreen() {
     setImages([...newValue]);
   };
 
+  const { t } = useTranslation();
+
   const onAddMessage = async () => {
     if (newMessage.trim() === "" && !images.length) {
       Alert.alert("Введите текст сообщения ");
@@ -148,6 +151,8 @@ export default function MessageOrderScreen() {
       })
       .catch((e) => {
         isWriteConsole && console.log("onAddMessage Error", e);
+
+        Alert.alert(t("error.title"), e.toString());
       })
       .finally(() => {
         setLoading(false);

@@ -105,6 +105,9 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
                   );
                   if (runWorkHistory) {
                     dispatch(setWorkHistory(runWorkHistory));
+                  } else {
+                    dispatch(setWorkHistory(null));
+                    dispatch(setActiveTaskWorker(null));
                   }
                 }
 

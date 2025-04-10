@@ -27,10 +27,13 @@ export default function UIInput({
             </View>
           ) : null} */}
       <UILabel text={title} />
-      <TextInput
-        className="text-xl bg-white dark:bg-s-900 rounded-lg border border-s-200 dark:border-s-700 px-4 py-2 text-s-900 dark:text-s-300 placeholder:text-s-500 focus:border-p-500"
-        {...rest}
-      />
+      <View>
+        <TextInput
+          className="text-xl bg-white dark:bg-s-900 rounded-lg border border-s-200 dark:border-s-700 px-4 py-2 text-s-900 dark:text-s-300 placeholder:text-s-500 focus:border-p-500"
+          {...rest}
+        />
+        {children}
+      </View>
     </View>
   );
 }

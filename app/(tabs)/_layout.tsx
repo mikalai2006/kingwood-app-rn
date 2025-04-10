@@ -298,12 +298,12 @@ export default function TabLayout() {
                   ? Colors.gr[700] // activeTaskStatus?.color
                   : Colors.gr[600], //activeTaskStatus?.color,
                 // maxWidth: "fit",
-                height: 74,
+                height: 85,
                 // paddingHorizontal: 5,
                 // paddingVertical: 15,
                 padding: 0,
                 margin: 0,
-                marginTop: -20,
+                marginTop: -30,
                 borderColor:
                   colorScheme === "dark" ? Colors.s[900] : Colors.s[100],
                 borderWidth: 5,

@@ -3,6 +3,7 @@ import React from "react";
 import { useObject, useQuery } from "@realm/react";
 import { BSON } from "realm";
 import { UserSchema } from "@/schema";
+import { getShortFIO } from "@/utils/utils";
 
 export type OrderTaskWorkerProps = {
   workerId: string;
@@ -19,7 +20,7 @@ const OrderTaskWorker = ({ workerId }: OrderTaskWorkerProps) => {
             className="text-base text-s-900 dark:text-s-200 leading-5"
             lineBreakMode="tail"
           >
-            {worker?.name}
+            {getShortFIO(worker?.name)}
           </Text>
         </View>
       </View>

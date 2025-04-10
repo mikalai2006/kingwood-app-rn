@@ -181,22 +181,23 @@ export default function Modal() {
               title={t("login")}
               onChangeText={setLogin}
             />
-            <View>
+            <View className="relative">
               <UIInput
                 className="min-w-full bg-s-200 p-2 rounded-lg"
                 secureTextEntry={!showPassword}
                 value={password}
                 title={t("password")}
                 onChangeText={setPassword}
-              />
-              <View className="absolute right-2 top-6">
-                <UIButton type="link" onPress={toggleShowPassword}>
-                  <SIcon
-                    path={showPassword ? "iEye" : "iEyeSplash"}
-                    size={25}
-                  />
-                </UIButton>
-              </View>
+              >
+                <View className="absolute right-2 top-0 bottom-0 flex flex-row items-center">
+                  <UIButton type="link" onPress={toggleShowPassword}>
+                    <SIcon
+                      path={showPassword ? "iEye" : "iEyeSplash"}
+                      size={25}
+                    />
+                  </UIButton>
+                </View>
+              </UIInput>
             </View>
             <UIButton
               type="primary"

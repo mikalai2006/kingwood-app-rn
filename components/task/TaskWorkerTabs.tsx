@@ -91,7 +91,7 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
     <ScrollView horizontal className="flex">
       <View className="p-4">
         {/* <Text>{JSON.stringify(objectsForTask)}</Text> */}
-        <View className="flex-row gap-2 h-12">
+        <View className="flex-row gap-2">
           {/* <Text>{props.objectId}</Text> */}
           {isLoading ? (
             <ActivityIndicator size={30} />
@@ -124,8 +124,8 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                   }
                   textClass={
                     item?._id.toString() == props.objectId
-                      ? "px-2 text-xl leading-6 text-white dark:text-white"
-                      : "px-2 text-xl leading-6 text-s-700 dark:text-s-400"
+                      ? "px-2 text-xl text-white dark:text-white"
+                      : "px-2 text-xl text-s-700 dark:text-s-400"
                   }
                   onPress={() => {
                     props.setObjectId(item._id.toString());

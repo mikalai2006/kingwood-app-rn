@@ -11,7 +11,7 @@ export function TaskWorkerNotifyActiveTaskNo({}: TaskWorkerNotifyActiveTaskNoPro
   const { t } = useTranslation();
 
   return (
-    <View className="bg-r-500 rounded-lg mt-1.5 p-1 px-4 flex flex-row items-center gap-1">
+    <View className="bg-r-500 rounded-lg mt-1.5 p-1 px-2 flex flex-row items-center gap-1">
       <View className="">
         <SIcon path="iWarning" size={30} color={Colors.white} />
       </View>
@@ -24,7 +24,7 @@ export function TaskWorkerNotifyActiveTaskNo({}: TaskWorkerNotifyActiveTaskNoPro
       >
         <Text
           textBreakStrategy="balanced"
-          className="flex-auto text-base leading-5 text-white dark:text-white"
+          className="flex-auto text-sm text-white dark:text-white"
         >
           {t("button.checkTask")}
         </Text>

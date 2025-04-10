@@ -173,7 +173,10 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
         {open && (
           <View className="border-b border-black/10 dark:border-white/10 mb-2">
             {groupsWorkHistoryMonth.map((m) => (
-              <View key={m.orderId} className="flex flex-row gap-2 mb-1">
+              <View
+                key={m.orderId}
+                className="flex flex-row gap-2 mb-1 border-b border-s-200 dark:border-s-950"
+              >
                 <Text
                   className={
                     "flex-auto font-medium " +

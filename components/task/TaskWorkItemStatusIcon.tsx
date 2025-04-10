@@ -56,16 +56,6 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
           workHistoryFromStore !== null ? (
             <View className="flex-1 flex-row items-stretch justify-start gap-2 p-0">
               <View className="flex-auto self-center rounded-lg pt-1.5 ">
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-white whitespace-nowrap leading-4"
-                >
-                  {activeOrder
-                    ? getObjectId(activeOrder._id.toString()) == "0"
-                      ? t("fake.name")
-                      : `№${activeOrder?.number.toString()} ${activeOrder.name}`
-                    : t("title.work")}
-                </Text>
                 <View className="flex flex-row gap-2">
                   {/* {taskStatus?._id ? (
                     <View>
@@ -93,6 +83,17 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
                     className="leading-6 font-medium text-white text-xl"
                   />
                 </View>
+                <Text
+                  numberOfLines={2}
+                  className=" text-white whitespace-nowrap"
+                  style={{ fontSize: 12 }}
+                >
+                  {activeOrder
+                    ? getObjectId(activeOrder._id.toString()) == "0"
+                      ? t("fake.name")
+                      : `№${activeOrder?.number.toString()} ${activeOrder.name}`
+                    : t("title.work")}
+                </Text>
               </View>
             </View>
           ) : null

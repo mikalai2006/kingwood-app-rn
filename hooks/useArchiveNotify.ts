@@ -12,9 +12,8 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { INotify } from "@/types";
 import { useError } from "./useError";
-import { getObjectId } from "@/utils/utils";
 
-export interface IUseNotifyProps {
+export interface IUseArchiveNotifyProps {
   id?: string[];
   userId?: string[];
   userTo?: string[];
@@ -24,7 +23,7 @@ export interface IUseNotifyProps {
   $skip?: number;
 }
 
-const useNotify = (props: IUseNotifyProps) => {
+const useArchiveNotify = (props: IUseArchiveNotifyProps) => {
   const { t } = useTranslation();
 
   const realm = useRealm();
@@ -51,14 +50,14 @@ const useNotify = (props: IUseNotifyProps) => {
             return;
           }
 
-          isWriteConsole && console.log("UseNotify props: ", props);
+          isWriteConsole && console.log("UseArchiveNotify props: ", props);
 
           // if (!workerId) {
           //   return;
           // }
           // await onGetNode(activeLanguageFromStore?.code || 'en', localNode)
           await onFetchWithAuth(
-            `${hostAPI}/notify/populate?` +
+            `${hostAPI}/archive_notify/find?` +
               new URLSearchParams({
                 lang: activeLanguageFromStore?.code || "en",
               }),
@@ -75,7 +74,7 @@ const useNotify = (props: IUseNotifyProps) => {
           )
             .then((r) => r.json())
             .then((response) => {
-              // console.log("UseNotify response: ", response);
+              // console.log("UseArchiveNotify response: ", response);
               if (!ignore) {
                 const responseData: INotify[] = response.data;
 
@@ -120,32 +119,26 @@ const useNotify = (props: IUseNotifyProps) => {
                       i++
                     ) {
                       realm.create(
-                        "NotifySchema",
+                        "ArchiveNotifySchema",
                         listDataForRealm[i],
                         UpdateMode.Modified
                       );
 
-                      if (
-                        listDataForRealm[i].user &&
-                        getObjectId(listDataForRealm[i].user?.id) != "0"
-                      ) {
-                        realm.create(
-                          "UserSchema",
-                          listDataForRealm[i].user,
-                          UpdateMode.Modified
-                        );
-                      }
+                      // if (listDataForRealm[i].user) {
+                      //   realm.create(
+                      //     "UserSchema",
+                      //     listDataForRealm[i].user,
+                      //     UpdateMode.Modified
+                      //   );
+                      // }
 
-                      if (
-                        listDataForRealm[i].recepient &&
-                        getObjectId(listDataForRealm[i].recepient?.id) != "0"
-                      ) {
-                        realm.create(
-                          "UserSchema",
-                          listDataForRealm[i].recepient,
-                          UpdateMode.Modified
-                        );
-                      }
+                      // if (listDataForRealm[i].recepient) {
+                      //   realm.create(
+                      //     "UserSchema",
+                      //     listDataForRealm[i].recepient,
+                      //     UpdateMode.Modified
+                      //   );
+                      // }
                     }
                   });
                 }
@@ -170,7 +163,7 @@ const useNotify = (props: IUseNotifyProps) => {
           // );
           setError(e.message);
           onSendError(e);
-          isWriteConsole && console.log("UseNotify error: ", e);
+          isWriteConsole && console.log("UseArchiveNotify error: ", e);
         }
       };
 
@@ -193,4 +186,4 @@ const useNotify = (props: IUseNotifyProps) => {
   };
 };
 
-export default useNotify;
+export default useArchiveNotify;

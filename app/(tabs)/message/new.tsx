@@ -23,7 +23,8 @@ export default function NotifyScreen() {
     (items) =>
       items
         .filtered(
-          "(userTo == $0 || userId == $0) AND status == 0",
+          // "(userTo == $0 || userId == $0) AND status == 0",
+          "userTo == $0",
           userFromStore?.id
         )
         .sorted("createdAt", true),

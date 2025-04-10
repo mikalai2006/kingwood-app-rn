@@ -46,6 +46,7 @@ import {
   NotifySchema,
   PaySchema,
   PayTemplateSchema,
+  ArchiveNotifySchema,
 } from "@/schema";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TaskWorkerNotify } from "@/components/task/TaskWorkerNotify";
@@ -162,6 +163,7 @@ export default function RootLayout() {
         NotifySchema,
         PaySchema,
         PayTemplateSchema,
+        ArchiveNotifySchema,
       ]}
       inMemory
     >

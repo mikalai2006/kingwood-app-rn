@@ -30,6 +30,7 @@
     "successUploadImage": "Изображение успешно добавлено!",
     "successEndWorkTime": "Рабочее время завершено!",
     "successStartWorkTime": "Началось рабочее время!",
+    "successReadNotify": "Уведомление помечено прочитанным!",
     "successProcessTask": "Заказ {{orderName}} запущен для выполнения!",
     "successPauseTask": "Заказ {{orderName}} поставлен на паузу!",
     "exitApp": "Выход из аккаунта",

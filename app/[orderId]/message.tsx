@@ -197,7 +197,7 @@ export default function MessageOrderScreen() {
               {total > messagesByRoom.length ? (
                 <UIButton
                   type="primary"
-                  text="more"
+                  text="Загрузить предыдущие"
                   onPress={() => setSkip(messagesByRoom.length - 1)}
                 />
               ) : null}

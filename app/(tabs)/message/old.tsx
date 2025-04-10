@@ -4,29 +4,26 @@ import { FlatList } from "react-native-gesture-handler";
 import { useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
 import { useQuery } from "@realm/react";
-import { NotifySchema } from "@/schema";
+import { ArchiveNotifySchema, NotifySchema } from "@/schema";
 import NotifyItem from "@/components/notify/NotifyItem";
-import useNotify from "@/hooks/useNotify";
 import { useTranslation } from "react-i18next";
+import useArchiveNotify from "@/hooks/useArchiveNotify";
 
 export default function NotifyScreen() {
   const userFromStore = useAppSelector(user);
 
   const { t } = useTranslation();
 
-  const { isLoading } = useNotify({
+  const { isLoading } = useArchiveNotify({
     userTo: userFromStore?.id ? [userFromStore?.id] : undefined,
   });
 
   const notifys = useQuery(
-    NotifySchema,
+    ArchiveNotifySchema,
     (items) =>
       items
-        .filtered(
-          "(userTo == $0 || userId == $0) AND status == 1",
-          userFromStore?.id
-        )
-        .sorted("createdAt", true),
+        .filtered("userTo == $0 AND status == 1", userFromStore?.id)
+        .sorted("createdAt", false),
     [userFromStore]
   );
 

@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, ToastAndroid } from "react-native";
 import React, { useState } from "react";
 import SIcon from "../ui/SIcon";
 import UserInfoAvatar from "../user/UserInfoAvatar";
@@ -34,29 +34,38 @@ const NotifyItem = ({ notify }: NotifyItemProps) => {
 
   const [loading, setLoading] = useState(false);
 
-  const onPatchNotify = async () => {
+  const onDeleteNotify = async () => {
     setLoading(true);
 
     return await onFetchWithAuth(`${hostAPI}/notify/${notify._id.toString()}`, {
-      method: "PATCH",
+      method: "DELETE",
       body: JSON.stringify({
         status: 1,
       }),
     })
       .then((res) => res.json())
-      .then((res: INotify) => {
+      .then(async (res: INotify) => {
         if (res?.id) {
-          realm.write(() => {
-            realm.create(
-              "NotifySchema",
-              {
-                ...res,
-                _id: new BSON.ObjectId(res.id),
-                images: res?.images || [],
-              },
-              UpdateMode.Modified
-            );
-          });
+          // await realm.write(() => {
+          //   // realm.delete(
+          //   //   realm.objectForPrimaryKey(
+          //   //     "NotifySchema",
+          //   //     new BSON.ObjectId(res.id)
+          //   //   )
+          //   // );
+          //   // realm.create(
+          //   //   "NotifySchema",
+          //   //   {
+          //   //     ...res,
+          //   //     _id: new BSON.ObjectId(res.id),
+          //   //     status: 1,
+          //   //     images: res?.images || [],
+          //   //   },
+          //   //   UpdateMode.Modified
+          //   // );
+          // });
+
+          // ToastAndroid.show(t("info.successReadNotify"), ToastAndroid.SHORT);
 
           // go to link.
           if (res.link) {
@@ -73,8 +82,47 @@ const NotifyItem = ({ notify }: NotifyItemProps) => {
       });
   };
 
+  // const onPatchNotify = async () => {
+  //   setLoading(true);
+
+  //   return await onFetchWithAuth(`${hostAPI}/notify/${notify._id.toString()}`, {
+  //     method: "PATCH",
+  //     body: JSON.stringify({
+  //       status: 1,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res: INotify) => {
+  //       if (res?.id) {
+  //         realm.write(() => {
+  //           realm.create(
+  //             "NotifySchema",
+  //             {
+  //               ...res,
+  //               _id: new BSON.ObjectId(res.id),
+  //               images: res?.images || [],
+  //             },
+  //             UpdateMode.Modified
+  //           );
+  //         });
+
+  //         // go to link.
+  //         if (res.link) {
+  //           router.push({ pathname: res.link as any, params: res.linkOption });
+  //           dispatch(setLinkParams(res.linkOption));
+  //         }
+  //       }
+  //     })
+  //     .catch((e: any) => {
+  //       Alert.alert(t("error"), e.message);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
+
   return notify ? (
-    <TouchableOpacity onPress={onPatchNotify}>
+    <TouchableOpacity onPress={onDeleteNotify}>
       <View
         className={
           "flex flex-wrap items-start gap-1 p-4 mt-4 mx-4 " +

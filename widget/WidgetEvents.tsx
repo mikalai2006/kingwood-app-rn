@@ -276,124 +276,134 @@ export default function WidgetEvents() {
         }
 
         let nameOperation = "";
-        realm.write(async () => {
-          try {
-            switch (data.service) {
-              case "workHistory":
-                nameOperation = "workHistory";
 
-                if (method === "DELETE") {
-                  await realm.delete(
-                    realm.objectForPrimaryKey(
+        if (getObjectId(data.content.id) != "0") {
+          realm.write(async () => {
+            try {
+              switch (data.service) {
+                case "workHistory":
+                  nameOperation = "workHistory";
+
+                  if (method === "DELETE") {
+                    await realm.delete(
+                      realm.objectForPrimaryKey(
+                        "WorkHistorySchema",
+                        new BSON.ObjectId(data.content.id)
+                      )
+                    );
+                  } else {
+                    await realm.create(
                       "WorkHistorySchema",
-                      new BSON.ObjectId(data.content.id)
-                    )
-                  );
-                } else {
-                  await realm.create(
-                    "WorkHistorySchema",
-                    {
-                      ...data.content,
-                      _id: new BSON.ObjectId(data.content.id),
-                    },
-                    UpdateMode.Modified
-                  );
-                }
-
-                onDetectActiveWorkHistory(data);
-                break;
-
-              case "user":
-                nameOperation = "user";
-                realm.create(
-                  "UserSchema",
-                  {
-                    ...data.content,
-                    _id: new BSON.ObjectId(data.content.id || data.content._id),
-                    images: data.content?.images || [],
-                    typeWork: data.content?.typeWork || [],
-                  },
-                  UpdateMode.Modified
-                );
-
-                onDetectUser(data);
-                break;
-
-              case "pay":
-                nameOperation = "pay";
-                if (data.method === "DELETE") {
-                  if (data.content?.id) {
-                    realm.delete(
-                      realm.objectForPrimaryKey(
-                        "PaySchema",
-                        new BSON.ObjectId(data.content.id)
-                      )
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(data.content.id),
+                      },
+                      UpdateMode.Modified
                     );
                   }
-                } else {
-                  realm.create(
-                    "PaySchema",
-                    {
-                      ...data.content,
-                      _id: new BSON.ObjectId(
-                        data.content.id || data.content._id
-                      ),
-                    },
-                    UpdateMode.Modified
-                  );
-                }
-                break;
 
-              case "notify":
-                nameOperation = "notify";
-                if (data.method === "DELETE") {
-                  if (data.content?.id) {
-                    realm.delete(
-                      realm.objectForPrimaryKey(
-                        "NotifySchema",
-                        new BSON.ObjectId(data.content.id)
-                      )
-                    );
-                  }
-                } else {
+                  onDetectActiveWorkHistory(data);
+                  break;
+
+                case "user":
+                  nameOperation = "user";
                   realm.create(
-                    "NotifySchema",
+                    "UserSchema",
                     {
                       ...data.content,
                       _id: new BSON.ObjectId(
                         data.content.id || data.content._id
                       ),
                       images: data.content?.images || [],
+                      typeWork: data.content?.typeWork || [],
                     },
                     UpdateMode.Modified
                   );
-                }
-                break;
 
-              case "order":
-                nameOperation = "order";
-                realm.create(
-                  "OrderSchema",
-                  {
-                    ...data.content,
-                    _id: new BSON.ObjectId(data.content.id || data.content._id),
-                  },
-                  UpdateMode.Modified
-                );
-                break;
+                  onDetectUser(data);
+                  break;
 
-              case "object":
-                nameOperation = "object";
-                if (data.method === "DELETE") {
-                  realm.delete(
-                    realm.objectForPrimaryKey(
-                      "ObjectsSchema",
-                      new BSON.ObjectId(data.content.id)
-                    )
-                  );
-                } else {
+                case "pay":
+                  nameOperation = "pay";
+                  if (data.method === "DELETE") {
+                    if (data.content?.id) {
+                      realm.delete(
+                        realm.objectForPrimaryKey(
+                          "PaySchema",
+                          new BSON.ObjectId(data.content.id)
+                        )
+                      );
+                    }
+                  } else {
+                    realm.create(
+                      "PaySchema",
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
+
+                case "archiveNotify":
+                  nameOperation = "archiveNotify";
+                  if (data.method === "DELETE") {
+                    if (data.content?.id) {
+                      realm.delete(
+                        realm.objectForPrimaryKey(
+                          "ArchiveNotifySchema",
+                          new BSON.ObjectId(data.content.id)
+                        )
+                      );
+                    }
+                  } else {
+                    realm.create(
+                      "ArchiveNotifySchema",
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                        images: data.content?.images || [],
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
+
+                case "notify":
+                  nameOperation = "notify";
+                  if (data.method === "DELETE") {
+                    if (data.content?.id) {
+                      realm.delete(
+                        realm.objectForPrimaryKey(
+                          "NotifySchema",
+                          new BSON.ObjectId(data.content.id)
+                        )
+                      );
+                    }
+                  } else {
+                    realm.create(
+                      "NotifySchema",
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                        images: data.content?.images || [],
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
+
+                case "order":
+                  nameOperation = "order";
                   realm.create(
-                    "ObjectsSchema",
+                    "OrderSchema",
                     {
                       ...data.content,
                       _id: new BSON.ObjectId(
@@ -402,205 +412,235 @@ export default function WidgetEvents() {
                     },
                     UpdateMode.Modified
                   );
-                }
-                break;
+                  break;
 
-              case "task":
-                nameOperation = "task";
-                if (data.method === "DELETE") {
-                  realm.delete(
-                    realm.objectForPrimaryKey(
+                case "object":
+                  nameOperation = "object";
+                  if (data.method === "DELETE") {
+                    realm.delete(
+                      realm.objectForPrimaryKey(
+                        "ObjectsSchema",
+                        new BSON.ObjectId(data.content.id)
+                      )
+                    );
+                  } else {
+                    realm.create(
+                      "ObjectsSchema",
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
+
+                case "task":
+                  nameOperation = "task";
+                  if (data.method === "DELETE") {
+                    realm.delete(
+                      realm.objectForPrimaryKey(
+                        "TaskSchema",
+                        new BSON.ObjectId(data.content.id)
+                      )
+                    );
+                  } else {
+                    realm.create(
                       "TaskSchema",
-                      new BSON.ObjectId(data.content.id)
-                    )
-                  );
-                } else {
-                  realm.create(
-                    "TaskSchema",
-                    {
-                      ...data.content,
-                      _id: new BSON.ObjectId(
-                        data.content.id || data.content._id
-                      ),
-                    },
-                    UpdateMode.Modified
-                  );
-                }
-                break;
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
 
-              case "taskWorker":
-                nameOperation = "taskWorker";
-                if (data.method === "DELETE") {
-                  realm.delete(
-                    realm.objectForPrimaryKey(
+                case "taskWorker":
+                  nameOperation = "taskWorker";
+                  if (data.method === "DELETE") {
+                    realm.delete(
+                      realm.objectForPrimaryKey(
+                        "TaskWorkerSchema",
+                        new BSON.ObjectId(data.content.id)
+                      )
+                    );
+
+                    onDetectActiveTaskWork(data);
+                  } else {
+                    realm.create(
                       "TaskWorkerSchema",
-                      new BSON.ObjectId(data.content.id)
-                    )
-                  );
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(
+                          data.content.id || data.content._id
+                        ),
+                        sortOrder: data.content.sortOrder || 0,
+                      },
+                      UpdateMode.Modified
+                    );
 
-                  onDetectActiveTaskWork(data);
-                } else {
+                    if (
+                      data.content?.object &&
+                      getObjectId(data.content?.object?.id) != "0"
+                    ) {
+                      realm.create(
+                        "ObjectsSchema",
+                        {
+                          ...data.content.object,
+                          _id: new BSON.ObjectId(
+                            data.content.object.id || data.content.object._id
+                          ),
+                        },
+                        UpdateMode.Modified
+                      );
+                    }
+
+                    if (
+                      data.content?.order &&
+                      getObjectId(data.content?.order?.id) != "0"
+                    ) {
+                      realm.create(
+                        "OrderSchema",
+                        {
+                          ...data.content.order,
+                          _id: new BSON.ObjectId(
+                            data.content.order.id || data.content.order._id
+                          ),
+                        },
+                        UpdateMode.Modified
+                      );
+                    }
+
+                    onDetectActiveTaskWork(data);
+                  }
+                  break;
+
+                // case "TaskMontajWorker":
+                //   realm.create(
+                //     "TaskMontajWorkerSchema",
+                //     {
+                //       ...data.content,
+                //       _id: new BSON.ObjectId(data.content.id || data.content._id),
+                //       sortOrder: data.content.sortOrder || 0,
+                //     },
+                //     UpdateMode.Modified
+                //   );
+
+                //   if (activeTaskFromStore?.id === data.content.id) {
+                //     dispatch(setActiveTaskWorker(data.content));
+                //   }
+                //   break;
+
+                case "taskStatus":
+                  nameOperation = "taskStatus";
                   realm.create(
-                    "TaskWorkerSchema",
+                    "TaskStatusSchema",
                     {
                       ...data.content,
                       _id: new BSON.ObjectId(
                         data.content.id || data.content._id
                       ),
-                      sortOrder: data.content.sortOrder || 0,
+                      enabled: data.content.enabled || 0,
+                      // start: data.content.enabled || 0,
+                      // finish: data.content.enabled || 0,
+                      // process: data.content.enabled || 0,
                     },
                     UpdateMode.Modified
                   );
+                  break;
 
-                  if (
-                    data.content?.object &&
-                    getObjectId(data.content?.object?.id) != "0"
-                  ) {
-                    realm.create(
-                      "ObjectsSchema",
-                      {
-                        ...data.content.object,
-                        _id: new BSON.ObjectId(
-                          data.content.object.id || data.content.object._id
-                        ),
-                      },
-                      UpdateMode.Modified
+                case "question":
+                  nameOperation = "question";
+                  if (method === "DELETE") {
+                    realm.delete(
+                      realm.objectForPrimaryKey(
+                        "QuestionSchema",
+                        new BSON.ObjectId(data.content.id)
+                      )
                     );
-                  }
-
-                  if (
-                    data.content?.order &&
-                    getObjectId(data.content?.order?.id) != "0"
-                  ) {
+                  } else {
                     realm.create(
-                      "OrderSchema",
-                      {
-                        ...data.content.order,
-                        _id: new BSON.ObjectId(
-                          data.content.order.id || data.content.order._id
-                        ),
-                      },
-                      UpdateMode.Modified
-                    );
-                  }
-
-                  onDetectActiveTaskWork(data);
-                }
-                break;
-
-              // case "TaskMontajWorker":
-              //   realm.create(
-              //     "TaskMontajWorkerSchema",
-              //     {
-              //       ...data.content,
-              //       _id: new BSON.ObjectId(data.content.id || data.content._id),
-              //       sortOrder: data.content.sortOrder || 0,
-              //     },
-              //     UpdateMode.Modified
-              //   );
-
-              //   if (activeTaskFromStore?.id === data.content.id) {
-              //     dispatch(setActiveTaskWorker(data.content));
-              //   }
-              //   break;
-
-              case "taskStatus":
-                nameOperation = "taskStatus";
-                realm.create(
-                  "TaskStatusSchema",
-                  {
-                    ...data.content,
-                    _id: new BSON.ObjectId(data.content.id || data.content._id),
-                    enabled: data.content.enabled || 0,
-                    // start: data.content.enabled || 0,
-                    // finish: data.content.enabled || 0,
-                    // process: data.content.enabled || 0,
-                  },
-                  UpdateMode.Modified
-                );
-                break;
-
-              case "question":
-                nameOperation = "question";
-                if (method === "DELETE") {
-                  realm.delete(
-                    realm.objectForPrimaryKey(
                       "QuestionSchema",
-                      new BSON.ObjectId(data.content.id)
-                    )
-                  );
-                } else {
+                      {
+                        ...data.content,
+                        _id: new BSON.ObjectId(data.content.id),
+                      },
+                      UpdateMode.Modified
+                    );
+                  }
+                  break;
+
+                case "message":
+                  nameOperation = "message";
                   realm.create(
-                    "QuestionSchema",
+                    "MessageSchema",
                     {
                       ...data.content,
-                      _id: new BSON.ObjectId(data.content.id),
+                      _id: new BSON.ObjectId(
+                        data.content.id || data.content._id
+                      ),
                     },
                     UpdateMode.Modified
                   );
-                }
-                break;
+                  break;
 
-              case "message":
-                nameOperation = "message";
+                case "messageRoom":
+                  nameOperation = "messageRoom";
+                  realm.create(
+                    "MessageRoomSchema",
+                    {
+                      ...data.content,
+                      _id: new BSON.ObjectId(
+                        data.content.id || data.content._id
+                      ),
+                    },
+                    UpdateMode.Modified
+                  );
+                  break;
+
+                default:
+                  console.log("UNKNOWN EVENT", event);
+
+                  break;
+              }
+
+              if (data.content.user) {
+                nameOperation = "userAfter";
                 realm.create(
-                  "MessageSchema",
+                  "UserSchema",
                   {
-                    ...data.content,
-                    _id: new BSON.ObjectId(data.content.id || data.content._id),
+                    ...data.content.user,
+                    _id: new BSON.ObjectId(
+                      data.content.user.id || data.content.user._id
+                    ),
+                    images: data.content?.images || [],
+                    typeWork: data.content?.typeWork || [],
                   },
                   UpdateMode.Modified
                 );
-                break;
-
-              case "messageRoom":
-                nameOperation = "messageRoom";
-                realm.create(
-                  "MessageRoomSchema",
-                  {
-                    ...data.content,
-                    _id: new BSON.ObjectId(data.content.id || data.content._id),
-                  },
-                  UpdateMode.Modified
+              }
+            } catch (e) {
+              onSendError(
+                new Error(
+                  `WidgetEvents error: ${data.service}[${nameOperation}]: `
+                )
+              );
+              isWriteConsole &&
+                console.log(
+                  `WidgetEvents error: ${data.service}[${nameOperation}]: `,
+                  e,
+                  data
                 );
-                break;
-
-              default:
-                console.log("UNKNOWN EVENT", event);
-
-                break;
             }
-
-            if (data.content.user) {
-              nameOperation = "userAfter";
-              realm.create(
-                "UserSchema",
-                {
-                  ...data.content.user,
-                  _id: new BSON.ObjectId(
-                    data.content.user.id || data.content.user._id
-                  ),
-                  images: data.content?.images || [],
-                  typeWork: data.content?.typeWork || [],
-                },
-                UpdateMode.Modified
-              );
-            }
-          } catch (e) {
-            onSendError(
-              new Error(
-                `WidgetEvents error: ${data.service}[${nameOperation}]: `
-              )
-            );
-            isWriteConsole &&
-              console.log(
-                `WidgetEvents error: ${data.service}[${nameOperation}]: `,
-                e,
-                data
-              );
-          }
-        });
-
+          });
+        } else {
+          isWriteConsole && console.log("EVENT ID NULL");
+        }
         // Notifications.scheduleNotificationAsync({
         //   content: {
         //     title: "Look at that notification",

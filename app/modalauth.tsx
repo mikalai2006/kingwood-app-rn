@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Image, Alert } from "react-native";
+import { View, Image, Alert, Text } from "react-native";
 
 import Card from "@/components/Card";
 import RText from "@/components/r/RText";
@@ -11,13 +11,14 @@ import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 import { useNavigation } from "expo-router";
-import { setTokens, tokens } from "@/store/storeSlice";
+import { authData, setAuthData, setTokens, tokens } from "@/store/storeSlice";
 import { ITokenResponse } from "@/types";
 import UIInput from "@/components/ui/UIInput";
 import useFetch from "@/hooks/useFetch";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
 import SIcon from "@/components/ui/SIcon";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Modal() {
   const { colorScheme } = useColorScheme();
@@ -28,9 +29,12 @@ export default function Modal() {
   const navigation = useNavigation();
   const tokensFromStore = useAppSelector(tokens);
 
+  const authDataFromStore = useAppSelector(authData);
+
   const [result, setResult] = useState("");
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState(authDataFromStore.login);
+  const [password, setPassword] = useState(authDataFromStore.password);
+  const [remembe, setRemembe] = useState(authDataFromStore.remembe);
 
   // const onLogin = async () => {
   //   const schemas = Linking.collectManifestSchemes();
@@ -66,6 +70,13 @@ export default function Modal() {
         if (!response?.access_token) {
           dispatch(setTokens(null));
           // navigation.navigate(ScreenKeys.AuthScreen);
+          dispatch(
+            setAuthData({
+              login: "",
+              password: "",
+              remembe,
+            })
+          );
           return null;
         } else {
           dispatch(
@@ -77,7 +88,23 @@ export default function Modal() {
               // expires_in_r: response.expires_in_r,
             })
           );
-
+          if (remembe) {
+            dispatch(
+              setAuthData({
+                login,
+                password,
+                remembe,
+              })
+            );
+          } else {
+            dispatch(
+              setAuthData({
+                login: "",
+                password: "",
+                remembe: false,
+              })
+            );
+          }
           return response;
         }
       })
@@ -199,6 +226,20 @@ export default function Modal() {
                 </View>
               </UIInput>
             </View>
+            <TouchableOpacity
+              onPress={() => {
+                setRemembe(!remembe);
+              }}
+            >
+              <View className="flex flex-row items-center gap-2">
+                <View className="border border-s-500 dark:border-s-600 rounded-lg w-8 h-8 flex items-center justify-center">
+                  {remembe ? <SIcon path="iCheckLg" size={25} /> : null}
+                </View>
+                <Text className="text-base text-black dark:text-s-200">
+                  Запомнить меня
+                </Text>
+              </View>
+            </TouchableOpacity>
             <UIButton
               type="primary"
               disabled={!login || !password}

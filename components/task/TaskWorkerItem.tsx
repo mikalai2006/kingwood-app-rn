@@ -101,11 +101,17 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
   const task = useObject(TaskSchema, new BSON.ObjectId(taskWorker?.taskId));
 
+  const statusWait = useQuery(TaskStatusSchema, (items) =>
+    items.filtered('status == "wait"')
+  );
+
   const taskStatus = useObject(
     TaskStatusSchema,
     taskWorkerFromStore?.id == taskWorkerId
       ? new BSON.ObjectId(taskWorkerFromStore?.statusId)
-      : new BSON.ObjectId(taskWorker?.statusId)
+      : getObjectId(taskWorker?._id.toString()) != "0"
+      ? new BSON.ObjectId(taskWorker?.statusId)
+      : statusWait[0]._id
   );
 
   const [loading, setLoading] = useState(false);

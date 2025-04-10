@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import {
   AppState,
+  IAuthData,
   IFinancyFilter,
   ILang,
   IRole,
@@ -33,6 +34,11 @@ const initialState: AppState = {
     monthIndex: 0,
   },
   schedules: [],
+  authData: {
+    login: "",
+    remembe: false,
+    password: "",
+  },
 };
 
 // Приведенная ниже функция называется thunk и позволяет нам выполнять асинхронную логику. Это
@@ -73,6 +79,9 @@ export const storeSlice = createSlice({
     },
     setLinkParams: (state, action: PayloadAction<any | null>) => {
       state.linkParams = action.payload;
+    },
+    setAuthData: (state, action: PayloadAction<IAuthData>) => {
+      state.authData = action.payload;
     },
     setUser: (state, action: PayloadAction<IUser | null>) => {
       // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
@@ -175,6 +184,7 @@ export const {
   setFinancyFilter,
   setLinkParams,
   setSchedules,
+  setAuthData,
 } = storeSlice.actions;
 // Функция ниже называется селектором и позволяет нам выбрать значение из
 // штат. Селекторы также могут быть определены встроенными, где они используются вместо
@@ -194,5 +204,6 @@ export const workHistory = (state: RootState) => state.store.workHistory;
 export const financyFilter = (state: RootState) => state.store.financyFilter;
 export const linkParams = (state: RootState) => state.store.linkParams;
 export const schedules = (state: RootState) => state.store.schedules;
+export const authData = (state: RootState) => state.store.authData;
 
 export default storeSlice.reducer;

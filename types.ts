@@ -464,6 +464,12 @@ export interface ISchedule {
   id: number;
 }
 
+export interface IAuthData {
+  login: string;
+  password: string;
+  remembe: boolean;
+}
+
 export interface AppState {
   modeTheme: "dark" | "light" | "system";
   tokens: ITokens | null;
@@ -483,4 +489,5 @@ export interface AppState {
   financyFilter: IFinancyFilter;
   schedules: ISchedule[];
   linkParams: any;
+  authData: IAuthData;
 }

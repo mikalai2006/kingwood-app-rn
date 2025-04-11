@@ -270,8 +270,8 @@ export default function WidgetEvents() {
         if (userRef.current) {
           // setErr(new Error("error.closeSocket"));
           setTimeout(onInitSocket, 1000);
+          setReconnect(true);
         }
-        setReconnect(true);
       };
 
       _socket.onmessage = function (event) {

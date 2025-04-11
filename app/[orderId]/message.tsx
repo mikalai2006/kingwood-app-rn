@@ -41,6 +41,7 @@ import UIUpload from "@/components/ui/UIUpload";
 import RImage from "@/components/r/RImage";
 import { OrderSchema } from "@/schema";
 import { useTranslation } from "react-i18next";
+import RLinking from "@/components/r/RLinking";
 // import OrderShortInfo from "@/components/order/OrderShortInfo";
 
 export default function MessageOrderScreen() {
@@ -81,7 +82,7 @@ export default function MessageOrderScreen() {
 
   const [skip, setSkip] = useState(0);
 
-  const { total, onQuery } = useMessages({
+  const { total, onQuery, isLoading } = useMessages({
     orderId: [orderId],
     $sort: [{ key: "createdAt", value: -1 }],
     $skip: skip,
@@ -193,15 +194,6 @@ export default function MessageOrderScreen() {
       {order && (
         <>
           <View className="flex-auto">
-            <View>
-              {total > messagesByRoom.length ? (
-                <UIButton
-                  type="primary"
-                  text="Загрузить предыдущие"
-                  onPress={() => setSkip(messagesByRoom.length - 1)}
-                />
-              ) : null}
-            </View>
             <ScrollView
               className="flex-1"
               ref={(ref) => {
@@ -209,6 +201,17 @@ export default function MessageOrderScreen() {
               }}
             >
               <View className="p-4 flex items-stretch gap-4">
+                <View className="px-4 py-2">
+                  {total > messagesByRoom.length ? (
+                    <UIButton
+                      type="secondary"
+                      loading={loading || isLoading}
+                      disabled={loading || isLoading}
+                      text="Загрузить предыдущие"
+                      onPress={() => setSkip(messagesByRoom.length - 1)}
+                    />
+                  ) : null}
+                </View>
                 {/* <View className="flex flex-row gap-2">
                 <UserInfoAvatar userId={userId} />
                 <View className="bg-s-100 dark:bg-s-500/10 p-4 rounded-lg">
@@ -245,20 +248,38 @@ export default function MessageOrderScreen() {
                         {/* <Text>{JSON.stringify(x.images)}</Text> */}
                         {x.images?.length ? (
                           <View className="flex flex-row flex-wrap gap-2 mb-4">
-                            {x.images.map((img, index) => (
-                              <TouchableOpacity
-                                key={index.toString()}
-                                onPress={() => onZoomImage(img)}
-                              >
-                                <View className="h-20 w-auto aspect-square">
-                                  <RImage
-                                    image={img}
-                                    // uri={`${hostSERVER}/images/${uri}`}
-                                    className="w-full h-full object-contain rounded-lg"
-                                  />
+                            {x.images.map((img, index) =>
+                              [
+                                ".jpg",
+                                ".jpeg",
+                                ".png",
+                                ".webp",
+                                ".ico",
+                                ".tif",
+                                ".bmp",
+                                ".gif",
+                              ].includes(img?.ext) ? (
+                                <TouchableOpacity
+                                  key={index.toString()}
+                                  onPress={() => onZoomImage(img)}
+                                >
+                                  <View className="h-20 w-auto aspect-square">
+                                    <RImage
+                                      image={img}
+                                      // uri={`${hostSERVER}/images/${uri}`}
+                                      className="w-full h-full object-contain rounded-lg"
+                                    />
+                                  </View>
+                                </TouchableOpacity>
+                              ) : (
+                                <View
+                                  key={index.toString()}
+                                  className="h-20 w-auto aspect-square"
+                                >
+                                  <RLinking file={img} />
                                 </View>
-                              </TouchableOpacity>
-                            ))}
+                              )
+                            )}
                           </View>
                         ) : null}
                         <Text className="text-lg text-s-800 dark:text-s-100 leading-5">
@@ -372,6 +393,7 @@ export default function MessageOrderScreen() {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
+          setActiveImg(null);
         }}
       >
         <View className="flex-1">

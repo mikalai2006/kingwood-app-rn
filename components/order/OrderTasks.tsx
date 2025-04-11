@@ -39,7 +39,7 @@ const OrderTasks = ({ orderId }: OrderTasksProps) => {
               )}
             </View>
           </View>
-          <View className="flex-auto min-h-32">
+          <View className="flex-auto min-h-28">
             <Text
               className="text-2xl text-s-900 dark:text-s-200 leading-6"
               lineBreakMode="tail"

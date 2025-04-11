@@ -73,12 +73,13 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
   const objectsForTask = useMemo(() => {
     const _allIds = taskWorkers.map((x) => x.objectId);
     const _ids: string[] = [];
+    _ids.push("000000000000000000000000");
+
     for (const _id of _allIds) {
       if (!_ids.includes(_id)) {
         _ids.push(_id);
       }
     }
-    // _ids.push("000000000000000000000000");
 
     const _result = _ids.map(
       (x) => allObjects.filtered("_id == $0", new BSON.ObjectId(x))[0]
@@ -101,47 +102,48 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
           //   </View>
           // ))
           objectsForTask.length ? (
-            objectsForTask.map((item) => (
-              <View
-                key={item?._id.toString()}
-                className="flex-auto flex items-center relative"
-              >
-                <UIButton
-                  type="link"
-                  disabled={item?._id.toString() == props.objectId}
-                  focusable={item?._id.toString() == props.objectId}
-                  // {
-                  //   item?._id.toString() == props.objectId
-                  //     ? "primary"
-                  //     : "secondary"
-                  // }
-                  //className="bg-white dark:bg-s-900 p-4 m-0 rounded-lg"
-                  text={item?.name}
-                  className={
-                    item?._id.toString() == props.objectId
-                      ? "bg-p-600 dark:bg-p-600 p-3 m-0 rounded-lg"
-                      : "bg-s-300 dark:bg-s-900 p-3 m-0 rounded-lg"
-                  }
-                  textClass={
-                    item?._id.toString() == props.objectId
-                      ? "px-2 text-xl text-white dark:text-white"
-                      : "px-2 text-xl text-s-700 dark:text-s-400"
-                  }
-                  onPress={() => {
-                    props.setObjectId(item._id.toString());
-                  }}
-                />
-                {workHistoryFromStore?.objectId == item._id.toString() &&
-                  statusProcess.length && (
-                    <View className="p-1 absolute -top-3 -right-2 rounded-full bg-s-200 dark:bg-s-950">
-                      <TaskIcon
-                        key={"status"}
-                        statusId={statusProcess[0]._id.toString()}
-                        className="p-1"
-                      />
-                    </View>
-                  )}
-                {/* <View
+            objectsForTask.map((item) =>
+              item ? (
+                <View
+                  key={item?._id.toString()}
+                  className="flex-auto flex items-center relative"
+                >
+                  <UIButton
+                    type="link"
+                    disabled={item?._id.toString() == props.objectId}
+                    focusable={item?._id.toString() == props.objectId}
+                    // {
+                    //   item?._id.toString() == props.objectId
+                    //     ? "primary"
+                    //     : "secondary"
+                    // }
+                    //className="bg-white dark:bg-s-900 p-4 m-0 rounded-lg"
+                    text={item?.name}
+                    className={
+                      item?._id.toString() == props.objectId
+                        ? "bg-p-600 dark:bg-p-600 p-3 m-0 rounded-lg"
+                        : "bg-s-300 dark:bg-s-900 p-3 m-0 rounded-lg"
+                    }
+                    textClass={
+                      item?._id.toString() == props.objectId
+                        ? "px-2 text-xl text-white dark:text-white"
+                        : "px-2 text-xl text-s-700 dark:text-s-400"
+                    }
+                    onPress={() => {
+                      props.setObjectId(item._id.toString());
+                    }}
+                  />
+                  {workHistoryFromStore?.objectId == item._id.toString() &&
+                    statusProcess.length && (
+                      <View className="p-1 absolute -top-3 -right-2 rounded-full bg-s-200 dark:bg-s-950">
+                        <TaskIcon
+                          key={"status"}
+                          statusId={statusProcess[0]._id.toString()}
+                          className="p-1"
+                        />
+                      </View>
+                    )}
+                  {/* <View
                   className={
                     item?._id.toString() == props.objectId
                       ? "bg-white dark:bg-s-500 p-4 m-0 rounded-lg"
@@ -151,8 +153,9 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                   <Text>{item?.name}</Text>
                 </View>
               </UIButton> */}
-              </View>
-            ))
+                </View>
+              ) : null
+            )
           ) : (
             <TaskNotFound />
           )}

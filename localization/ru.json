@@ -109,6 +109,7 @@
     "taskPauseDescription": "Вы хотите остановить выполнение хоз.работ?",
     "taskProcessDescription": "Вы хотите запустить выполнение хоз.работ?"
   },
+  "reconnect": "Обновление подключения...",
   "oklad": "Оклад",
   "pushToken": "PUSH токен",
   "newNotify": "новое",

@@ -277,7 +277,7 @@ export default function TabLayout() {
               //       "order"
               //     )} №${activeTaskWorkerFromStore?.order.number.toString()}`
               //   : t("title.work"),
-              tabBarActiveTintColor: activeTaskWorkerFromStore
+              tabBarActiveTintColor: workHistoryFromStore
                 ? Colors.white
                 : colorScheme === "dark"
                 ? Colors.r[200]
@@ -290,7 +290,7 @@ export default function TabLayout() {
               //   : Colors.p[700],
               tabBarItemStyle: {
                 borderRadius: 20,
-                backgroundColor: !activeTaskWorkerFromStore
+                backgroundColor: !workHistoryFromStore
                   ? colorScheme === "dark"
                     ? Colors.p[700]
                     : Colors.p[600]

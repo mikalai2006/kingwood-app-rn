@@ -30,7 +30,7 @@ import RImage from "@/components/r/RImage";
 import { OrderSchema } from "@/schema";
 import OrderShortInfo from "@/components/order/OrderShortInfo";
 
-export default function MessageOrderScreen() {
+export default function MessageOrderIDScreen() {
   const dispatch = useAppDispatch();
 
   const { colorScheme } = useColorScheme();
@@ -252,20 +252,37 @@ export default function MessageOrderScreen() {
                             {/* <Text>{JSON.stringify(x.images)}</Text> */}
                             {x.images?.length ? (
                               <View className="flex flex-row flex-wrap gap-2 mb-4">
-                                {x.images.map((uri, index) => (
-                                  <TouchableOpacity
-                                    className="h-20 w-auto aspect-square"
-                                    key={index.toString()}
-                                    onPress={() =>
-                                      onZoomImage(`${hostSERVER}/images/${uri}`)
-                                    }
-                                  >
-                                    <RImage
-                                      uri={`${hostSERVER}/images/${uri}`}
-                                      className="w-full h-full object-contain rounded-lg"
-                                    />
-                                  </TouchableOpacity>
-                                ))}
+                                {x.images.map((uri, index) =>
+                                  [
+                                    ".jpg",
+                                    ".jpeg",
+                                    ".png",
+                                    ".webp",
+                                    ".ico",
+                                    ".tif",
+                                    ".bmp",
+                                    ".gif",
+                                  ].includes(uri?.ext) ? (
+                                    <TouchableOpacity
+                                      className="h-20 w-auto aspect-square"
+                                      key={index.toString()}
+                                      onPress={() =>
+                                        onZoomImage(
+                                          `${hostSERVER}/images/${uri}`
+                                        )
+                                      }
+                                    >
+                                      <RImage
+                                        uri={`${hostSERVER}/images/${uri}`}
+                                        className="w-full h-full object-contain rounded-lg"
+                                      />
+                                    </TouchableOpacity>
+                                  ) : (
+                                    <View>
+                                      <Text>{uri?.ext}</Text>
+                                    </View>
+                                  )
+                                )}
                               </View>
                             ) : null}
                             <Text className="text-lg text-s-800 dark:text-s-100 leading-5">

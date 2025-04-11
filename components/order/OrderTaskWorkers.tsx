@@ -34,7 +34,10 @@ const OrderTaskWorkers = ({ taskId }: OrderTaskWorkersProps) => {
             )}
           </View>
           <View className="flex-auto">
-            <OrderTaskWorker workerId={taskWorker.workerId} />
+            <OrderTaskWorker
+              workerId={taskWorker.workerId}
+              statusId={taskWorker.statusId}
+            />
           </View>
         </View>
       ))}

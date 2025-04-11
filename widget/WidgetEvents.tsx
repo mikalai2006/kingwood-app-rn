@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { ActivityIndicator, Alert, Platform, Text, View } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -226,8 +226,12 @@ export default function WidgetEvents() {
     userRef.current = userFromStore;
   }, [userFromStore]);
 
+  const [reconnect, setReconnect] = useState(false);
+
   useEffect(() => {
     const onInitSocket = async () => {
+      console.log("onInitToken");
+
       if (!tokensFromStore?.access_token) {
         return;
       }
@@ -253,6 +257,7 @@ export default function WidgetEvents() {
         );
         isWriteConsole &&
           console.log("Open websocket: ", tokensFromStore?.access_token);
+        setReconnect(false);
       };
 
       _socket.onclose = () => {
@@ -262,8 +267,10 @@ export default function WidgetEvents() {
         // isWriteConsole && console.log("userRef:", userRef);
 
         if (userRef.current) {
-          setErr(new Error("error.closeSocket"));
+          // setErr(new Error("error.closeSocket"));
+          setTimeout(onInitSocket, 1000);
         }
+        setReconnect(true);
       };
 
       _socket.onmessage = function (event) {
@@ -716,7 +723,15 @@ export default function WidgetEvents() {
     return token;
   }
 
-  return null;
+  return reconnect ? (
+    <View
+      className="flex-1 absolute top-0 bottom-0 right-0 left-0 items-center justify-center bg-s-100 dark:bg-s-800"
+      style={{ opacity: 0.9, zIndex: 99999 }}
+    >
+      <ActivityIndicator size={30} className="text-s-500 dark:text-s-100" />
+      <Text className="text-s-500 dark:text-s-100">{t("reconnect")}</Text>
+    </View>
+  ) : null;
   // (
   //   <View
   //     style={{

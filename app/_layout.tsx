@@ -477,15 +477,15 @@ export default function RootLayout() {
               className="flex-1 bg-s-200 dark:bg-s-900"
             >
               <StatusBar translucent backgroundColor="transparent" />
-              <SafeAreaView className="flex-1 bg-s-200 dark:bg-s-900">
-                <View className="flex-1 p-4">
+              <SafeAreaView className="flex-1 bg-s-200 dark:bg-s-900 ">
+                <View className="flex-1 p-4 items-center justify-center">
+                  <ActivityIndicator size={30} className="text-r-500" />
                   <Text className="text-xl font-bold mb-2 text-r-600 dark:text-r-300">
                     {t("disconnectTitle")}
                   </Text>
                   <Text className="text-lg leading-5 text-r-800 dark:text-r-300">
                     {t("disconnect")}
                   </Text>
-                  <ActivityIndicator size={30} color={Colors.s[500]} />
                 </View>
               </SafeAreaView>
             </GestureHandlerRootView>

@@ -104,14 +104,17 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   const statusWait = useQuery(TaskStatusSchema, (items) =>
     items.filtered('status == "wait"')
   );
-
+  const statusProcess = useQuery(TaskStatusSchema, (items) =>
+    items.filtered('status == "process"')
+  );
   const taskStatus = useObject(
     TaskStatusSchema,
-    taskWorkerFromStore?.id == taskWorkerId
-      ? new BSON.ObjectId(taskWorkerFromStore?.statusId)
-      : getObjectId(taskWorker?._id.toString()) != "0"
-      ? new BSON.ObjectId(taskWorker?.statusId)
-      : statusWait[0]._id
+
+    getObjectId(taskWorkerId) == "0"
+      ? workHistoryFromStore?.taskWorkerId == taskWorkerId
+        ? statusProcess[0]?._id
+        : statusWait[0]?._id
+      : new BSON.ObjectId(taskWorker?.statusId)
   );
 
   const [loading, setLoading] = useState(false);

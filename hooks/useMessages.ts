@@ -64,7 +64,7 @@ const useMessages = (props: IuseMessagesProps) => {
         //       ]
         //     : [],
         // });
-
+        setLoading(true);
         await onFetchWithAuth(
           `${hostAPI}/message/find?` +
             new URLSearchParams({

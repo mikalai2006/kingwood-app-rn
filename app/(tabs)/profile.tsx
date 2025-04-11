@@ -69,6 +69,25 @@ export default function TabProfileScreen() {
     ]);
   };
 
+  const onShowOklad = () => {
+    Alert.alert(
+      t("oklad"),
+      `${userFromStore?.oklad}{" "}
+    ${getNoun(userFromStore?.oklad, "₽", "₽", "₽")}`,
+      [
+        // {
+        //   text: t("button.no"),
+        //   onPress: () => {},
+        //   style: "cancel",
+        // },
+        {
+          text: t("button.ok"),
+          onPress: () => {},
+        },
+      ]
+    );
+  };
+
   const post = useObject(PostSchema, new BSON.ObjectId(userFromStore?.postId));
 
   return (
@@ -127,10 +146,15 @@ export default function TabProfileScreen() {
                     <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                       {t(`typePay.${userFromStore.typePay}`)}
                     </Text>
-                    <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                    <UIButton type="link" onPress={() => onShowOklad()}>
+                      <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                        ***
+                      </Text>
+                    </UIButton>
+                    {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
                       {userFromStore?.oklad}{" "}
                       {getNoun(userFromStore?.oklad, "₽", "₽", "₽")}
-                    </Text>
+                    </Text> */}
                   </View>
                 )}
 

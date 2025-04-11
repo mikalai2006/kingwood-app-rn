@@ -233,6 +233,7 @@ export default function WidgetEvents() {
       console.log("onInitToken");
 
       if (!tokensFromStore?.access_token) {
+        setReconnect(false);
         return;
       }
       const _tokens = await onSyncToken();

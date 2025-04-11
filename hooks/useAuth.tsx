@@ -229,8 +229,8 @@ export default function useAuth() {
   });
 
   const onLogout = async () => {
-    dispatch(setActiveTaskWorker(null));
-    dispatch(setWorkHistory(null));
+    // dispatch(setActiveTaskWorker(null));
+    // dispatch(setWorkHistory(null));
 
     dispatch(setTokens(null));
     dispatch(setUser(null));

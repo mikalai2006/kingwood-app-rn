@@ -43,7 +43,7 @@ export default function TabProfileScreen() {
   const { onEndWorkTime } = useTaskWorkerUtils();
 
   const logout = async () => {
-    await onEndWorkTime();
+    // await onEndWorkTime();
 
     // dispatch(setActiveTaskWorker(null));
     // dispatch(setWorkHistory(null));

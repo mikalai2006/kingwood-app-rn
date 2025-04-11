@@ -72,8 +72,7 @@ export default function TabProfileScreen() {
   const onShowOklad = () => {
     Alert.alert(
       t("oklad"),
-      `${userFromStore?.oklad}
-    ${getNoun(userFromStore?.oklad, "₽", "₽", "₽")}`,
+      `${userFromStore?.oklad} ${getNoun(userFromStore?.oklad, "₽", "₽", "₽")}`,
       [
         // {
         //   text: t("button.no"),

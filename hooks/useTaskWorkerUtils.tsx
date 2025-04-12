@@ -472,45 +472,45 @@ export const useTaskWorkerUtils = () => {
                 return;
               }
 
-              await onFetchWithAuth(
-                `${hostAPI}/task_worker/${defaultTaskWorker?._id.toString()}`,
-                {
-                  method: "PATCH",
-                  body: JSON.stringify({
-                    //productId: params.id,
-                    statusId: _statusProcess._id.toString(),
-                    status: _statusProcess.status,
-                    workerId: userFromStore?.id,
-                  }),
-                }
-              )
-                .then((res) => res.json())
-                .then(async (res: ITaskWorker) => {
-                  await realm.write(() => {
-                    try {
-                      realm.create(
-                        "TaskWorkerSchema",
-                        {
-                          ...res,
-                          _id: new BSON.ObjectId(res.id),
-                          sortOrder: res.sortOrder || 0,
-                        },
-                        UpdateMode.Modified
-                      );
+              // await onFetchWithAuth(
+              //   `${hostAPI}/task_worker/${defaultTaskWorker?._id.toString()}`,
+              //   {
+              //     method: "PATCH",
+              //     body: JSON.stringify({
+              //       //productId: params.id,
+              //       statusId: _statusProcess._id.toString(),
+              //       status: _statusProcess.status,
+              //       workerId: userFromStore?.id,
+              //     }),
+              //   }
+              // )
+              //   .then((res) => res.json())
+              //   .then(async (res: ITaskWorker) => {
+              //     await realm.write(() => {
+              //       try {
+              //         realm.create(
+              //           "TaskWorkerSchema",
+              //           {
+              //             ...res,
+              //             _id: new BSON.ObjectId(res.id),
+              //             sortOrder: res.sortOrder || 0,
+              //           },
+              //           UpdateMode.Modified
+              //         );
 
-                      dispatch(setActiveTaskWorker(Object.assign({}, res)));
-                    } catch (e) {
-                      isWriteConsole &&
-                        console.log("onCompletedTask2 error: ", e);
-                    }
-                  });
-                })
-                .catch((e) => {
-                  isWriteConsole && console.log("onCompletedTask2 Error", e);
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
+              //         dispatch(setActiveTaskWorker(Object.assign({}, res)));
+              //       } catch (e) {
+              //         isWriteConsole &&
+              //           console.log("onCompletedTask2 error: ", e);
+              //       }
+              //     });
+              //   })
+              //   .catch((e) => {
+              //     isWriteConsole && console.log("onCompletedTask2 Error", e);
+              //   })
+              //   .finally(() => {
+              //     setLoading(false);
+              //   });
 
               // предлагаем оставить сообщения для выполненного заказа.
               Alert.alert(

@@ -14,6 +14,7 @@ import {
   linkParams,
   setLinkParams,
   user,
+  workHistory,
 } from "@/store/storeSlice";
 import UIButton from "@/components/ui/UIButton";
 import TaskWorkerTabs from "@/components/task/TaskWorkerTabs";
@@ -42,6 +43,7 @@ export default function FollowScreen() {
   const linkParamsFromStore = useAppSelector(linkParams);
 
   const activeTaskWorkerFromStore = useAppSelector(activeTaskWorker);
+  const workHistoryFromStore = useAppSelector(workHistory);
 
   const { t } = useTranslation();
 
@@ -66,9 +68,9 @@ export default function FollowScreen() {
         setObjectId(linkParamsFromStore?.objectId);
         // console.log("set objectId from params");
       } else {
-        if (activeTaskWorkerFromStore?.objectId) {
-          setObjectId(activeTaskWorkerFromStore.objectId);
-          // console.log("set objectId from store");
+        if (workHistoryFromStore?.objectId) {
+          setObjectId(workHistoryFromStore.objectId);
+          console.log("set objectId from store");
         }
         // }, []);
 

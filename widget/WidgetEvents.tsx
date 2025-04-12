@@ -215,6 +215,13 @@ export default function WidgetEvents() {
         await onLogout();
 
         Alert.alert(t("title.info"), t("error.youIsBlocked"));
+      } else if (
+        data.method === "DELETE" &&
+        userRef.current?.id === data.content.id
+      ) {
+        await onLogout();
+
+        Alert.alert(t("title.info"), t("error.youIsDelete"));
       }
     },
     [userFromStore, onLogout]

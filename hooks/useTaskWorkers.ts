@@ -27,6 +27,7 @@ export interface IUseTaskWorkersProps {
   workerId?: string[];
   status?: string[];
   $limit?: number;
+  $skip?: number;
 }
 
 const useTaskWorkers = (props: IUseTaskWorkersProps) => {
@@ -51,6 +52,8 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [items, setItems] = useState<ITaskWorker[]>([]);
+
+  const [total, setTotal] = useState(0);
   // const [products, setProducts] = useState<IProduct[]>([]);
 
   useFocusEffect(
@@ -89,7 +92,15 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
             .then((r) => r.json())
             .then((response) => {
               if (!ignore) {
-                // console.log("useTaskWorkers response: ", response.data.length);
+                if (response?.total) {
+                  setTotal(response.total);
+                }
+
+                isWriteConsole &&
+                  console.log(
+                    "useTaskWorkers response: ",
+                    response.data.length
+                  );
 
                 const responseTaskWorkersData: ITaskWorker[] = response.data;
                 if (!responseTaskWorkersData) {
@@ -139,8 +150,8 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
                   realm.write(() => {
                     try {
                       for (
-                        let i = 0, total = listDataForRealm.length;
-                        i < total;
+                        let i = 0, _total = listDataForRealm.length;
+                        i < _total;
                         i++
                       ) {
                         realm.create(
@@ -253,12 +264,13 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
       return () => {
         ignore = true;
       };
-    }, [])
+    }, [props?.$skip])
   );
 
   return {
     taskWorkers: items,
     isLoading,
+    total,
     error,
   };
 };

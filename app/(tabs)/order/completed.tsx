@@ -4,31 +4,22 @@ import { FlatList } from "react-native-gesture-handler";
 import { useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
 import { useQuery } from "@realm/react";
-import {
-  OrderSchema,
-  TaskSchema,
-  TaskStatusSchema,
-  TaskWorkerSchema,
-} from "@/schema";
-import { useMemo } from "react";
+import { OrderSchema, TaskSchema, TaskWorkerSchema } from "@/schema";
+import { useState } from "react";
 import useTaskWorkers from "@/hooks/useTaskWorkers";
 import { TaskWorkerItem } from "@/components/task/TaskWorkerItem";
-import { SSkeleton } from "@/components/ui/SSkeleton";
+import UIButton from "@/components/ui/UIButton";
 
 export default function FollowScreen() {
   const userFromStore = useAppSelector(user);
 
-  const allTaskStatus = useQuery(TaskStatusSchema);
+  const [skip, setSkip] = useState(0);
 
-  const startStatus = useMemo(
-    () => allTaskStatus.find((x) => x.start),
-    [allTaskStatus]
-  );
-
-  const { isLoading, error } = useTaskWorkers({
+  const { isLoading, error, total } = useTaskWorkers({
     workerId: userFromStore ? [userFromStore.id] : undefined,
-    $limit: 30,
-    // statusId: startStatus?._id ? [startStatus?._id.toString()] : [],
+    status: ["finish", "autofinish"],
+    $limit: 2,
+    $skip: skip,
   });
 
   const taskWorkers = useQuery(TaskWorkerSchema, (items) =>
@@ -71,16 +62,35 @@ export default function FollowScreen() {
         //     </View>
         //   ))}
         // </View>
-        <ActivityIndicator size={30} />
-      ) : (
+        <View className="absolute top-0 bottom-0 left-0 right-0 flex-1 items-center justify-center">
+          <ActivityIndicator size={30} />
+        </View>
+      ) : null}
+      <>
+        {/* <Text>
+          {taskWorkers.length}, {total}, {skip}
+        </Text> */}
         <FlatList
           data={taskWorkers}
           keyExtractor={(item) => item._id.toString()}
-          renderItem={({ item }) => (
-            <TaskWorkerItem taskWorkerId={item._id.toString()} />
+          renderItem={({ item, index }) => (
+            <>
+              <TaskWorkerItem taskWorkerId={item._id.toString()} />
+              {index == taskWorkers.length - 1 && total > taskWorkers.length ? (
+                <View className="px-4 py-2">
+                  <UIButton
+                    type="secondary"
+                    loading={isLoading}
+                    disabled={isLoading}
+                    text="Загрузить еще"
+                    onPress={() => setSkip(taskWorkers.length - 1)}
+                  />
+                </View>
+              ) : null}
+            </>
           )}
         />
-      )}
+      </>
       {/* </SafeAreaView> */}
     </View>
   );

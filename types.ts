@@ -118,6 +118,7 @@ export interface IOrder {
   goComplete: number;
   dateOtgruzka: string;
   montajComplete: number;
+  countTaskMontaj: number;
 
   createdAt: Date;
   updatedAt: Date;

@@ -121,7 +121,7 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                     text={item?.name}
                     className={
                       item?._id.toString() == props.objectId
-                        ? "bg-p-600 dark:bg-p-600 p-3 m-0 rounded-lg"
+                        ? "bg-s-500 dark:bg-s-500 p-3 m-0 rounded-lg"
                         : "bg-s-300 dark:bg-s-900 p-3 m-0 rounded-lg"
                     }
                     textClass={
@@ -134,25 +134,15 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                     }}
                   />
                   {workHistoryFromStore?.objectId == item._id.toString() &&
-                    statusProcess.length && (
-                      <View className="p-1 absolute -top-3 -right-2 rounded-full bg-s-200 dark:bg-s-950">
-                        <TaskIcon
-                          key={"status"}
-                          statusId={statusProcess[0]._id.toString()}
-                          className="p-1"
-                        />
-                      </View>
-                    )}
-                  {/* <View
-                  className={
-                    item?._id.toString() == props.objectId
-                      ? "bg-white dark:bg-s-500 p-4 m-0 rounded-lg"
-                      : "bg-white dark:bg-s-900 p-4 m-0 rounded-lg"
-                  }
-                >
-                  <Text>{item?.name}</Text>
-                </View>
-              </UIButton> */}
+                  statusProcess.length ? (
+                    <View className="p-1 absolute -top-3 -right-2 rounded-full bg-s-200 dark:bg-s-950">
+                      <TaskIcon
+                        key={"status"}
+                        statusId={statusProcess[0]._id.toString()}
+                        className="p-1"
+                      />
+                    </View>
+                  ) : null}
                 </View>
               ) : null
             )

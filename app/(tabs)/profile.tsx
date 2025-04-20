@@ -21,13 +21,13 @@ import UserSettingAvatar from "@/components/user/UserSettingAvatar";
 import SwitchMode from "@/components/SwitchMode";
 import { addStartNull, getNoun } from "@/utils/utils";
 import { router } from "expo-router";
-import UILabel from "@/components/ui/UILabel";
+// import UILabel from "@/components/ui/UILabel";
 import { useTranslation } from "react-i18next";
 import { useObject } from "@realm/react";
 import { PostSchema } from "@/schema";
 import { BSON } from "realm";
 import dayjs from "@/utils/dayjs";
-import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
+// import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
 export default function TabProfileScreen() {
   const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export default function TabProfileScreen() {
 
   const { onLogout } = useAuth();
 
-  const { onEndWorkTime } = useTaskWorkerUtils();
+  // const { onEndWorkTime } = useTaskWorkerUtils();
 
   const logout = async () => {
     // await onEndWorkTime();

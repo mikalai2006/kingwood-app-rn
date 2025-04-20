@@ -26,7 +26,7 @@ export default function UIInput({
               <SIcon path={props.icon} size={25} tw={classIcon} />
             </View>
           ) : null} */}
-      <UILabel text={title} />
+      {title ? <UILabel text={title} /> : null}
       <View>
         <TextInput
           className="text-xl bg-white dark:bg-s-900 rounded-lg border border-s-200 dark:border-s-700 px-4 py-2 text-s-900 dark:text-s-300 placeholder:text-s-500 focus:border-p-500"

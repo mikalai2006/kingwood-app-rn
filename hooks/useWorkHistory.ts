@@ -12,12 +12,13 @@ import {
   user,
 } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { useError } from "./useError";
 import { IWorkHistory, IWorkHistoryPopulate } from "@/types";
 import { getObjectId } from "@/utils/utils";
+import dayjs from "@/utils/dayjs";
 
 export interface IUseWorkHistoryProps {
   workerId?: string[];
@@ -105,6 +106,17 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
                   );
                   if (runWorkHistory) {
                     dispatch(setWorkHistory(runWorkHistory));
+
+                    if (!dayjs(runWorkHistory.from).isToday()) {
+                      isWriteConsole &&
+                        console.log(
+                          "Обнаружена раб. сессия прошлых дней!",
+                          runWorkHistory.from
+                        );
+                      router.push({
+                        pathname: "/modalendprevday",
+                      });
+                    }
                   } else {
                     dispatch(setWorkHistory(null));
                     dispatch(setActiveTaskWorker(null));

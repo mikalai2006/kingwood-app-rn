@@ -1,6 +1,12 @@
 import "react-native-get-random-values";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, StatusBar, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  AppState,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import "../localization/i18n";
 import NetInfo, {
   NetInfoState,
@@ -137,11 +143,32 @@ export default function RootLayout() {
     isWriteConsole && console.log("ERR: ", err);
   }, [err]);
 
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        isWriteConsole && console.log("App has come to the foreground!");
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      isWriteConsole && console.log("AppState", appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   if (!loaded) {
     return null;
   }
 
-  return (
+  return appStateVisible == "active" ? (
     <RealmProvider
       schema={[
         TaskSchema,
@@ -308,6 +335,15 @@ export default function RootLayout() {
                 /> */}
                         <Stack.Screen
                           name="usersettingform"
+                          options={{
+                            // title: "Предложение",
+                            // presentation: "transparentModal",
+                            // animation: "slide_from_right",
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="modalendprevday"
                           options={{
                             // title: "Предложение",
                             // presentation: "transparentModal",
@@ -493,7 +529,7 @@ export default function RootLayout() {
         </PersistGate>
       </Provider>
     </RealmProvider>
-  );
+  ) : null;
 }
 
 const styles = {

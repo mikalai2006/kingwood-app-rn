@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import { NativeModules, Platform } from "react-native";
+import React, { useEffect, useMemo, useRef } from "react";
+import { Alert, AppState, NativeModules, Platform } from "react-native";
 import { hostAPI, isWriteConsole } from "@/utils/global";
 
 import {
@@ -49,6 +49,8 @@ export const WidgetInitApp = () => {
     onChangeLocale(activeLangCode || deviceLanguage);
   }, []);
 
+  const appState = useRef(AppState.currentState);
+
   const setFirstRunSettings = () => {
     if (!activeLangCode || languagesFromStore?.length === 0) {
       isWriteConsole &&
@@ -84,6 +86,8 @@ export const WidgetInitApp = () => {
 
   useEffect(() => {
     const onFetching = async () => {
+      isWriteConsole && console.log("onInitApp");
+
       try {
         const onFindLanguages = async () => {
           await onFetch(
@@ -339,12 +343,13 @@ export const WidgetInitApp = () => {
         onInitFakeData();
       } catch (e: any) {
         isWriteConsole && console.log("WidgetInitApp error: ", e.message);
+        Alert.alert(t("error.title"), e?.toString());
       } finally {
       }
     };
 
     onFetching();
-  }, []);
+  }, [appState]);
 
   return null;
   // !isInternetReachable ? (

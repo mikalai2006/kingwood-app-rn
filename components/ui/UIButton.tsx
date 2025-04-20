@@ -43,7 +43,7 @@ export default function UIButton(props: UIButtonProps) {
           : " bg-gr-500 border-gr-500 dark:bg-gr-700";
         break;
       case "secondary":
-        result += props.disabled ? disableClass : " bg-s-400 dark:bg-black/20 ";
+        result += props.disabled ? disableClass : " bg-s-400 dark:bg-s-500 ";
         break;
       case "link":
         result += props.disabled
@@ -59,7 +59,7 @@ export default function UIButton(props: UIButtonProps) {
   }, [props.disabled, props.twClass, props.type]);
 
   const classText = React.useMemo(() => {
-    let result = "text-lg px-0 leading-6 ";
+    let result = "text-base px-0 leading-6 ";
 
     const disableClass = " text-s-300 dark:text-s-700 ";
 

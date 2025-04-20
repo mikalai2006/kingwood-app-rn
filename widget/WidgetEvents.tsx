@@ -1,6 +1,13 @@
 import "react-native-get-random-values";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Platform, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  AppState,
+  Platform,
+  Text,
+  View,
+} from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -67,6 +74,9 @@ export default function WidgetEvents() {
   const activeWorkHistoryFromStoreRef = useRef(activeWorkHistoryFromStore);
   const userRef = useRef(userFromStore);
 
+  const socket = useRef<WebSocket | undefined>();
+  const needReconnectSocket = useRef<boolean>(false);
+
   const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
     []
@@ -76,6 +86,27 @@ export default function WidgetEvents() {
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        isWriteConsole && console.log("App has come to the foreground!");
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      isWriteConsole && console.log("AppState", appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const onSetExpoPushToken = async (token: string) => {
     // console.log("userFromStore: ", userFromStore?.id);
@@ -237,7 +268,22 @@ export default function WidgetEvents() {
 
   useEffect(() => {
     const onInitSocket = async () => {
-      console.log("onInitToken");
+      isWriteConsole &&
+        console.log("onInitToken: ", socket.current?.readyState);
+
+      if (
+        socket.current?.readyState == WebSocket.OPEN ||
+        socket.current?.readyState == WebSocket.CONNECTING
+      ) {
+        isWriteConsole &&
+          console.log("socket already open: ", socket.current?.readyState);
+        return;
+      }
+
+      if (appStateVisible !== "active") {
+        isWriteConsole && console.log("not active app");
+        return;
+      }
 
       if (!tokensFromStore?.access_token) {
         setReconnect(false);
@@ -257,6 +303,8 @@ export default function WidgetEvents() {
 
       const _socket = new WebSocket(wsAPI);
       _socket.onopen = function () {
+        needReconnectSocket.current = true;
+
         _socket.send(
           JSON.stringify({
             type: "jwt",
@@ -265,19 +313,39 @@ export default function WidgetEvents() {
         );
         isWriteConsole &&
           console.log("Open websocket: ", tokensFromStore?.access_token);
+
         setReconnect(false);
       };
 
       _socket.onclose = () => {
-        isWriteConsole && console.log("Close socket!");
-        isWriteConsole && console.log(new Error("error.closeSocket"));
+        isWriteConsole &&
+          console.log(
+            "Close socket! , needReconnectSocket.current=",
+            needReconnectSocket.current
+          );
+        // isWriteConsole && console.log(new Error("error.closeSocket"));
         // isWriteConsole && console.log("userFromStore:", userFromStore);
         // isWriteConsole && console.log("userRef:", userRef);
 
-        if (userRef.current) {
-          // setErr(new Error("error.closeSocket"));
-          setTimeout(onInitSocket, 1000);
+        if (userRef.current && needReconnectSocket.current) {
           setReconnect(true);
+          // setErr(new Error("error.closeSocket"));
+          isWriteConsole &&
+            console.log("Need reconnect socket!", socket.current?.readyState);
+
+          setTimeout(() => {
+            isWriteConsole &&
+              console.log(
+                "Reconnect socket! appStateVisible=",
+                appStateVisible
+              );
+
+            onInitSocket().then((r) => {
+              if (r) {
+                socket.current = r;
+              }
+            });
+          }, 1000);
         }
       };
 
@@ -290,24 +358,32 @@ export default function WidgetEvents() {
           return;
         }
 
+        if (socket.current?.readyState !== WebSocket.OPEN) {
+          return;
+        }
+
         let nameOperation = "";
 
+        if (appStateVisible !== "active" || realm.isClosed) {
+          return;
+        }
+
         if (getObjectId(data.content.id) != "0") {
-          realm.write(async () => {
+          realm.write(() => {
             try {
               switch (data.service) {
                 case "workHistory":
                   nameOperation = "workHistory";
 
                   if (method === "DELETE") {
-                    await realm.delete(
+                    realm.delete(
                       realm.objectForPrimaryKey(
                         "WorkHistorySchema",
                         new BSON.ObjectId(data.content.id)
                       )
                     );
                   } else {
-                    await realm.create(
+                    realm.create(
                       "WorkHistorySchema",
                       {
                         ...data.content,
@@ -639,10 +715,12 @@ export default function WidgetEvents() {
                   UpdateMode.Modified
                 );
               }
-            } catch (e) {
+            } catch (e: any) {
               onSendError(
                 new Error(
-                  `WidgetEvents error: ${data.service}[${nameOperation}]: `
+                  `WidgetEvents error: ${
+                    data.service
+                  }[${nameOperation}]: ${e.toString()}`
                 )
               );
               isWriteConsole &&
@@ -672,12 +750,33 @@ export default function WidgetEvents() {
       return _socket;
     };
 
-    let socket: WebSocket | undefined;
+    if (appStateVisible == "active") {
+      onInitSocket().then((r) => {
+        if (r) {
+          socket.current = r;
+        }
+      });
+    }
+    //else {
+    //   socket.current?.close();
+    //   // socket.current = null;
+    // }
 
-    onInitSocket().then((r) => (socket = r));
-
-    return () => socket?.close();
+    return () => {
+      // console.log("Close socket: appStateVisible: ", appStateVisible);
+      // if (appStateVisible !== "active") {
+      needReconnectSocket.current = false;
+      socket.current?.close();
+      // }
+    };
   }, [tokensFromStore]);
+
+  // useEffect(() => {
+  //   console.log("appStateVisible: ", appStateVisible);
+  //   if (appStateVisible != "active") {
+  //     socket.current?.close();
+  //   }
+  // }, [appStateVisible]);
 
   // isWriteConsole && console.log("token PUSHN: ", expoPushToken);
 
@@ -734,10 +833,10 @@ export default function WidgetEvents() {
   return reconnect ? (
     <View
       className="flex-1 absolute top-0 bottom-0 right-0 left-0 items-center justify-center bg-s-100 dark:bg-s-800"
-      style={{ opacity: 0.9, zIndex: 99999 }}
+      style={{ opacity: 0.98, zIndex: 99999 }}
     >
       <ActivityIndicator size={30} className="text-s-500 dark:text-s-100" />
-      <Text className="text-s-500 dark:text-s-100">{t("reconnect")}</Text>
+      <Text className="text-s-900 dark:text-s-100">{t("reconnect")}</Text>
     </View>
   ) : null;
   // (

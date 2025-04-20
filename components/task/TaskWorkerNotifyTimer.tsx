@@ -6,7 +6,7 @@ import { useQuery } from "@realm/react";
 import { WorkHistorySchema } from "@/schema";
 import { useMemo } from "react";
 import dayjs from "@/utils/dayjs";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import SIcon from "../ui/SIcon";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/utils/Colors";
@@ -98,7 +98,11 @@ export function TaskWorkerNotifyTimer({
         size={15}
         color={colorScheme === "dark" ? Colors.s[300] : Colors.s[200]}
       />
-      <TaskWorkerTime time={time} className={className} short={short} />
+      {time.totalMinutes == 0 && workHistoryFromStore ? (
+        <ActivityIndicator className="text-white" size={20} />
+      ) : (
+        <TaskWorkerTime time={time} className={className} short={short} />
+      )}
     </View>
     // <Text className={`${className}`}>
     //   {hours}

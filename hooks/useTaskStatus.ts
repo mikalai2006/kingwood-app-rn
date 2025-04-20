@@ -63,7 +63,11 @@ const useTaskStatus = (props: IUseTaskStatusProps) => {
             .then((r) => r.json())
             .then((response) => {
               if (!ignore) {
-                // console.log("UseTaskStatus response: ", response);
+                isWriteConsole &&
+                  console.log(
+                    "UseTaskStatus response: ",
+                    response?.data?.length
+                  );
 
                 const responseData: ITaskStatus[] = response.data;
                 if (!responseData) {

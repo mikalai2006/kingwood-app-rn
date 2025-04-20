@@ -7,6 +7,7 @@ import { useColorScheme } from "nativewind";
 import { useObject } from "@realm/react";
 import { TaskStatusSchema } from "@/schema";
 import { BSON } from "realm";
+import { invertColor } from "@/utils/utils";
 
 export interface ITaskIconProps {
   statusId: string;
@@ -48,13 +49,13 @@ const TaskIcon = (props: ITaskIconProps) => {
         taskStatus.status === "process"
           ? {
               transform: [{ rotate: spin }],
-              // backgroundColor: taskStatus.color,
-              backgroundColor: Colors.gr[600],
+              backgroundColor: taskStatus.color,
+              // backgroundColor: Colors.gr[600],
             }
           : {
-              // backgroundColor: taskStatus.color
-              backgroundColor:
-                colorScheme === "dark" ? Colors.s[600] : Colors.s[100],
+              backgroundColor: taskStatus.color,
+              // backgroundColor:
+              //   colorScheme === "dark" ? Colors.s[600] : Colors.s[100],
             }
       }
       className={`rounded-full ${props.className}`}
@@ -63,11 +64,16 @@ const TaskIcon = (props: ITaskIconProps) => {
         pathText={taskStatus.icon}
         size={props.size || 15}
         color={
-          taskStatus.status === "process"
-            ? colorScheme === "dark"
-              ? Colors.white
-              : Colors.white
-            : Colors.s[400]
+          invertColor(taskStatus.color, true)
+          // taskStatus.status === "process"
+          //   ? colorScheme === "dark"
+          //     ? Colors.white
+          //     : Colors.white
+          //   : taskStatus.status === "finish"
+          //   ? colorScheme === "dark"
+          //     ? Colors.white
+          //     : Colors.white
+          //   : Colors.s[400]
         }
       />
     </Animated.View>

@@ -25,7 +25,7 @@ import {
 } from "@/store/storeSlice";
 import { useTranslation } from "react-i18next";
 import TaskIcon from "./TaskIcon";
-import dayjs from "@/utils/dayjs";
+import dayjs, { formatDate } from "@/utils/dayjs";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 import { getObjectId } from "@/utils/utils";
@@ -199,6 +199,9 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
   const toggleTaskWorker = async (statusName: string) => {
     const _status = allTaskStatus.find((x) => x.status === statusName);
     if (!_status) {
+      isWriteConsole &&
+        console.log("Not found TaskStatus!", allTaskStatus.length, statusName);
+
       return;
     }
 
@@ -487,8 +490,17 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
       <View
         className={
           (taskStatus?.status === "process"
-            ? " bg-gr-100 dark:bg-gr-900"
-            : " bg-white dark:bg-s-800") + " rounded-lg shadow-lg "
+            ? " bg-gr-100 dark:bg-gr-900 "
+            : " bg-white dark:bg-s-800 ") +
+          " rounded-lg shadow-lg " +
+          (!dayjs(new Date()).isBetween(
+            dayjs(taskWorker.from),
+            dayjs(taskWorker.to),
+            "day",
+            "[]"
+          ) && !["finish", "autofinish"].includes(taskWorker.status)
+            ? " opacity-60 "
+            : "")
         }
         // style={{ backgroundColor: taskStatus?.color }}
       >
@@ -502,7 +514,19 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             <TaskOrder orderId={task.orderId} />
           </View>
         </View>
-        <View className="p-2 pt-0 rounded-b-lg">
+
+        <View
+          className={
+            (!dayjs(new Date()).isBetween(
+              dayjs(taskWorker.from),
+              dayjs(taskWorker.to),
+              "day",
+              "[]"
+            ) && !["finish", "autofinish"].includes(taskWorker.status)
+              ? " opacity-35 dark:opacity-15 "
+              : "") + " p-2 pt-0 rounded-b-lg"
+          }
+        >
           {/* <View style={{ aspectRatio: 1 }}>
           <RImage
             className="object-cover aspect-square"
@@ -525,17 +549,19 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                 numberOfLines={2}
                 lineBreakMode="tail"
               >
-                <Text className="text-s-400">{t("yourTask")}: </Text>
-                <Text className="font-medium">{task.name}</Text>
+                <Text className="text-base text-s-400">{t("yourTask")}: </Text>
+                <Text className="font-medium text-base">{task.name}</Text>
               </Text>
-              <View className="leading-5 flex flex-row gap-0">
-                <Text className="text-s-400">{t("taskStatus")}: </Text>
+              <View className="flex flex-row gap-0">
+                <Text className="text-base text-s-400">
+                  {t("taskStatus")}:{" "}
+                </Text>
                 <Text
                   className={
                     (taskStatus?.status === "process"
                       ? "bg-gr-600 dark:bg-gr-600 text-white"
                       : "text-s-800 dark:text-s-100") +
-                    " px-2 rounded-lg leading-6 font-medium"
+                    " px-2 rounded-lg text-base font-medium"
                   }
                 >
                   {taskStatus?.name}
@@ -582,12 +608,25 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                     type="secondary"
                     text={t("button.finishTask")}
                     disabled={
-                      taskWorkerFromStore?.id !== taskWorker._id.toString() ||
+                      // taskWorkerFromStore?.id !== taskWorker._id.toString() ||
+                      !dayjs(new Date()).isBetween(
+                        dayjs(taskWorker.from),
+                        dayjs(taskWorker.to),
+                        "day",
+                        "[]"
+                      ) ||
                       loading ||
                       isBlocked
                     }
+                    // className="bg-lime-600 dark:bg-lime-700 rounded-lg flex items-center justify-center px-2"
                     onPress={() => onCompletedTask(task, taskWorker)}
-                  />
+                  >
+                    {/* <View className="">
+                      <Text className="text-white">
+                        {t("button.finishTask")}
+                      </Text>
+                    </View> */}
+                  </UIButton>
                 )}
               </View>
             )}
@@ -607,6 +646,21 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         )} */}
         </View>
       </View>
+
+      {!dayjs(new Date()).isBetween(
+        dayjs(taskWorker.from),
+        dayjs(taskWorker.to),
+        "day",
+        "[]"
+      ) && !["finish", "autofinish"].includes(taskWorker.status) ? (
+        <View className="absolute top-0 right-0 left-0 bottom-6 flex items-center justify-end">
+          <Text className="text-s-500 dark:text-s-500 font-bold">
+            {t("info.taskFuture", {
+              dateStart: dayjs(taskWorker.from).format(formatDate),
+            })}
+          </Text>
+        </View>
+      ) : null}
     </View>
   ) : //  : taskWorker ? (
   //   <View className="w-full p-2 px-4">

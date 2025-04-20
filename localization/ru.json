@@ -24,11 +24,13 @@
     "add": "Добавить",
     "finishTask": "Задание выполнено",
     "save": "Сохранить",
+    "view": "Просмотреть",
     "refreshSocket": "Перезагрузить приложение",
     "resetPassword": "Изменить пароль",
     "go": "Перейти"
   },
   "info": {
+    "taskFuture": "Задание можно будет выполнять с {{dateStart}}",
     "successUploadImage": "Изображение успешно добавлено!",
     "successEndWorkTime": "Рабочее время завершено!",
     "successStartWorkTime": "Началось рабочее время!",
@@ -110,6 +112,14 @@
     "taskPauseDescription": "Вы хотите остановить выполнение хоз.работ?",
     "taskProcessDescription": "Вы хотите запустить выполнение хоз.работ?"
   },
+  "hourEnd": "часы",
+  "minuteEnd": "минуты",
+  "textTimeEndPrevDayBefore": "Введите время до которого вы работали {{timePrevDay}}",
+  "textTimeEndPrevDayAfter": "и завершите эту рабочую сессию",
+  "timeMustBeAfter": "Время завершения должно быть позже времени начала: {{from}}",
+  "btnEndPrevDay": "Завершить рабочую сессию",
+  "titlePrevDay": "Завершение рабочей сессии\r\nза {{prevDay}}",
+  "detectPrevDay": "Обнаружена незавершенная рабочая сессия прошлого дня",
   "reconnect": "Обновление подключения...",
   "oklad": "Оклад",
   "pushToken": "PUSH токен",

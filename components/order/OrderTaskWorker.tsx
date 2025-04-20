@@ -28,7 +28,7 @@ const OrderTaskWorker = ({ workerId, statusId }: OrderTaskWorkerProps) => {
         </View>
         <View>
           <Text
-            className="px-1.5 rounded-md text-white dark:text-black"
+            className="px-1.5 text-sm rounded-md text-white dark:text-black"
             style={{ backgroundColor: taskStatus?.color }}
           >
             {taskStatus?.name}

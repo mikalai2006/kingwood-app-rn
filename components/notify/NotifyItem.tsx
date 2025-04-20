@@ -164,8 +164,13 @@ const NotifyItem = ({ notify }: NotifyItemProps) => {
             </Text>
           </View>
 
-          <View className="">
-            <SIcon path="iChevronRight" size={25} color={Colors.s[500]} />
+          <View className="flex flex-row items-center justify-center">
+            {notify.status === 0 ? (
+              <View className="bg-p-500 dark:bg-p-700 rounded-lg p-2 flex flex-row gap-2">
+                <Text className="text-base text-white">{t("button.view")}</Text>
+                {/* <SIcon path="iChevronRight" size={25} color={Colors.s[500]} /> */}
+              </View>
+            ) : null}
           </View>
           {/* <UIButton
             type={notify.status ? "secondary" : "primary"}

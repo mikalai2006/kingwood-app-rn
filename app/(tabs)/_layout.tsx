@@ -46,22 +46,6 @@ export default function TabLayout() {
   );
 
   const userFromStore = useAppSelector(user);
-
-  useNotify({
-    userTo: userFromStore?.id ? [userFromStore.id] : undefined,
-  });
-
-  useWorkHistory(
-    {
-      workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
-      // status: 0,
-      // date: dayjs().format(),
-      from: dayjs().subtract(2, "day").format(),
-      to: dayjs().format(),
-      $limit: 100,
-    },
-    [userFromStore]
-  );
   // if (userFromStore) {
   //   // const { messagesRooms } = useMessagesRooms({
   //   //   userId: userFromStore?.id,
@@ -86,6 +70,22 @@ export default function TabLayout() {
     setMode(modeThemeFromStore);
     setColorScheme(modeThemeFromStore);
   }, []);
+
+  useNotify({
+    userTo: userFromStore?.id ? [userFromStore.id] : undefined,
+  });
+
+  useWorkHistory(
+    {
+      workerId: userFromStore?.id ? [userFromStore?.id] : undefined,
+      // status: 0,
+      // date: dayjs().format(),
+      from: dayjs().subtract(10, "day").format(),
+      to: dayjs().format(),
+      $limit: 100,
+    },
+    [userFromStore]
+  );
 
   return userFromStore ? (
     <View className="flex-1 bg-s-200 dark:bg-s-950">

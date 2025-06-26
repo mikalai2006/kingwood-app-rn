@@ -30,7 +30,7 @@
     "go": "Перейти"
   },
   "info": {
-    "taskFuture": "Задание можно будет выполнять с {{dateStart}}",
+    "taskFuture": "Задание к выполнению с {{dateStart}}",
     "successUploadImage": "Изображение успешно добавлено!",
     "successEndWorkTime": "Рабочее время завершено!",
     "successStartWorkTime": "Началось рабочее время!",

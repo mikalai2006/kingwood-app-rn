@@ -89,36 +89,40 @@ export const WidgetInitApp = () => {
       isWriteConsole && console.log("onInitApp");
 
       try {
-        const onFindLanguages = async () => {
-          await onFetch(
-            hostAPI +
-              "/lang?" +
-              new URLSearchParams({
-                lang: activeLanguageFromStore?.code || "en",
-              }),
-            {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-            }
-          )
-            .then((r) => r.json())
-            .then((r) => {
-              if (r.data?.length) {
-                // console.log('r.data=', r.data);
-                dispatch(setLanguages(r.data));
-              }
-            })
-            .catch((e) => {
-              throw new Error("onFindLanguages: " + e.message);
-            })
-            .finally(() => {
-              setFirstRunSettings();
-            });
-        };
-        await onFindLanguages();
+        // const onFindLanguages = async () => {
+        //   await onFetch(
+        //     hostAPI +
+        //       "/lang?" +
+        //       new URLSearchParams({
+        //         lang: activeLanguageFromStore?.code || "en",
+        //       }),
+        //     {
+        //       method: "GET",
+        //       headers: {
+        //         Accept: "application/json",
+        //         "Content-Type": "application/json",
+        //       },
+        //     }
+        //   )
+        //     .then((r) => r.json())
+        //     .then((r) => {
+        //       if (r.data?.length) {
+        //         // console.log('r.data=', r.data);
+        //         dispatch(setLanguages(r.data));
+        //       }
+        //     })
+        //     .catch((e) => {
+        //       throw new Error("onFindLanguages: " + e.message);
+        //     })
+        //     .finally(() => {
+        //       setFirstRunSettings();
+        //     });
+        // };
+        // await onFindLanguages();
+
+        // init lang.
+        dispatch(setLanguages([]));
+        setFirstRunSettings();
 
         const onFindPost = async () => {
           await onFetch(

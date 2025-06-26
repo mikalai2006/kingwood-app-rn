@@ -24,7 +24,7 @@ export default function UIButton(props: UIButtonProps) {
   const { colorScheme } = useColorScheme();
 
   const classBtn = React.useMemo(() => {
-    let result = "p-3 rounded-lg";
+    let result = "px-3 py-2.5 rounded-lg";
 
     const disableClass = " bg-transparent ";
 

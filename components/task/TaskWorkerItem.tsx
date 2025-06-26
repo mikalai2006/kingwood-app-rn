@@ -32,6 +32,7 @@ import { getObjectId } from "@/utils/utils";
 import { useWork } from "@/hooks/useWork";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
+import SIcon from "../ui/SIcon";
 
 export type TaskWorkerItemProps = {
   // taskWorker: TaskWorkerSchema;
@@ -212,66 +213,67 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
 
     setLoading(true);
 
-    // pause prev task.
-    if (
-      workHistoryFromStore != null &&
-      workHistoryFromStore.id &&
-      workHistoryFromStore.id != taskWorker?._id.toString()
-    ) {
-      // if (getObjectId(workHistoryFromStore.id) != "0") {
-      await onFetchWithAuth(
-        `${hostAPI}/task_worker/${workHistoryFromStore.taskWorkerId}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({
-            statusId: _statusPause._id.toString(),
-            status: _statusPause?.status,
-          }),
-        }
-      )
-        .then((res) => res.json())
-        .then((res: ITaskWorker) => {
-          realm.write(() => {
-            try {
-              realm.create(
-                "TaskWorkerSchema",
-                {
-                  ...res,
-                  _id: new BSON.ObjectId(res.id),
-                  sortOrder: res.sortOrder || 0,
-                },
-                UpdateMode.Modified
-              );
+    // // pause prev task.
+    // if (
+    //   workHistoryFromStore != null &&
+    //   workHistoryFromStore.id &&
+    //   workHistoryFromStore.id != taskWorker?._id.toString()
+    // ) {
+    //   // if (getObjectId(workHistoryFromStore.id) != "0") {
+    //   await onFetchWithAuth(
+    //     `${hostAPI}/task_worker/${workHistoryFromStore.taskWorkerId}`,
+    //     {
+    //       method: "PATCH",
+    //       body: JSON.stringify({
+    //         statusId: _statusPause._id.toString(),
+    //         status: _statusPause?.status,
+    //       }),
+    //     }
+    //   )
+    //     .then((res) => res.json())
+    //     .then((res: ITaskWorker) => {
+    //       realm.write(() => {
+    //         try {
+    //           realm.create(
+    //             "TaskWorkerSchema",
+    //             {
+    //               ...res,
+    //               _id: new BSON.ObjectId(res.id),
+    //               sortOrder: res.sortOrder || 0,
+    //             },
+    //             UpdateMode.Modified
+    //           );
 
-              // if (res.status === "process") {
-              //   dispatch(setActiveTaskWorker(Object.assign({}, res)));
-              // } else {
-              //   dispatch(setActiveTaskWorker(null));
-              // }
+    //           // if (res.status === "process") {
+    //           //   dispatch(setActiveTaskWorker(Object.assign({}, res)));
+    //           // } else {
+    //           //   dispatch(setActiveTaskWorker(null));
+    //           // }
 
-              // _statusPause.status &&
-              //   onWriteWorkHistory(_statusPause.status, res);
-              // ToastAndroid.show(
-              //   t("info.successPauseTask", {
-              //     orderName: `№${res.order.number}-${res.order.name}`,
-              //   }),
-              //   ToastAndroid.SHORT
-              // );
-            } catch (e) {
-              isWriteConsole && console.log("toggleTask prev error: ", e);
-            }
-          });
-        })
-        .catch((e) => {
-          isWriteConsole && console.log("toggleTaskWorker prev Error", e);
-        });
-      // } else {
-      //   // fake taskWorker.
-      //   taskWorker && (await onWriteWorkHistory("wait", taskWorker));
-      // }
-    }
+    //           // _statusPause.status &&
+    //           //   onWriteWorkHistory(_statusPause.status, res);
+    //           // ToastAndroid.show(
+    //           //   t("info.successPauseTask", {
+    //           //     orderName: `№${res.order.number}-${res.order.name}`,
+    //           //   }),
+    //           //   ToastAndroid.SHORT
+    //           // );
+    //         } catch (e) {
+    //           isWriteConsole && console.log("toggleTask prev error: ", e);
+    //         }
+    //       });
+    //     })
+    //     .catch((e) => {
+    //       isWriteConsole && console.log("toggleTaskWorker prev Error", e);
+    //     });
+    //   // } else {
+    //   //   // fake taskWorker.
+    //   //   taskWorker && (await onWriteWorkHistory("wait", taskWorker));
+    //   // }
+    // }
 
     // if (getObjectId(taskWorker?._id.toString()) != "0") {
+    // TODO.
     await onFetchWithAuth(
       `${hostAPI}/task_worker/${taskWorker?._id.toString()}`,
       {
@@ -286,6 +288,8 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
     )
       .then((res) => res.json())
       .then((res: ITaskWorker) => {
+        // isWriteConsole && console.log("Change taskWorker: ", statusName, res);
+
         realm.write(() => {
           try {
             realm.create(
@@ -499,7 +503,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             "day",
             "[]"
           ) && !["finish", "autofinish"].includes(taskWorker.status)
-            ? " opacity-60 "
+            ? "" //" opacity-60 "
             : "")
         }
         // style={{ backgroundColor: taskStatus?.color }}
@@ -523,7 +527,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
               "day",
               "[]"
             ) && !["finish", "autofinish"].includes(taskWorker.status)
-              ? " opacity-35 dark:opacity-15 "
+              ? "" //" opacity-35 dark:opacity-15 "
               : "") + " p-2 pt-0 rounded-b-lg"
           }
         >
@@ -588,13 +592,13 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                       text={t("button.goTask")}
                       loading={loading}
                       disabled={
-                        // workTimeFromStore === null ||
-                        !dayjs(new Date()).isBetween(
-                          dayjs(taskWorker.from),
-                          dayjs(taskWorker.to),
-                          "day",
-                          "[]"
-                        ) ||
+                        // // workTimeFromStore === null ||
+                        // !dayjs(new Date()).isBetween(
+                        //   dayjs(taskWorker.from),
+                        //   dayjs(taskWorker.to),
+                        //   "day",
+                        //   "[]"
+                        // ) ||
                         order?.status < 1 || //!order?.stolyarComplete //activeTaskFromStore !== null ||
                         taskStatus?.status == "autofinish" ||
                         isBlocked
@@ -608,15 +612,14 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                     type="secondary"
                     text={t("button.finishTask")}
                     disabled={
-                      // taskWorkerFromStore?.id !== taskWorker._id.toString() ||
-                      !dayjs(new Date()).isBetween(
-                        dayjs(taskWorker.from),
-                        dayjs(taskWorker.to),
-                        "day",
-                        "[]"
-                      ) ||
-                      loading ||
-                      isBlocked
+                      // // taskWorkerFromStore?.id !== taskWorker._id.toString() ||
+                      // !dayjs(new Date()).isBetween(
+                      //   dayjs(taskWorker.from),
+                      //   dayjs(taskWorker.to),
+                      //   "day",
+                      //   "[]"
+                      // ) ||
+                      loading || isBlocked
                     }
                     // className="bg-lime-600 dark:bg-lime-700 rounded-lg flex items-center justify-center px-2"
                     onPress={() => onCompletedTask(task, taskWorker)}
@@ -645,22 +648,25 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
           </View>
         )} */}
         </View>
-      </View>
 
-      {!dayjs(new Date()).isBetween(
-        dayjs(taskWorker.from),
-        dayjs(taskWorker.to),
-        "day",
-        "[]"
-      ) && !["finish", "autofinish"].includes(taskWorker.status) ? (
-        <View className="absolute top-0 right-0 left-0 bottom-6 flex items-center justify-end">
-          <Text className="text-s-500 dark:text-s-500 font-bold">
-            {t("info.taskFuture", {
-              dateStart: dayjs(taskWorker.from).format(formatDate),
-            })}
-          </Text>
-        </View>
-      ) : null}
+        {!dayjs(new Date()).isBetween(
+          dayjs(taskWorker.from),
+          dayjs(taskWorker.to),
+          "day",
+          "[]"
+        ) && !["finish", "autofinish"].includes(taskWorker.status) ? (
+          <View className="bg-p-200 p-2 rounded-b-lg flex flex-row gap-4">
+            <View>
+              <SIcon path="iInfoSquare" size={25} color={Colors.p[600]} />
+            </View>
+            <Text className="text-p-800 dark:text-s-500 font-bold">
+              {t("info.taskFuture", {
+                dateStart: dayjs(taskWorker.from).format(formatDate),
+              })}
+            </Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   ) : //  : taskWorker ? (
   //   <View className="w-full p-2 px-4">

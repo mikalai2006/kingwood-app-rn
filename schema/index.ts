@@ -17,3 +17,4 @@ export * from "./NotifySchema";
 export * from "./PaySchema";
 export * from "./PayTemplateSchema";
 export * from "./ArchiveNotifySchema";
+export * from "./ObjectsSchema";

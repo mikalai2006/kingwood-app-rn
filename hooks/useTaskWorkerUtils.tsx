@@ -584,28 +584,28 @@ export const useTaskWorkerUtils = () => {
               //   });
 
               // предлагаем оставить сообщения для выполненного заказа.
-              Alert.alert(
-                t("info.completedMessage"),
-                t("info.completedMessageText"),
-                [
-                  {
-                    text: t("button.no"),
-                    onPress: () => {},
-                    style: "cancel",
-                  },
-                  {
-                    text: t("button.yes"),
-                    onPress: async () => {
-                      router.push({
-                        pathname: "/[orderId]/message",
-                        params: {
-                          orderId: orders[0]._id.toString(),
-                        },
-                      });
-                    },
-                  },
-                ]
-              );
+              // Alert.alert(
+              //   t("info.completedMessage"),
+              //   t("info.completedMessageText"),
+              //   [
+              //     {
+              //       text: t("button.no"),
+              //       onPress: () => {},
+              //       style: "cancel",
+              //     },
+              //     {
+              //       text: t("button.yes"),
+              //       onPress: async () => {
+              //         router.push({
+              //           pathname: "/[orderId]/message",
+              //           params: {
+              //             orderId: orders[0]._id.toString(),
+              //           },
+              //         });
+              //       },
+              //     },
+              //   ]
+              // );
             },
           },
         ]

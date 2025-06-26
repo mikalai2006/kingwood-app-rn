@@ -38,14 +38,13 @@ const TaskWorkerList = (props: TaskWorkerListProps) => {
   ).filter((y) => {
     const _task = tasks.find((x) => x._id.toString() == y.taskId);
 
-    return (
-      // _task?.status != "finish" &&
-      dayjs(new Date()).isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
-      dayjs(new Date())
-        .add(1, "day")
-        .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
-      y._id.toString() === "000000000000000000000000"
-    );
+    return true;
+    // // _task?.status != "finish" &&
+    // dayjs(new Date()).isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
+    // dayjs(new Date())
+    //   .add(1, "day")
+    //   .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
+    // y._id.toString() === "000000000000000000000000"
   });
 
   return (

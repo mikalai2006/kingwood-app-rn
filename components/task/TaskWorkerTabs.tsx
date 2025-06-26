@@ -53,14 +53,13 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
   ).filter((y) => {
     const _task = tasks.find((x) => x._id.toString() == y.taskId);
 
-    return (
-      // _task?.status != "finish" &&
-      dayjs(new Date()).isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
-      dayjs(new Date())
-        .add(1, "day")
-        .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
-      y._id.toString() === "000000000000000000000000"
-    );
+    return true;
+    // // _task?.status != "finish" &&
+    // dayjs(new Date()).isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
+    // dayjs(new Date())
+    //   .add(10, "day")
+    //   .isBetween(dayjs(y.from), dayjs(y.to), "day", "[]") ||
+    // y._id.toString() === "000000000000000000000000"
   });
 
   // const taskWorkers1 = useQuery(TaskWorkerSchema, (items) =>
@@ -87,6 +86,7 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
 
     return _result;
   }, [taskWorkers]);
+  console.log("tabs");
 
   return (
     <ScrollView horizontal className="flex">
@@ -126,8 +126,8 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
                     }
                     textClass={
                       item?._id.toString() == props.objectId
-                        ? "px-2 text-xl text-white dark:text-white"
-                        : "px-2 text-xl text-s-700 dark:text-s-400"
+                        ? "px-2 text-lg text-white dark:text-white"
+                        : "px-2 text-lg text-s-700 dark:text-s-400"
                     }
                     onPress={() => {
                       props.setObjectId(item._id.toString());

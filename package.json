@@ -3,7 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "dev:android": "SET APP_VARIANT=development&npx expo run:android --device",
+    "dev:android": "SET APP_VARIANT=development && npx expo run:android --device",
     "start": "expo start",
     "start:dev": "expo start  --dev-client",
     "reset-project": "node ./scripts/reset-project.js",

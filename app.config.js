@@ -49,10 +49,9 @@ export default {
       ? "com.mikalai2006.kingwood.dev"
       : "com.mikalai2006.kingwood",
     userInterfaceStyle: "automatic",
-    googleServicesFile:
-      process.env.GOOGLE_SERVICES_JSON || IS_DEV
-        ? "./google-services.dev.json"
-        : "./google-services.json",
+    googleServicesFile: IS_DEV
+      ? process.env.GOOGLE_SERVICES_DEV_JSON
+      : process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
   },
   web: {
     bundler: "metro",

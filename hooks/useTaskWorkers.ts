@@ -28,6 +28,7 @@ export interface IUseTaskWorkersProps {
   status?: string[];
   $limit?: number;
   $skip?: number;
+  $sort?: { key: string; value: number }[];
 }
 
 const useTaskWorkers = (props: IUseTaskWorkersProps) => {

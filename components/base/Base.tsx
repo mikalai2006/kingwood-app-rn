@@ -286,6 +286,15 @@ const Base = (props: IBaseProps) => {
                         headerShown: true,
                       }}
                     />
+                    <Stack.Screen
+                      name="usertimework"
+                      options={{
+                        title: t("title.timeWork"),
+                        presentation: "transparentModal",
+                        animation: "slide_from_right",
+                        headerShown: false,
+                      }}
+                    />
                     {/* <Stack.Screen
                 name="modaldarom"
                 options={{

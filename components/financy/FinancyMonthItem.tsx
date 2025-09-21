@@ -139,7 +139,7 @@ export function FinancyMonthItem({ date, time }: FinancyMonthItemProps) {
             {
               <TaskWorkerTime
                 time={getObjectTime(totalTime)}
-                className="text-md text-gr-800 dark:text-gr-400"
+                className="text-lg text-gr-800 dark:text-gr-400"
                 short={false}
                 // hideSeconds
               />

@@ -146,9 +146,12 @@ export default function TabProfileScreen() {
                       {t(`typePay.${userFromStore.typePay}`)}
                     </Text>
                     <UIButton type="link" onPress={() => onShowOklad()}>
-                      <Text className="text-lg font-bold text-p-800 dark:text-p-200">
-                        ***
-                      </Text>
+                      <View className="-mx-1 flex-row gap-4">
+                        <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                          ***
+                        </Text>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
                     </UIButton>
                     {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
                       {userFromStore?.oklad}{" "}
@@ -167,6 +170,27 @@ export default function TabProfileScreen() {
                         "DD MMMM YYYY"
                       )}
                   </Text>
+                </View>
+
+                <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
+                  <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
+                    {t(`timeWork`)}
+                  </Text>
+                  <View className="-mx-1 flex-row gap-4">
+                    <Text className="text-lg font-bold text-p-800 dark:text-p-200"></Text>
+
+                    <UIButton
+                      type="secondary"
+                      className="p-2 rounded-lg bg-s-200 dark:bg-s-600"
+                      textClass="text-s-600 dark:text-s-200"
+                      text={t("button.edit")}
+                      onPress={() => {
+                        router.push({
+                          pathname: "/usertimework",
+                        });
+                      }}
+                    />
+                  </View>
                 </View>
 
                 <View className="py-2 flex-row gap-4 items-center">

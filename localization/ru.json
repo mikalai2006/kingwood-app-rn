@@ -13,6 +13,7 @@
     "yes": "Да",
     "ok": "Ok",
     "no": "Нет",
+    "edit": "Изменить",
     "cancel": "Отмена",
     "completedTask": "Выполненные заказы",
     "startWorkTime": "Начать рабочее время",
@@ -112,6 +113,7 @@
     "taskPauseDescription": "Вы хотите остановить выполнение хоз.работ?",
     "taskProcessDescription": "Вы хотите запустить выполнение хоз.работ?"
   },
+  "timeWork": "Макс. рабочее время",
   "hourEnd": "часы",
   "minuteEnd": "минуты",
   "textTimeEndPrevDayBefore": "Введите время до которого вы работали {{timePrevDay}}",

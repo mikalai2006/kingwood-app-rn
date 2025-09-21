@@ -1,5 +1,9 @@
 const IS_DEV = process.env.APP_VARIANT === "development";
-
+console.log(
+  "Start build with APP_VARIANT=",
+  process.env.APP_VARIANT,
+  IS_DEV ? "com.mikalai2006.kingwood.dev" : "com.mikalai2006.kingwood"
+);
 export default {
   name: IS_DEV ? "КингВуд(DEV)" : "КингВуд",
   slug: "kingwood-app-rn",
@@ -50,7 +54,7 @@ export default {
       : "com.mikalai2006.kingwood",
     userInterfaceStyle: "automatic",
     googleServicesFile: IS_DEV
-      ? process.env.GOOGLE_SERVICES_DEV_JSON
+      ? process.env.GOOGLE_SERVICES_DEV_JSON || "./google-services.dev.json"
       : process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
   },
   web: {

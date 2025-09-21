@@ -22,10 +22,20 @@ export function TaskWorkerTime({
       {/* {JSON.stringify(time)} */}
       {time.hours > 0 ? (!short ? time.hours : time.hours0) : ""}
       {time.hours > 0 ? (!short ? t("time.hours") + " " : ":") : ""}
-      {!short ? time.minutes : time.minutes0}
-      {!short ? t("time.minutes") + " " : ":"}
-      {!hideSeconds ? (!short ? time.seconds : time.seconds0) : ""}
-      {!hideSeconds ? (!short ? t("time.seconds") + " " : "") : ""}
+      {!short
+        ? time.minutes > 0
+          ? time.minutes + t("time.minutes") + " "
+          : ""
+        : time.minutes0 + (!hideSeconds ? ":" : "")}
+      {/* {!short ? t("time.minutes") + " " : ":"} */}
+      {!hideSeconds
+        ? !short
+          ? time.seconds > 0
+            ? time.seconds + t("time.seconds") + " "
+            : ""
+          : time.seconds0
+        : ""}
+      {/* {!hideSeconds ? (!short ? t("time.seconds") + " " : "") : ""} */}
     </Text>
   );
 }

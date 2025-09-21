@@ -84,7 +84,7 @@ export function TaskWorkerItemStatusIcon({}: TaskWorkItemStatusIconProps) {
                   />
                 </View>
                 <Text
-                  numberOfLines={2}
+                  numberOfLines={1}
                   className=" text-white whitespace-nowrap"
                   style={{ fontSize: 12 }}
                 >

@@ -88,9 +88,10 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
       //   : taskWorker?.objectId
     )
   );
-  if (taskWorker?.taskId && getObjectId(taskWorker?.taskId) != "0") {
-    useTask({ id: [taskWorker.taskId] });
-  }
+
+  // if (taskWorker?.taskId && getObjectId(taskWorker?.taskId) != "0") {
+  //   useTask({ id: [taskWorker.taskId] });
+  // }
 
   const allTaskStatus = useQuery(TaskStatusSchema);
   const allOrders = useQuery(OrderSchema);
@@ -494,7 +495,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
       <View
         className={
           (taskStatus?.status === "process"
-            ? " bg-gr-100 dark:bg-gr-900 "
+            ? " bg-gr-100 dark:bg-gr-800 "
             : " bg-white dark:bg-s-800 ") +
           " rounded-lg shadow-lg " +
           (!dayjs(new Date()).isBetween(
@@ -508,13 +509,21 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
         }
         // style={{ backgroundColor: taskStatus?.color }}
       >
-        <View className="rounded-t-lg p-2 pb-0">
+        <View
+          className={
+            "rounded-t-lg pb-0  "
+            // +
+            // (taskStatus?.status === "process"
+            //   ? " bg-gr-200 dark:bg-gr-800"
+            //   : " bg-s-50 dark:bg-s-900")
+          }
+        >
           {/* {order.priority && (
             <Text className="self-start p-1 rounded-sm text-base bg-red-300 dark:bg-red-400">
               Срочный заказ
             </Text>
           )} */}
-          <View className="px-1">
+          <View>
             <TaskOrder orderId={task.orderId} />
           </View>
         </View>
@@ -549,15 +558,17 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
             <View className="p-2">
               {/* <Text className="text-s-500 leading-5 mb-1">Задача</Text> */}
               <Text
-                className="text-base leading-6 text-s-700 dark:text-s-100"
+                className="text-base text-s-600 dark:text-s-100"
                 numberOfLines={2}
                 lineBreakMode="tail"
               >
-                <Text className="text-base text-s-400">{t("yourTask")}: </Text>
+                <Text className="text-base text-s-600 dark:text-s-200">
+                  {t("yourTask")}:{" "}
+                </Text>
                 <Text className="font-medium text-base">{task.name}</Text>
               </Text>
               <View className="flex flex-row gap-0">
-                <Text className="text-base text-s-400">
+                <Text className="text-base text-s-600 dark:text-s-200">
                   {t("taskStatus")}:{" "}
                 </Text>
                 <Text
@@ -565,7 +576,7 @@ export function TaskWorkerItem({ taskWorkerId }: TaskWorkerItemProps) {
                     (taskStatus?.status === "process"
                       ? "bg-gr-600 dark:bg-gr-600 text-white"
                       : "text-s-800 dark:text-s-100") +
-                    " px-2 rounded-lg text-base font-medium"
+                    " px-2 rounded-lg text-sm font-medium"
                   }
                 >
                   {taskStatus?.name}

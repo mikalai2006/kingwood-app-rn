@@ -171,31 +171,39 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
     <Pressable onPress={() => setOpen(!open)}>
       <Card className="mt-1">
         {open && (
-          <View className="border-b border-black/10 dark:border-white/10 mb-2">
-            {groupsWorkHistoryMonth.map((m) => (
+          <View className="mb-2 bg-s-100 dark:bg-s-700 py-2 rounded-lg">
+            {groupsWorkHistoryMonth.map((m, index) => (
               <View
                 key={m.orderId}
-                className="flex flex-row gap-2 mb-1 border-b border-s-200 dark:border-s-950"
+                className={
+                  "flex flex-row gap-2 px-2 py-1 " +
+                  (index < groupsWorkHistoryMonth.length - 1
+                    ? "border-b border-s-200 dark:border-s-950 border-dotted"
+                    : "")
+                }
               >
-                <Text
-                  className={
-                    "flex-auto font-medium " +
-                    (m.total > 0
-                      ? "text-s-800 dark:text-s-300 "
-                      : "text-r-600 dark:text-r-400")
-                  }
-                >
-                  {m.order.number ? "№" + m.order.number + " " : ""}
-                  {m.order.name}
-                  <Text className="text-g-300 dark:text-s-500">
-                    , {m.object.name}
+                <View className="flex-auto">
+                  <Text className="text-s-500 dark:text-s-500">
+                    {m.object.name}
                   </Text>
-                </Text>
+                  <Text
+                    className={
+                      "font-medium " +
+                      (m.total > 0
+                        ? "text-s-800 dark:text-s-300 "
+                        : "text-r-600 dark:text-r-400")
+                    }
+                  >
+                    {m.order.number ? "№" + m.order.number + " " : ""}
+                    {m.order.name}
+                  </Text>
+                </View>
                 <Text
                   className={
-                    m.total > 0
+                    (m.total > 0
                       ? "text-gr-600 dark:text-p-300 font-medium"
-                      : "text-r-600 dark:text-r-400 font-medium"
+                      : "text-r-600 dark:text-r-400 font-medium") +
+                    " self-center text-right text-md min-w-16"
                   }
                 >
                   {(m.total || 0).toLocaleString("ru-RU")} ₽

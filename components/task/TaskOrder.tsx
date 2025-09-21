@@ -21,11 +21,11 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
 
   const { t } = useTranslation();
 
-  if (getObjectId(orderId) != "0") {
-    useOrders({
-      id: [orderId],
-    });
-  }
+  // if (getObjectId(orderId) != "0") {
+  //   useOrders({
+  //     id: [orderId],
+  //   });
+  // }
 
   const order = useObject(OrderSchema, new BSON.ObjectId(orderId));
   const object = useObject(ObjectsSchema, new BSON.ObjectId(order?.objectId));
@@ -33,7 +33,7 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
   return order ? (
     <UIButton
       type="link"
-      className="p-2 flex flex-row items-center"
+      className="p-0"
       onPress={() => {
         if (getObjectId(order._id.toString()) != "0") {
           router.push({
@@ -43,42 +43,55 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
         }
       }}
     >
-      <View className="flex-auto">
-        {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
-        <Text className="text-lg font-medium leading-5 text-s-700 dark:text-s-100 pt-2">
-          {order.number ? `№${order.number} - ` : ""}
-          {order.name}
+      {order.priority ? (
+        <Text className="p-2 rounded-t-lg text-md bg-red-300 dark:bg-red-300">
+          {t("priorityOrder")}
         </Text>
-        <View className="flex flex-row items-center">
-          {/* <View className="flex flex-row">
+      ) : null}
+      <View className="p-2 pt-4 px-4 flex flex-row items-center">
+        <View className="flex-auto flex flex-row gap-2">
+          <View className="items-center flex flex-row">
+            {order.number ? (
+              <Text className="self-center text-s-500 dark:text-s-300 text-sm pr-1 pt-2">
+                №
+              </Text>
+            ) : null}
+            <Text className="text-3xl font-medium text-s-700 dark:text-p-300">
+              {order.number ? `${order.number}` : ""}
+            </Text>
+          </View>
+          <View className="flex-auto">
+            <View className="flex flex-row items-center">
+              {/* <View className="flex flex-row">
             <Text className="text-lg  text-s-500 dark:text-s-300 pr-1">
               {t("order")} №{order.number},
             </Text>
           </View> */}
-          <View className="flex flex-row items-center">
-            <Text className="text-lg font-medium text-s-500 dark:text-s-300 pr-1">
-              {object?.name}
-            </Text>
-            {order.priority ? (
-              <Text className="px-1 rounded-sm text-sm bg-red-300 dark:bg-red-300">
-                {t("priorityOrder")}
-              </Text>
-            ) : null}
-            {/* <Text className="text-xl leading-5 font-medium text-s-500 dark:text-s-300">
+              <View className="flex flex-row items-center">
+                <Text className="text-md font-medium text-s-500 dark:text-p-300 pr-1">
+                  {object?.name}
+                </Text>
+                {/* <Text className="text-xl leading-5 font-medium text-s-500 dark:text-s-300">
             {object?.name}
           </Text> */}
+              </View>
+            </View>
+            {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
+            <Text className="text-md font-medium text-s-700 dark:text-s-100 capitalize">
+              {order.name}
+            </Text>
           </View>
         </View>
+        {getObjectId(order._id.toString()) != "0" && (
+          <View>
+            <SIcon
+              path="iChevronRight"
+              size={20}
+              color={colorScheme === "dark" ? Colors.s[500] : Colors.s[300]}
+            />
+          </View>
+        )}
       </View>
-      {getObjectId(order._id.toString()) != "0" && (
-        <View>
-          <SIcon
-            path="iChevronRight"
-            size={20}
-            color={colorScheme === "dark" ? Colors.s[500] : Colors.s[300]}
-          />
-        </View>
-      )}
     </UIButton>
   ) : (
     <Text>Not found order</Text>

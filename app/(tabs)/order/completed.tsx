@@ -20,12 +20,20 @@ export default function FollowScreen() {
     status: ["finish", "autofinish"],
     $limit: 2,
     $skip: skip,
+    $sort: [
+      {
+        key: "number",
+        value: -1,
+      },
+    ],
   });
 
   const taskWorkers = useQuery(TaskWorkerSchema, (items) =>
-    items.filtered("workerId == $0 AND status IN {'finish', 'autofinish'}", [
-      userFromStore?.id,
-    ])
+    items
+      .filtered("workerId == $0 AND status IN {'finish', 'autofinish'}", [
+        userFromStore?.id,
+      ])
+      .sorted("orderId", true)
   );
 
   const allOrder = useQuery(OrderSchema);

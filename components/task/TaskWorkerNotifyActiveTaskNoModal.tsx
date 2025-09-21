@@ -11,7 +11,7 @@ export function TaskWorkerNotifyActiveTaskNoModal({}: TaskWorkerNotifyActiveTask
   const { t } = useTranslation();
 
   return (
-    <View className="rounded-lg p-2 px-1 flex flex-row items-center gap-3">
+    <View className="rounded-lg p-1 px-1 flex flex-row items-center gap-3">
       {/* <View className="">
         <SIcon path="iWarningCircle" size={25} color={Colors.white} />
       </View> */}

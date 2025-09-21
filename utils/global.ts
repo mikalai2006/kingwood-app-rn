@@ -1,8 +1,10 @@
-const IS_DEV = process.env.APP_VARIANT === "development";
-
+const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === "development";
 export const timeoutMaxRequest = 10000; // in milliseconds
 export const isWriteConsole = IS_DEV;
 
+if (isWriteConsole) {
+  console.log("\x1b[33m", "Start development environment", IS_DEV);
+}
 // export const hostAPI = "https://kingwood-apps.ru/api/v1";
 // export const hostSERVER = "https://kingwood-apps.ru";
 // export const wsAPI = "wss://kingwood-apps.ru/api/v1/ws/room1";

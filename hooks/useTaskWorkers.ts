@@ -17,6 +17,7 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { ITaskWorker, ITaskWorkerPopulate } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseTaskWorkersProps {
   query?: string;
@@ -251,7 +252,7 @@ const useTaskWorkers = (props: IUseTaskWorkersProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useTaskWorker", e?.message));
           // console.log('UseNode error: ', e?.message);
         }
       };

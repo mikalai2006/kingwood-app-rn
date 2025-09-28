@@ -16,14 +16,19 @@ export default function NotifyScreen() {
 
   const { isLoading } = useArchiveNotify({
     userTo: userFromStore?.id ? [userFromStore?.id] : undefined,
+    $sort: [
+      {
+        key: "createdAt",
+        value: -1,
+      },
+    ],
   });
 
   const notifys = useQuery(
     ArchiveNotifySchema,
     (items) =>
-      items
-        .filtered("userTo == $0 AND status == 1", userFromStore?.id)
-        .sorted("createdAt", false),
+      items.filtered("userTo == $0 AND status == 1", userFromStore?.id),
+    // .sorted("createdAt", false),
     [userFromStore]
   );
 
@@ -39,7 +44,11 @@ export default function NotifyScreen() {
       ) : (
         <FlatList
           className=""
-          data={notifys}
+          data={[...notifys].sort(
+            (a, b) =>
+              new Date(a.createdAt).getMilliseconds() +
+              new Date(b.createdAt).getMilliseconds()
+          )}
           keyExtractor={(item) => item._id.toString()}
           renderItem={({ item }) => (
             <NotifyItem key={item._id.toString()} notify={item} />

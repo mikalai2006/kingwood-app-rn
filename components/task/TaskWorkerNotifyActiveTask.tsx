@@ -2,27 +2,21 @@ import { Text, View } from "react-native";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   activeTaskWorker,
-  setActiveTaskWorker,
   setLinkParams,
   user,
   workHistory,
 } from "@/store/storeSlice";
 import SIcon from "../ui/SIcon";
-import { Colors } from "@/utils/Colors";
 import {
   OperationSchema,
   OrderSchema,
   TaskSchema,
   TaskStatusSchema,
-  TaskWorkerSchema,
 } from "@/schema";
-import { useObject, useQuery } from "@realm/react";
+import { useObject } from "@realm/react";
 import { BSON } from "realm";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
-import UIButton from "../ui/UIButton";
 import { router } from "expo-router";
-import { useEffect, useMemo } from "react";
-import useOrders from "@/hooks/useOrders";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useTaskWorkers from "@/hooks/useTaskWorkers";
 

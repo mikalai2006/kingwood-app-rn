@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import Card from "@/components/Card";
 import { IAdminOrderParams } from "@/app/(tabs)/order";
 import useOrders from "@/hooks/useOrders";
-import { SSkeleton } from "@/components/ui/SSkeleton";
 import { OrderAdminItem } from "./OrderAdminItem";
 
 export interface OrderAdminListProps {

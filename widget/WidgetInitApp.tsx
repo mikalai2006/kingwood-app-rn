@@ -17,6 +17,8 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import dayjs from "@/utils/dayjs";
 import { useTranslation } from "react-i18next";
+import { CustomError } from "@/hooks/useErrors";
+import { useError } from "@/hooks/useError";
 
 export const WidgetInitApp = () => {
   const { onFetch } = useFetch();
@@ -24,6 +26,7 @@ export const WidgetInitApp = () => {
   // const {isInternetReachable} = useNetInfo();
 
   const { t } = useTranslation();
+  const { onSendError } = useError();
 
   const dispatch = useAppDispatch();
   const realm = useRealm();
@@ -158,7 +161,7 @@ export const WidgetInitApp = () => {
               }
             })
             .catch((e) => {
-              throw new Error("onFindPost: " + e.message);
+              throw new CustomError("onFindPost", e.message, "404");
             });
         };
         await onFindPost();
@@ -346,8 +349,9 @@ export const WidgetInitApp = () => {
         };
         onInitFakeData();
       } catch (e: any) {
-        isWriteConsole && console.log("WidgetInitApp error: ", e.message);
-        Alert.alert(t("error.title"), e?.toString());
+        // isWriteConsole && console.log("WidgetInitApp error: ", e.message);
+        // onCreateError(e);
+        onSendError(new CustomError("WidgetInitApp", e.message));
       } finally {
       }
     };

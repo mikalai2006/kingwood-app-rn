@@ -3,7 +3,6 @@ import { useObject } from "@realm/react";
 import { useColorScheme } from "nativewind";
 import { BSON } from "realm";
 import { OrderSchema } from "@/schema";
-import useOrders from "@/hooks/useOrders";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import { useTranslation } from "react-i18next";
 import UIButton from "../ui/UIButton";
@@ -50,7 +49,7 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
       ) : null}
       <View className="p-2 pt-4 px-4 flex flex-row items-center">
         <View className="flex-auto flex flex-row gap-2">
-          <View className="items-center flex flex-row">
+          {/* <View className="items-center flex flex-row">
             {order.number ? (
               <Text className="self-center text-s-500 dark:text-s-300 text-sm pr-1 pt-2">
                 №
@@ -59,7 +58,7 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
             <Text className="text-3xl font-medium text-s-700 dark:text-p-300">
               {order.number ? `${order.number}` : ""}
             </Text>
-          </View>
+          </View> */}
           <View className="flex-auto">
             <View className="flex flex-row items-center">
               {/* <View className="flex flex-row">
@@ -68,7 +67,7 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
             </Text>
           </View> */}
               <View className="flex flex-row items-center">
-                <Text className="text-md font-medium text-s-500 dark:text-p-300 pr-1">
+                <Text className="text-lg font-medium text-s-500 dark:text-p-300 pr-1">
                   {object?.name}
                 </Text>
                 {/* <Text className="text-xl leading-5 font-medium text-s-500 dark:text-s-300">
@@ -77,7 +76,10 @@ export function TaskOrder({ orderId }: TaskOrderProps) {
               </View>
             </View>
             {/* <Text className="text-s-500 leading-5 mb-2">Изделие</Text> */}
-            <Text className="text-md font-medium text-s-700 dark:text-s-100 capitalize">
+            <Text className="text-lg leading-6 py-1 font-medium text-s-700 dark:text-s-100">
+              <Text className="text-s-500 dark:text-p-300">
+                {order.number ? `№${order.number} - ` : ""}
+              </Text>
               {order.name}
             </Text>
           </View>

@@ -23,13 +23,13 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "inWork",
         params: {
-          status: 1,
+          status: [1],
         },
       },
       {
         key: "notWork",
         params: {
-          status: 0,
+          status: [0],
         },
       },
       // {
@@ -41,7 +41,7 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "stolyarComplete",
         params: {
-          status: 1,
+          status: [1],
           stolyarComplete: 1,
           // shlifComplete: 0,
           // malyarComplete: 0,
@@ -52,7 +52,7 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "shlifComplete",
         params: {
-          status: 1,
+          status: [1],
           // stolyarComplete: 1,
           shlifComplete: 1,
           // malyarComplete: 0,
@@ -63,7 +63,7 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "malyarComplete",
         params: {
-          status: 1,
+          status: [1],
           // stolyarComplete: 1,
           // shlifComplete: 1,
           malyarComplete: 1,
@@ -74,7 +74,7 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "goComplete",
         params: {
-          status: 1,
+          status: [1],
           // stolyarComplete: 1,
           // shlifComplete: 1,
           // malyarComplete: 1,
@@ -85,13 +85,13 @@ const OrderAdminTabs = (props: OrderAdminTabsProps) => {
       {
         key: "completed",
         params: {
-          status: 100,
+          status: [100],
         },
       },
-      {
-        key: "all",
-        params: {},
-      },
+      // {
+      //   key: "all",
+      //   params: {},
+      // },
     ];
   }, []);
 

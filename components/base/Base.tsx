@@ -1,61 +1,17 @@
-import {
-  ActivityIndicator,
-  AppState,
-  StatusBar,
-  Text,
-  View,
-} from "react-native";
+import { View } from "react-native";
 import React from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
-
-import { Provider } from "react-redux";
-import { store, persistor } from "@/store/store";
-
-import { PersistGate } from "redux-persist/integration/react";
-
-import { RealmProvider } from "@realm/react";
-import {
-  ImageSchema,
-  MessageRoomSchema,
-  MessageSchema,
-  OperationSchema,
-  OrderSchema,
-  PostSchema,
-  QuestionSchema,
-  TaskMontajSchema,
-  TaskMontajWorkerSchema,
-  TaskSchema,
-  TaskStatusSchema,
-  TaskWorkerSchema,
-  UserSchema,
-  WorkHistorySchema,
-  WorkTimeSchema,
-  NotifySchema,
-  PaySchema,
-  PayTemplateSchema,
-  ArchiveNotifySchema,
-  ObjectsSchema,
-} from "@/schema";
 
 import { Colors } from "@/utils/Colors";
 import { useColorScheme } from "nativewind";
 
 import { useTranslation } from "react-i18next";
 
-import WidgetInitAuth from "@/widget/WidgetInitAuth";
 import { WidgetInitApp } from "@/widget/WidgetInitApp";
-import WidgetEvents from "@/widget/WidgetEvents";
-
-import { ErrContext } from "../ErrContext";
 
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
-
-interface IBaseProps {
-  err: Error | null;
-  setErr: (err: Error | null) => void;
-}
+import { isWriteConsole } from "@/utils/global";
 
 function useNotificationObserver() {
   React.useEffect(() => {
@@ -88,8 +44,8 @@ function useNotificationObserver() {
   }, []);
 }
 
-const Base = (props: IBaseProps) => {
-  const { err, setErr } = props;
+const Base = () => {
+  isWriteConsole && console.log("Render Base");
 
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
@@ -97,74 +53,27 @@ const Base = (props: IBaseProps) => {
   useNotificationObserver();
 
   return (
-    <RealmProvider
-      schema={[
-        TaskSchema,
-        ImageSchema,
-        UserSchema,
-        TaskStatusSchema,
-        TaskWorkerSchema,
-        OperationSchema,
-        OrderSchema,
-        ObjectsSchema,
-        MessageSchema,
-        MessageRoomSchema,
-        PostSchema,
-        QuestionSchema,
-        WorkTimeSchema,
-        TaskMontajSchema,
-        TaskMontajWorkerSchema,
-        WorkHistorySchema,
-        NotifySchema,
-        PaySchema,
-        PayTemplateSchema,
-        ArchiveNotifySchema,
-      ]}
-      inMemory
-    >
-      <Provider store={store}>
-        <PersistGate
-          loading={
-            <View>
-              <StatusBar translucent backgroundColor="transparent" />
-              <ActivityIndicator />
-            </View>
-          }
-          persistor={persistor}
-        >
-          <ErrContext.Provider value={{ err, setErr }}>
-            {/* <SpeedTestView err={err || ""} /> */}
-            <View className="flex-1 bg-s-100 dark:bg-s-900">
-              <WidgetInitApp />
-              <GestureHandlerRootView style={styles.root}>
-                <StatusBar translucent backgroundColor="transparent" />
-                <View style={styles.view} className="bg-s-200 dark:bg-s-950">
-                  {/* <SafeAreaView style={{ flex: 1 }}> */}
-                  {/* <View className="flex-none">
+    <View style={styles.view} className="bg-s-200 dark:bg-s-950">
+      <WidgetInitApp />
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
+      {/* <View className="flex-none">
                 <TaskWorkerNotify />
             </View> */}
-                  <Stack
-                    // initialRouteName="auth"
-                    screenOptions={{
-                      headerTitleAlign: "center",
-                      presentation: "fullScreenModal",
-                      headerStyle: {
-                        backgroundColor:
-                          colorScheme === "dark"
-                            ? Colors.s[950]
-                            : Colors.s[100],
-                      },
-                      headerTintColor:
-                        colorScheme === "dark" ? Colors.s[200] : Colors.s[800],
-                    }}
-                  >
-                    {
-                      <Stack.Screen
-                        name="(tabs)"
-                        options={{ headerShown: false }}
-                      />
-                    }
-                    {/* <Stack.Screen
+      <Stack
+        // initialRouteName="auth"
+        screenOptions={{
+          headerTitleAlign: "center",
+          presentation: "fullScreenModal",
+          headerStyle: {
+            backgroundColor:
+              colorScheme === "dark" ? Colors.s[950] : Colors.s[100],
+          },
+          headerTintColor:
+            colorScheme === "dark" ? Colors.s[200] : Colors.s[800],
+        }}
+      >
+        {<Stack.Screen name="(tabs)" options={{ headerShown: false }} />}
+        {/* <Stack.Screen
                 name="modalcategory"
                 options={{
                 title: "Выберите категорию",
@@ -173,16 +82,16 @@ const Base = (props: IBaseProps) => {
                 // headerShown: false,
                 }}
             /> */}
-                    <Stack.Screen
-                      name="modalpicker"
-                      options={{
-                        title: "Добавление изображения",
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        // headerShown: false,
-                      }}
-                    />
-                    {/* <Stack.Screen
+        <Stack.Screen
+          name="modalpicker"
+          options={{
+            title: "Добавление изображения",
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            // headerShown: false,
+          }}
+        />
+        {/* <Stack.Screen
                 name="modalfilter"
                 options={{
                 title: "Настройка фильтра",
@@ -191,7 +100,7 @@ const Base = (props: IBaseProps) => {
                 // headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="modalsort"
                 options={{
                 title: "Настройка сортировки",
@@ -200,7 +109,7 @@ const Base = (props: IBaseProps) => {
                 // headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="product"
                 options={{
                 // presentation: "transparentModal",
@@ -208,7 +117,7 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="user"
                 options={{
                 // presentation: "transparentModal",
@@ -216,23 +125,23 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    <Stack.Screen
-                      name="modalauth"
-                      options={{
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="finance"
-                      options={{
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    {/* <Stack.Screen
+        <Stack.Screen
+          name="modalauth"
+          options={{
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="finance"
+          options={{
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        {/* <Stack.Screen
                 name="modaloffer"
                 options={{
                 // title: "Предложение",
@@ -241,61 +150,61 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    <Stack.Screen
-                      name="usersettingform"
-                      options={{
-                        // title: "Предложение",
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="modalendprevday"
-                      options={{
-                        // title: "Предложение",
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="userpassword"
-                      options={{
-                        // title: "Предложение",
-                        // presentation: "transparentModal",
-                        // animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="modaldatepicker"
-                      options={{
-                        title: t("modaldatepicker"),
-                        presentation: "transparentModal",
-                        animation: "slide_from_right",
-                        headerShown: true,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="modalschedule"
-                      options={{
-                        title: t("title.schedule"),
-                        presentation: "transparentModal",
-                        animation: "slide_from_right",
-                        headerShown: true,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="usertimework"
-                      options={{
-                        title: t("title.timeWork"),
-                        presentation: "transparentModal",
-                        animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    {/* <Stack.Screen
+        <Stack.Screen
+          name="usersettingform"
+          options={{
+            // title: "Предложение",
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="modalendprevday"
+          options={{
+            // title: "Предложение",
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="userpassword"
+          options={{
+            // title: "Предложение",
+            // presentation: "transparentModal",
+            // animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="modaldatepicker"
+          options={{
+            title: t("modaldatepicker"),
+            presentation: "transparentModal",
+            animation: "slide_from_right",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="modalschedule"
+          options={{
+            title: t("title.schedule"),
+            presentation: "transparentModal",
+            animation: "slide_from_right",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="usertimework"
+          options={{
+            title: t("title.timeWork"),
+            presentation: "transparentModal",
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        {/* <Stack.Screen
                 name="modaldarom"
                 options={{
                 // title: "Предложение",
@@ -304,7 +213,7 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="modalquestion"
                 options={{
                 // title: "Вопросы",
@@ -313,7 +222,7 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="address"
                 options={{
                 // title: "Вопросы",
@@ -322,7 +231,7 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="mapaddaddress"
                 options={{
                 // title: "Вопросы",
@@ -331,7 +240,7 @@ const Base = (props: IBaseProps) => {
                 headerShown: false,
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="mapfilter"
                 options={{
                 // title: "Вопросы",
@@ -341,31 +250,31 @@ const Base = (props: IBaseProps) => {
                 }}
             /> */}
 
-                    <Stack.Screen
-                      name="auth"
-                      options={{
-                        headerShown: false,
-                        // presentation: 'transparentModal',
-                        // animation: "slide_from_bottom",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="modalmessage"
-                      options={{
-                        headerShown: false,
-                        // presentation: 'transparentModal',
-                        // animation: "slide_from_bottom",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="[orderId]"
-                      options={{
-                        headerShown: false,
-                        // presentation: 'transparentModal',
-                        // animation: "slide_from_bottom",
-                      }}
-                    />
-                    {/* <Stack.Screen
+        <Stack.Screen
+          name="auth"
+          options={{
+            headerShown: false,
+            // presentation: 'transparentModal',
+            // animation: "slide_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="modalmessage"
+          options={{
+            headerShown: false,
+            // presentation: 'transparentModal',
+            // animation: "slide_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="[orderId]"
+          options={{
+            headerShown: false,
+            // presentation: 'transparentModal',
+            // animation: "slide_from_bottom",
+          }}
+        />
+        {/* <Stack.Screen
                 name="modaldeal"
                 options={{
                 headerShown: false,
@@ -393,7 +302,7 @@ const Base = (props: IBaseProps) => {
                 // ),
                 }}
             /> */}
-                    {/* <Stack.Screen
+        {/* <Stack.Screen
                 name="giveactions"
                 options={{
                 // headerShown: false,
@@ -414,18 +323,10 @@ const Base = (props: IBaseProps) => {
                 // ),
                 }}
             /> */}
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  {/* </SafeAreaView> */}
-                </View>
-              </GestureHandlerRootView>
-              <WidgetInitAuth />
-              <WidgetEvents />
-            </View>
-          </ErrContext.Provider>
-        </PersistGate>
-      </Provider>
-    </RealmProvider>
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      {/* </SafeAreaView> */}
+    </View>
   );
 };
 

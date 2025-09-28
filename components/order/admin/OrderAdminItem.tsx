@@ -37,8 +37,8 @@ export function OrderAdminItem({ orderId }: OrderAdminItemProps) {
         className="rounded-lg shadow-lg bg-white dark:bg-s-800"
         // style={{ backgroundColor: taskStatus?.color }}
       >
-        <View className="rounded-t-lg p-2 pb-0">
-          <View className="px-1">
+        <View className="rounded-t-lg">
+          <View className="">
             <TaskOrder orderId={order._id.toString()} />
           </View>
         </View>

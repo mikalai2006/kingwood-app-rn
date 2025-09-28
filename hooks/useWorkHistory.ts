@@ -19,6 +19,7 @@ import { useError } from "./useError";
 import { IWorkHistory, IWorkHistoryPopulate } from "@/types";
 import { getObjectId } from "@/utils/utils";
 import dayjs from "@/utils/dayjs";
+import { CustomError } from "./useErrors";
 
 export interface IUseWorkHistoryProps {
   workerId?: string[];
@@ -213,7 +214,7 @@ const useWorkHistory = (props: IUseWorkHistoryProps, deps: any[]) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useWorkHistory", e?.message));
           // console.log('UseNode error: ', e?.message);
         }
       };

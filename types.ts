@@ -356,6 +356,13 @@ export type ITaskMontajWorkerInput = {
   [Property in keyof ITaskMontajWorker]?: ITaskMontajWorker[Property];
 };
 
+export interface IDoplata {
+  days: string[];
+  minHours: number;
+  doplata: number;
+  id: number;
+}
+
 export interface IUser {
   id: string;
   userId: string;
@@ -369,10 +376,12 @@ export interface IUser {
   roleId: string;
   roleObject: IRole;
   postId: string;
+  dops: IDoplata[];
   postObject: IPost;
   typeWork: string[];
   typePay: number;
   oklad: number;
+  maxTime: number;
   // workes: number;
   post: IPost;
   auth: {

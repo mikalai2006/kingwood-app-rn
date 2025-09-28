@@ -171,47 +171,48 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
     <Pressable onPress={() => setOpen(!open)}>
       <Card className="mt-1">
         {open && (
-          <View className="mb-2 bg-s-100 dark:bg-s-700 py-2 rounded-lg">
-            {groupsWorkHistoryMonth.map((m, index) => (
-              <View
-                key={m.orderId}
-                className={
-                  "flex flex-row gap-2 px-2 py-1 " +
-                  (index < groupsWorkHistoryMonth.length - 1
-                    ? "border-b border-s-200 dark:border-s-950 border-dotted"
-                    : "")
-                }
-              >
-                <View className="flex-auto">
-                  <Text className="text-s-500 dark:text-s-500">
-                    {m.object.name}
-                  </Text>
-                  <Text
-                    className={
-                      "font-medium " +
-                      (m.total > 0
-                        ? "text-s-800 dark:text-s-300 "
-                        : "text-r-600 dark:text-r-400")
-                    }
-                  >
-                    {m.order.number ? "№" + m.order.number + " " : ""}
-                    {m.order.name}
-                  </Text>
-                </View>
-                <Text
+          <View>
+            <View className="mb-2 bg-s-50 dark:bg-s-700 py-2 rounded-lg">
+              {groupsWorkHistoryMonth.map((m, index) => (
+                <View
+                  key={m.orderId}
                   className={
-                    (m.total > 0
-                      ? "text-gr-600 dark:text-p-300 font-medium"
-                      : "text-r-600 dark:text-r-400 font-medium") +
-                    " self-center text-right text-md min-w-16"
+                    "flex flex-row gap-2 px-2 py-1 " +
+                    (index < groupsWorkHistoryMonth.length - 1
+                      ? "border-b border-s-200 dark:border-s-950 border-dotted"
+                      : "")
                   }
                 >
-                  {(m.total || 0).toLocaleString("ru-RU")} ₽
-                </Text>
-              </View>
-            ))}
+                  <View className="flex-auto">
+                    <Text className="text-s-600 dark:text-s-500">
+                      {m.object.name}
+                    </Text>
+                    <Text
+                      className={
+                        " " +
+                        (m.total > 0
+                          ? "text-s-800 dark:text-s-300 "
+                          : "text-r-600 dark:text-r-400")
+                      }
+                    >
+                      {m.order.number ? "№" + m.order.number + " " : ""}
+                      {m.order.name}
+                    </Text>
+                  </View>
+                  <Text
+                    className={
+                      (m.total > 0
+                        ? "text-gr-600 dark:text-p-300 font-medium"
+                        : "text-r-600 dark:text-r-400 font-medium") +
+                      " self-center text-right text-md min-w-16"
+                    }
+                  >
+                    {(m.total || 0).toLocaleString("ru-RU")} ₽
+                  </Text>
+                </View>
+              ))}
 
-            {/* <View className="flex flex-row gap-2 mb-1">
+              {/* <View className="flex flex-row gap-2 mb-1">
               <Text className="flex-auto text-s-800 dark:text-s-300">
                 {t("totalBy", {
                   date: `${financyFilterFromStore.monthText}, ${financyFilterFromStore.year}`,
@@ -221,32 +222,41 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
                 {(zpFullDay || 0).toLocaleString("ru-RU")} ₽
               </Text>
             </View> */}
-            {allPayMonth.map((pay) => (
-              <View
-                key={pay._id.toString()}
-                className="flex flex-row gap-2 mb-1"
-              >
-                <Text
+            </View>
+
+            <View className="mb-2 bg-s-50 dark:bg-s-700 py-2 rounded-lg">
+              {allPayMonth.map((pay, index) => (
+                <View
+                  key={pay._id.toString()}
                   className={
-                    "flex-auto " +
-                    (pay.total > 0
-                      ? "text-s-800 dark:text-s-300 "
-                      : "text-r-600 dark:text-r-400")
+                    "flex flex-row gap-2 px-2 py-0.5 " +
+                    (index < allPayMonth.length - 1
+                      ? "border-b border-s-200 dark:border-s-950 border-dotted"
+                      : "")
                   }
                 >
-                  {pay.name}
-                </Text>
-                <Text
-                  className={
-                    pay.total > 0
-                      ? "text-p-600 dark:text-p-300 font-medium"
-                      : "text-r-600 dark:text-r-400 font-medium"
-                  }
-                >
-                  {pay.total.toLocaleString("ru-RU")} ₽
-                </Text>
-              </View>
-            ))}
+                  <Text
+                    className={
+                      "flex-auto " +
+                      (pay.total > 0
+                        ? "text-s-800 dark:text-s-300 "
+                        : "text-r-600 dark:text-r-400")
+                    }
+                  >
+                    {pay.name}
+                  </Text>
+                  <Text
+                    className={
+                      pay.total > 0
+                        ? "text-p-600 dark:text-p-300 font-medium"
+                        : "text-r-600 dark:text-r-400 font-medium"
+                    }
+                  >
+                    {pay.total.toLocaleString("ru-RU")} ₽
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         )}
         <View className="flex flex-row gap-2 items-center">

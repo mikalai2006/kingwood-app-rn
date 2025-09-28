@@ -77,6 +77,11 @@ export const storeSlice = createSlice({
       // }
       // console.log("setTokens:::", state.tokens);
     },
+    setAccessToken: (state, action: PayloadAction<string>) => {
+      if (state.tokens) {
+        state.tokens.access_token = action.payload;
+      }
+    },
     setLinkParams: (state, action: PayloadAction<any | null>) => {
       state.linkParams = action.payload;
     },
@@ -137,7 +142,7 @@ export const storeSlice = createSlice({
       state,
       action: PayloadAction<ITaskWorkerPopulate | null>
     ) => {
-      // console.log("setActiveTask", action.payload);
+      console.log("setActiveTask", action.payload?.id, action.payload?.status);
       state.activeTaskWorker = action.payload;
     },
     setWorkTime: (state, action: PayloadAction<IWorkTime | null>) => {
@@ -173,6 +178,7 @@ export const storeSlice = createSlice({
 export const {
   setModeTheme,
   setTokens,
+  setAccessToken,
   setLangCode,
   setUser,
   setLanguages,

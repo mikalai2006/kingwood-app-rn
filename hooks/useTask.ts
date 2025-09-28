@@ -12,6 +12,7 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { ITask } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseTaskProps {
   id?: string[];
@@ -183,7 +184,7 @@ const useTask = (props: IUseTaskProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useTask", e?.message));
           // console.log('UseNode error: ', e?.message);
         }
       };

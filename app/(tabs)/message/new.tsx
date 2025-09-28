@@ -16,18 +16,23 @@ export default function NotifyScreen() {
 
   const { isLoading } = useNotify({
     userTo: userFromStore?.id ? [userFromStore?.id] : undefined,
+    $sort: [
+      {
+        key: "createdAt",
+        value: -1,
+      },
+    ],
   });
 
   const notifys = useQuery(
     NotifySchema,
     (items) =>
-      items
-        .filtered(
-          // "(userTo == $0 || userId == $0) AND status == 0",
-          "userTo == $0",
-          userFromStore?.id
-        )
-        .sorted("createdAt", true),
+      items.filtered(
+        // "(userTo == $0 || userId == $0) AND status == 0",
+        "userTo == $0",
+        userFromStore?.id
+      ),
+    // .sorted("createdAt", true),
     [userFromStore]
   );
 
@@ -43,7 +48,11 @@ export default function NotifyScreen() {
       ) : (
         <FlatList
           className=""
-          data={notifys}
+          data={[...notifys].sort(
+            (a, b) =>
+              new Date(a.updatedAt).getMilliseconds() +
+              new Date(b.updatedAt).getMilliseconds()
+          )}
           keyExtractor={(item) => item._id.toString()}
           renderItem={({ item }) => (
             <NotifyItem key={item._id.toString()} notify={item} />

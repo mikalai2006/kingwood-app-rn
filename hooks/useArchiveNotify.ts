@@ -12,6 +12,7 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { INotify } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseArchiveNotifyProps {
   id?: string[];
@@ -162,8 +163,8 @@ const useArchiveNotify = (props: IUseArchiveNotifyProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
-          isWriteConsole && console.log("UseArchiveNotify error: ", e);
+          onSendError(new CustomError("useArchiveNotify", e));
+          // isWriteConsole && console.log("UseArchiveNotify error: ", e);
         }
       };
 

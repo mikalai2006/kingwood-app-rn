@@ -1,13 +1,16 @@
+import { CustomError } from "@/hooks/useErrors";
 import React, { useContext } from "react";
 
 export type ErrContent = {
-  err: Error | null;
-  setErr: (c: Error | null) => void | null;
+  err: CustomError[];
+  setErr: (c: CustomError[]) => void | null;
+  // addErr: (c: CustomError) => void | null;
 };
 
 export const ErrContext = React.createContext<ErrContent>({
-  err: null,
+  err: [],
   setErr: () => {},
+  // addErr: () => {},
 });
 
 export const useErrContext = () => useContext(ErrContext);

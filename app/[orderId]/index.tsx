@@ -1,21 +1,13 @@
 import { View, Text } from "react-native";
 
 import { ScrollView } from "react-native-gesture-handler";
-import {
-  useLocalSearchParams,
-  useGlobalSearchParams,
-  usePathname,
-} from "expo-router";
+import { useGlobalSearchParams, usePathname } from "expo-router";
 import { useAppSelector } from "@/store/hooks";
 import { user } from "@/store/storeSlice";
-import ImageSlider from "@/components/image/ImageSlider";
 import Card from "@/components/Card";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useColorScheme } from "nativewind";
-import UIButtonBack from "@/components/ui/UIButtonBack";
 import UILabel from "@/components/ui/UILabel";
 import { useMemo } from "react";
-import useOrders from "@/hooks/useOrders";
 import { useQuery } from "@realm/react";
 import { OrderSchema } from "@/schema";
 import OrderObject from "@/components/order/OrderObject";

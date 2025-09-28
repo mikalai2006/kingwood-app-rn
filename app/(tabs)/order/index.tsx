@@ -16,15 +16,15 @@ import {
   user,
   workHistory,
 } from "@/store/storeSlice";
-import UIButton from "@/components/ui/UIButton";
 import TaskWorkerTabs from "@/components/task/TaskWorkerTabs";
 import { useCallback, useEffect, useState } from "react";
 import TaskWorkerList from "@/components/task/TaskWorkerList";
 import OrderAdminTabs from "@/components/order/admin/OrderAdminTabs";
 import OrderAdminList from "@/components/order/admin/OrderAdminList";
+import { isWriteConsole } from "@/utils/global";
 
 export interface IAdminOrderParams {
-  status?: number;
+  status?: number[];
   montajComplete?: number;
   malyarComplete?: number;
   stolyarComplete?: number;
@@ -52,7 +52,7 @@ export default function FollowScreen() {
   const [tab, setTab] = useState<IAdminOrder>({
     key: "inWork",
     params: {
-      status: 1,
+      status: [1],
     },
   });
 
@@ -61,7 +61,8 @@ export default function FollowScreen() {
       // console.log(
       //   "hello: linkParamsFromStore : ",
       //   linkParamsFromStore,
-      //   objectId
+      //   objectId,
+      //   workHistoryFromStore?.objectId
       // );
 
       if (linkParamsFromStore) {
@@ -70,7 +71,7 @@ export default function FollowScreen() {
       } else {
         if (workHistoryFromStore?.objectId) {
           setObjectId(workHistoryFromStore.objectId);
-          console.log("set objectId from store");
+          isWriteConsole && console.log("set objectId from store");
         }
         // }, []);
 

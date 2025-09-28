@@ -12,12 +12,13 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { IOrder } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseOrderProps {
   id?: string[];
   name?: string;
   group?: string[];
-  status?: number;
+  status?: number[];
   stolyarComplete?: number;
   shlifComplete?: number;
   malyarComplete?: number;
@@ -48,7 +49,7 @@ const useOrders = (props: IUseOrderProps) => {
 
       const onFindOrders = async () => {
         try {
-          isWriteConsole && console.log("useOrders: ", props);
+          isWriteConsole && console.log("useOrders params: ", props);
           const searchParams = new URLSearchParams({
             lang: activeLanguageFromStore?.code || "en",
           });
@@ -194,7 +195,7 @@ const useOrders = (props: IUseOrderProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useOrders", e));
           // console.log('UseNode error: ', e?.message);
         }
       };

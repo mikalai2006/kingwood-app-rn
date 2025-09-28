@@ -6,13 +6,15 @@ import {
   setUser,
   setActiveTaskWorker,
   setWorkHistory,
+  setAccessToken,
 } from "@/store/storeSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import useFetch from "@/hooks/useFetch";
 import { ITokens, IUser } from "@/types";
-import { router } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useError } from "./useError";
+import { isExpiredTime } from "@/utils/utils";
+import { CustomError } from "./useErrors";
 
 export interface ISign {
   email: string;
@@ -29,65 +31,65 @@ export default function useAuth() {
 
   const { onSendError } = useError();
 
-  const isAccessTokenExpiredRef = useRef<() => boolean>(() => false);
+  // const isAccessTokenExpiredRef = useRef<() => boolean>(() => false);
   /**
    * Определяем истек ли токена доступа
    * @returns boolean
    */
-  const isAccessTokenExpired = useCallback(() => {
-    return isAccessTokenExpiredRef.current();
-  }, []);
-  useEffect(() => {
-    isAccessTokenExpiredRef.current = () => {
-      // console.log("isAccessTokenExpired: tokenFromStore:", tokenFromStore);
-      if (!tokenFromStore?.expires_in) {
-        return true;
-      }
+  // const isAccessTokenExpired = useCallback(() => {
+  //   return isAccessTokenExpiredRef.current();
+  // }, []);
+  // useEffect(() => {
+  //   isAccessTokenExpiredRef.current = () => {
+  //     // console.log("isAccessTokenExpired: tokenFromStore:", tokenFromStore);
+  //     if (!tokenFromStore?.expires_in) {
+  //       return true;
+  //     }
 
-      const time = new Date().getTime();
-      const timeExp = new Date(tokenFromStore.expires_in).getTime();
-      const isExp = timeExp - time - timeoutMaxRequest <= 0;
+  //     const time = new Date().getTime();
+  //     const timeExp = new Date(tokenFromStore.expires_in).getTime();
+  //     const isExp = timeExp - time - timeoutMaxRequest <= 0;
 
-      // console.log(
-      //   "isAccessTokenExpired: ",
-      //   isExp,
-      //   timeExp - time,
-      //   timeExp,
-      //   time
-      // );
-      return isExp;
-    };
-  });
+  //     // console.log(
+  //     //   "isAccessTokenExpired: ",
+  //     //   isExp,
+  //     //   timeExp - time,
+  //     //   timeExp,
+  //     //   time
+  //     // );
+  //     return isExp;
+  //   };
+  // });
 
-  const isRefreshTokenExpiredRef = useRef<() => boolean>(() => false);
-  /**
-   * Определяем истек ли токен для обновления токена доступа
-   * @returns boolean
-   */
-  const isRefreshTokenExpired = useCallback(() => {
-    return isRefreshTokenExpiredRef.current();
-  }, []);
-  useEffect(() => {
-    isRefreshTokenExpiredRef.current = () => {
-      // console.log("isRefreshTokenExpired: tokenFromStore:", tokenFromStore);
-      if (!tokenFromStore?.expires_in_r) {
-        return true;
-      }
+  // const isRefreshTokenExpiredRef = useRef<() => boolean>(() => false);
+  // /**
+  //  * Определяем истек ли токен для обновления токена доступа
+  //  * @returns boolean
+  //  */
+  // const isRefreshTokenExpired = useCallback(() => {
+  //   return isRefreshTokenExpiredRef.current();
+  // }, []);
+  // useEffect(() => {
+  //   isRefreshTokenExpiredRef.current = () => {
+  //     // console.log("isRefreshTokenExpired: tokenFromStore:", tokenFromStore);
+  //     if (!tokenFromStore?.expires_in_r) {
+  //       return true;
+  //     }
 
-      const time = new Date().getTime();
-      const timeExp = new Date(tokenFromStore.expires_in_r).getTime();
-      const isExp = timeExp - time - timeoutMaxRequest <= 0;
+  //     const time = new Date().getTime();
+  //     const timeExp = new Date(tokenFromStore.expires_in_r).getTime();
+  //     const isExp = timeExp - time - timeoutMaxRequest <= 0;
 
-      // console.log(
-      //   "isRefreshTokenExpired: ",
-      //   isExp,
-      //   timeExp - time
-      //   // timeExp,
-      //   // time
-      // );
-      return isExp;
-    };
-  });
+  //     // console.log(
+  //     //   "isRefreshTokenExpired: ",
+  //     //   isExp,
+  //     //   timeExp - time
+  //     //   // timeExp,
+  //     //   // time
+  //     // );
+  //     return isExp;
+  //   };
+  // });
 
   const onRefreshTokenRef = useRef<() => Promise<ITokens | null>>(null!);
   const onRefreshToken = useCallback(() => {
@@ -133,7 +135,7 @@ export default function useAuth() {
           }
         })
         .catch((e) => {
-          onSendError(e);
+          onSendError(new CustomError("refreshToken", e?.message));
           throw e;
         });
     };
@@ -149,8 +151,10 @@ export default function useAuth() {
         const { access_token, refresh_token } = tokenFromStore || {};
 
         const isAuthActually =
-          access_token && access_token !== "" && !isAccessTokenExpired();
-        const mayByRefresh = refresh_token !== "" && !isRefreshTokenExpired();
+          access_token &&
+          access_token !== "" &&
+          !isExpiredTime(tokenFromStore?.expires_in);
+        // const mayByRefresh = refresh_token !== "" && !isExpiredTime(tokenFromStore?.expires_in_r);
 
         // console.log(
         //   "isAuthActually=",
@@ -163,23 +167,26 @@ export default function useAuth() {
         //   // isRefreshTokenExpired()
         // );
         if (!isAuthActually) {
-          if (mayByRefresh) {
-            const refreshTokens = await onRefreshToken();
-            // if (!refreshTokens) {
-            //     navigation.navigate(ScreenKeys.AuthScreen);
-            // }
-            return refreshTokens;
-          } else {
-            // throw new Error('Not auth');
-            // navigation.navigate(ScreenKeys.AuthScreen);
-            router.navigate("/modalauth");
-            return null;
-          }
+          // if (mayByRefresh) {
+          //   const refreshTokens = await onRefreshToken();
+          //   // if (!refreshTokens) {
+          //   //     navigation.navigate(ScreenKeys.AuthScreen);
+          //   // }
+          //   return refreshTokens;
+          // } else {
+          //   // throw new Error('Not auth');
+          //   // navigation.navigate(ScreenKeys.AuthScreen);
+          //   router.navigate("/modalauth");
+          //   return null;
+          // }
+
+          dispatch(setAccessToken(""));
+          return null;
         } else {
           return tokenFromStore;
         }
-      } catch (e) {
-        onSendError(e);
+      } catch (e: any) {
+        onSendError(new CustomError("OnSyncToken", e?.message));
         throw e;
       }
     };
@@ -195,7 +202,10 @@ export default function useAuth() {
   useEffect(() => {
     onGetIamRef.current = async () => {
       // console.log('onGetIam::: token.access_token=[', token.access_token, ']', token.access_token === '');
-      if (!tokenFromStore?.access_token || isAccessTokenExpired()) {
+      if (
+        !tokenFromStore?.access_token ||
+        isExpiredTime(tokenFromStore?.expires_in)
+      ) {
         return;
       }
       return await onFetch(hostAPI + "/auth/iam", {
@@ -222,7 +232,7 @@ export default function useAuth() {
           }
         })
         .catch((e) => {
-          onSendError(e);
+          onSendError(new CustomError("onGetIam", e?.message));
           throw e;
         });
     };
@@ -237,7 +247,11 @@ export default function useAuth() {
   };
 
   const onBlock = async (id: string) => {
-    if (!tokenFromStore?.access_token || isAccessTokenExpired() || !id) {
+    if (
+      !tokenFromStore?.access_token ||
+      isExpiredTime(tokenFromStore?.expires_in) ||
+      !id
+    ) {
       return;
     }
 
@@ -261,7 +275,7 @@ export default function useAuth() {
         dispatch(setUser(null));
       })
       .catch((e) => {
-        onSendError(e);
+        onSendError(new CustomError("onBlock", e?.message));
         throw e;
       });
   };
@@ -346,7 +360,7 @@ export default function useAuth() {
   return {
     onGetIam,
     onRefreshToken,
-    isAccessTokenExpired,
+    // isAccessTokenExpired,
     onSyncToken,
     onLogout,
     onBlock,

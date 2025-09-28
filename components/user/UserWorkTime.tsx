@@ -9,6 +9,7 @@ import { hostAPI, isWriteConsole } from "@/utils/global";
 import useAuth from "@/hooks/useAuth";
 import Card from "../Card";
 import UIInput from "../ui/UIInput";
+import UICounter from "../ui/UICounter";
 
 const UserWorkTime = () => {
   const { t } = useTranslation();
@@ -20,15 +21,13 @@ const UserWorkTime = () => {
   const tokensFromStore = useAppSelector(tokens);
 
   // const [login, setLogin] = useState(userFromStore?.login);
-  const [workTime, setWorkTime] = useState("");
+  const [workTime, setWorkTime] = useState(userFromStore?.maxTime.toString());
+  console.log("userFromStore?.maxTime=", userFromStore?.maxTime);
+
   const [passwordTwo, setPasswordTwo] = useState("");
   const disabledSave = useMemo(
-    () =>
-      workTime == "" ||
-      passwordTwo == "" ||
-      workTime != passwordTwo ||
-      workTime.length < 6,
-    [workTime, passwordTwo]
+    () => workTime == userFromStore?.maxTime.toString(),
+    [workTime, userFromStore?.maxTime]
   );
   const [loading, setLoading] = useState(false);
   const createFormData = (body: any = {}) => {
@@ -40,7 +39,7 @@ const UserWorkTime = () => {
 
     return data;
   };
-  const onPatchAuth = async () => {
+  const onPatchUser = async () => {
     setLoading(true);
 
     await onCheckAuth();
@@ -49,31 +48,26 @@ const UserWorkTime = () => {
       return;
     }
 
-    return await fetch(
-      hostAPI + `/auth/reset-password/${userFromStore?.userId}`,
-      {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin-Type": "*",
-          Authorization: `Bearer ${tokensFromStore.access_token}`,
-        },
-        body: JSON.stringify({
-          password: workTime,
-        }),
-      }
-    )
+    return await fetch(hostAPI + `/user/${userFromStore?.id}`, {
+      method: "PATCH",
+      headers: {
+        "Access-Control-Allow-Origin-Type": "*",
+        Authorization: `Bearer ${tokensFromStore.access_token}`,
+      },
+      body: createFormData({
+        maxTime: workTime,
+      }),
+    })
       .then((r) => r.json())
       .then(async (response) => {
         if (response.message && response?.code === 401) {
           dispatch(setTokens({ access_token: "" }));
         }
 
-        if (response) {
+        if (response.id) {
           const result = await onGetIam();
-          setWorkTime("");
-          setPasswordTwo("");
           // console.log("result: ", result, userFromStore);
-          Alert.alert(t("noty"), t("okNewPassword"));
+
           return response;
         }
       })
@@ -90,17 +84,21 @@ const UserWorkTime = () => {
   return (
     <>
       <Card>
-        <UIInput
+        <UICounter
           value={workTime}
+          max={24}
+          min={0}
           onChangeText={setWorkTime}
           keyboardType="numeric"
-          title={t("newPassword")}
+          onChangeValue={(value) => {
+            setWorkTime(value.toString());
+          }}
           editable={true}
         />
 
         <View className="my-2">
-          <Text className="text-lg leading-5 text-s-800 dark:text-s-100">
-            {t("minLenghtPassword")}
+          <Text className="text-md leading-6 text-s-800 dark:text-s-100">
+            {t("maxTimeDescription")}
           </Text>
         </View>
 
@@ -110,7 +108,7 @@ const UserWorkTime = () => {
             text="Сохранить изменения"
             loading={loading}
             disabled={disabledSave}
-            onPress={onPatchAuth}
+            onPress={onPatchUser}
           />
         </View>
       </Card>

@@ -38,8 +38,9 @@ import { useFetchWithAuth } from "@/hooks/useFetchWithAuth";
 
 import { useErrContext } from "@/components/ErrContext";
 import { useError } from "@/hooks/useError";
-import { getObjectId } from "@/utils/utils";
+import { getObjectId, isExpiredTime } from "@/utils/utils";
 import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
+import { CustomError } from "@/hooks/useErrors";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -110,7 +111,7 @@ export default function WidgetEvents() {
 
   const onSetExpoPushToken = async (token: string) => {
     // console.log("userFromStore: ", userFromStore?.id);
-    if (userFromStore?.id) {
+    if (userFromStore?.id && !isExpiredTime(tokensFromStore?.expires_in)) {
       await onFetchWithAuth(`${hostAPI}/auth/${userFromStore?.userId}`, {
         method: "PATCH",
         body: JSON.stringify({
@@ -127,8 +128,8 @@ export default function WidgetEvents() {
           // }
         })
         .catch((e) => {
-          onSendError(new Error(`onSetExpoPushToken Error: ${e?.message}`));
-          isWriteConsole && console.log("onSetExpoPushToken Error", e);
+          onSendError(new CustomError("onSetExpoPushToken", e?.message));
+          // isWriteConsole && console.log("onSetExpoPushToken Error", e);
           throw e;
         });
       setExpoPushToken(token);
@@ -184,17 +185,21 @@ export default function WidgetEvents() {
   }, [activeTaskFromStore]);
 
   const onDetectActiveTaskWork = useCallback((data: IWsMessage) => {
-    // console.log(
-    //   "taskWorker ids=",
-    //   activeTaskFromStoreRef.current?.id,
-    //   data.content.id
-    // );
+    console.log(
+      "onDetectActiveTaskWork: taskWorker ids=",
+      activeTaskFromStoreRef.current?.id,
+      data.content.id,
+      data.content.status
+    );
     if (data.method === "DELETE") {
       if (activeTaskFromStoreRef.current?.id === data.content.id) {
         dispatch(setActiveTaskWorker(null));
       }
     } else {
-      if (activeTaskFromStoreRef.current?.id === data.content.id) {
+      if (
+        activeTaskFromStoreRef.current?.id === data.content.id ||
+        data.content.status == "process"
+      ) {
         dispatch(setActiveTaskWorker(data.content));
       }
     }
@@ -211,15 +216,15 @@ export default function WidgetEvents() {
     (data: IWsMessage) => {
       // console.log("onDetectActiveWorkHistory:");
 
-      // isWriteConsole &&
-      //   console.log(
-      //     "onDetectActiveWorkHistory: ",
-      //     // activeWorkHistoryFromStoreRef.current?.id,
-      //     data.content.status,
-      //     userRef.current?.id,
-      //     userFromStore?.id,
-      //     data.content?.workerId
-      //   );
+      isWriteConsole &&
+        console.log(
+          "onDetectActiveWorkHistory: ",
+          // activeWorkHistoryFromStoreRef.current?.id,
+          data.content.status,
+          userRef.current?.id,
+          userFromStore?.id,
+          data.content?.workerId
+        );
       if (data.method === "CREATE") {
         // isWriteConsole && console.log("Set workHistory CREATE ");
         if (
@@ -285,15 +290,15 @@ export default function WidgetEvents() {
         return;
       }
 
-      if (!tokensFromStore?.access_token) {
+      if (!tokensFromStore || isExpiredTime(tokensFromStore.expires_in)) {
         setReconnect(false);
-        return;
-      }
-      const _tokens = await onSyncToken();
-      if (!_tokens) {
-        // console.log("tokens: ", tokens);
         throw new Error(t("general:httpError.notFoundToken"));
       }
+      // const _tokens = await onSyncToken();
+      // if (!_tokens) {
+      //   // console.log("tokens: ", tokens);
+      //   throw new Error(t("general:httpError.notFoundToken"));
+      // }
       const stateNet = await NetInfo.fetch();
       // console.log('onFetch:::::', stateNet);
 
@@ -328,7 +333,6 @@ export default function WidgetEvents() {
         // isWriteConsole && console.log("userRef:", userRef);
 
         if (userRef.current && needReconnectSocket.current) {
-          setReconnect(true);
           // setErr(new Error("error.closeSocket"));
           isWriteConsole &&
             console.log("Need reconnect socket!", socket.current?.readyState);
@@ -340,11 +344,15 @@ export default function WidgetEvents() {
                 appStateVisible
               );
 
+            // if (!isExpiredTime(tokensFromStore.expires_in)) {
+            setReconnect(true);
+
             onInitSocket().then((r) => {
               if (r) {
                 socket.current = r;
               }
             });
+            // }
           }, 1000);
         }
       };
@@ -477,17 +485,19 @@ export default function WidgetEvents() {
                       );
                     }
                   } else {
-                    realm.create(
-                      "NotifySchema",
-                      {
-                        ...data.content,
-                        _id: new BSON.ObjectId(
-                          data.content.id || data.content._id
-                        ),
-                        images: data.content?.images || [],
-                      },
-                      UpdateMode.Modified
-                    );
+                    if (data.content?.id || data.content?._id) {
+                      realm.create(
+                        "NotifySchema",
+                        {
+                          ...data.content,
+                          _id: new BSON.ObjectId(
+                            data.content.id || data.content._id
+                          ),
+                          images: data.content?.images || [],
+                        },
+                        UpdateMode.Modified
+                      );
+                    }
                   }
                   break;
 
@@ -574,6 +584,8 @@ export default function WidgetEvents() {
                       },
                       UpdateMode.Modified
                     );
+
+                    // onDetectActiveTaskWork(data);
 
                     if (
                       data.content?.object &&
@@ -717,11 +729,15 @@ export default function WidgetEvents() {
               }
             } catch (e: any) {
               onSendError(
-                new Error(
-                  `WidgetEvents error: ${
-                    data.service
-                  }[${nameOperation}]: ${e.toString()}`
+                new CustomError(
+                  `WidgetEvents error: ${data.service}[${nameOperation}]}`,
+                  e?.message
                 )
+                // new Error(
+                //   `WidgetEvents error: ${
+                //     data.service
+                //   }[${nameOperation}]: ${e.toString()}`
+                // )
               );
               isWriteConsole &&
                 console.log(

@@ -13,6 +13,7 @@ import { BSON, UpdateMode } from "realm";
 import { TaskStatusSchema } from "@/schema";
 import { ITaskStatus } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseTaskStatusProps {
   userId?: string | undefined;
@@ -142,7 +143,7 @@ const useTaskStatus = (props: IUseTaskStatusProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useTaskStatus", e?.message));
           // console.log('UseNode error: ', e?.message);
         }
       };

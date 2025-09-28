@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { IUser } from "@/types";
 import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
+import { CustomError } from "./useErrors";
+import { useError } from "./useError";
 
 export interface IUseUserProps {
   id: string;
@@ -110,7 +112,7 @@ const UseUser = (props: IUseUserProps) => {
         //     ToastAndroid.TOP,
         // );
         setError(e.message);
-        onSendError(e);
+        onSendError(new CustomError("useUser", e?.message));
         // console.log('UseNode error: ', e?.message);
       }
     };

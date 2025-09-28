@@ -120,3 +120,15 @@ export function invertColor(hex?: string, bw?: boolean) {
     padZero((255 - b).toString(16))
   );
 }
+
+export const isExpiredTime = (time: number | undefined) => {
+  if (!time) return true;
+
+  const _time = new Date().getTime();
+  const timeExp = new Date(time).getTime();
+  const diff = timeExp - _time - 5000;
+
+  const isExp = diff <= 0;
+
+  return isExp;
+};

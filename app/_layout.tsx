@@ -67,6 +67,8 @@ import { isWriteConsole } from "@/utils/global";
 import Base from "@/components/base/Base";
 // import useAppStateCheck from "@/hooks/useAppStateCheck";
 import { AppStateStatusContext } from "@/components/AppStateStatusContext";
+import Welcome from "@/components/base/Welcome";
+import { CustomError } from "@/hooks/useErrors";
 // import SpeedTestView from "@/components/SpeedTestView";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -132,7 +134,7 @@ export default function RootLayout() {
       if (state) {
         setNet({ ...state });
         if (state.isConnected) {
-          setErr(null);
+          setErr([]);
         }
       }
     });
@@ -141,11 +143,11 @@ export default function RootLayout() {
     () => unsubscribe();
   }, []);
 
-  const [err, setErr] = useState<Error | null>(null);
+  const [err, setErr] = useState<CustomError[]>([]);
 
-  useEffect(() => {
-    isWriteConsole && console.log("ERR: ", err);
-  }, [err]);
+  // useEffect(() => {
+  //   isWriteConsole && console.log("ERR: ", err);
+  // }, [err]);
 
   // const appState = useRef(AppState.currentState);
   // const [appStateVisible, setAppStateVisible] = useState(appState.current);
@@ -232,26 +234,28 @@ export default function RootLayout() {
         //     persistor={persistor}
         //   >
         net?.isConnected ? (
-          err != null ? (
-            <View className="bg-s-100 dark:bg-s-900 z-50 flex-1 items-center justify-center p-6">
-              <StatusBar translucent backgroundColor="transparent" />
-              <Text className="text-lg text-s-800 dark:text-s-200 leading-5 mb-6">
-                {t(`${err?.message}`)}
-              </Text>
-              <UIButton
-                type="primary"
-                text={t("button.refreshSocket")}
-                onPress={() => {
-                  setErr(null);
-                }}
-              />
-            </View>
-          ) : (
-            // <Text>App load {appState.current}</Text>
-            // base component.
-            <Base err={err} setErr={setErr} />
-          )
+          // base component.
+          <Welcome err={err} setErr={setErr} />
         ) : (
+          // err != null ? (
+          //   <View className="bg-s-100 dark:bg-s-900 z-50 flex-1 items-center justify-center p-6">
+          //     <StatusBar translucent backgroundColor="transparent" />
+          //     <Text className="text-lg text-s-800 dark:text-s-200 leading-5 mb-6">
+          //       {t(`${err?.message}`)}
+          //     </Text>
+          //     <UIButton
+          //       type="primary"
+          //       text={t("button.refreshSocket")}
+          //       onPress={() => {
+          //         setErr(null);
+          //       }}
+          //     />
+          //   </View>
+          // ) : (
+          //   // <Text>App load {appState.current}</Text>
+          //   // base component.
+          //   <Base err={err} setErr={setErr} />
+          // )
           <GestureHandlerRootView
             style={styles.root}
             className="flex-1 bg-s-200 dark:bg-s-900"

@@ -87,6 +87,35 @@ export default function TabProfileScreen() {
     );
   };
 
+  const onShowDops = () => {
+    let message = "";
+    if (userFromStore?.dops?.length) {
+      message = userFromStore.dops.reduce((ac, el) => {
+        const days = el.days.map((x) => t(`day.${x}`)).join(", ");
+        let mess = `${days}: >=${el.minHours} ${t("time.hours")} ${t(
+          "dops.dop"
+        )} ${userFromStore?.oklad} ${getNoun(
+          el.doplata,
+          "₽",
+          "₽",
+          "₽"
+        )}\r\n\r\n`;
+        return ac + mess;
+      }, "");
+    }
+
+    Alert.alert(t("dops.title"), message, [
+      // {
+      //   text: t("button.no"),
+      //   onPress: () => {},
+      //   style: "cancel",
+      // },
+      {
+        text: t("button.ok"),
+        onPress: () => {},
+      },
+    ]);
+  };
   const post = useObject(PostSchema, new BSON.ObjectId(userFromStore?.postId));
 
   return (
@@ -117,20 +146,20 @@ export default function TabProfileScreen() {
             <View>
               <UserSettingAvatar />
 
-              <Card className="my-4">
-                <View className="py-2 border-b border-s-100 dark:border-s-800">
-                  <Text
-                    lineBreakMode="middle"
-                    numberOfLines={1}
-                    textBreakStrategy="balanced"
-                    className="flex-auto text-xl font-bold text-p-800 dark:text-p-200"
-                  >
-                    {userFromStore.name}
-                  </Text>
-                </View>
+              <View className="py-4 pb-6">
+                <Text
+                  lineBreakMode="middle"
+                  numberOfLines={1}
+                  textBreakStrategy="balanced"
+                  className="flex-auto text-center text-2xl font-bold text-p-800 dark:text-p-200"
+                >
+                  {userFromStore.name}
+                </Text>
+              </View>
 
+              <Card className="mb-4">
                 <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
-                  <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
+                  <Text className="px-3 flex-auto text-lg text-s-800 dark:text-s-500">
                     {t(`post`)}
                   </Text>
                   <Text className="text-lg font-bold text-p-800 dark:text-p-200">
@@ -141,26 +170,26 @@ export default function TabProfileScreen() {
                 {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (
-                  <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
-                    <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
-                      {t(`typePay.${userFromStore.typePay}`)}
-                    </Text>
-                    <UIButton type="link" onPress={() => onShowOklad()}>
+                  <UIButton type="link" onPress={() => onShowOklad()}>
+                    <View className="pt-2 flex-row gap-4 items-center">
+                      <Text className="px-0 flex-auto text-lg text-s-800 dark:text-s-500">
+                        {t(`typePay.${userFromStore.typePay}`)}
+                      </Text>
                       <View className="-mx-1 flex-row gap-4">
                         <Text className="text-lg font-bold text-p-800 dark:text-p-200">
                           ***
                         </Text>
                         <SIcon path="iChevronRight" size={20} />
                       </View>
-                    </UIButton>
-                    {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                      {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
                       {userFromStore?.oklad}{" "}
                       {getNoun(userFromStore?.oklad, "₽", "₽", "₽")}
-                    </Text> */}
-                  </View>
+                      </Text> */}
+                    </View>
+                  </UIButton>
                 )}
 
-                <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
+                {/* <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
                   <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                     {t(`birthday`)}
                   </Text>
@@ -172,27 +201,6 @@ export default function TabProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
-                  <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
-                    {t(`timeWork`)}
-                  </Text>
-                  <View className="-mx-1 flex-row gap-4">
-                    <Text className="text-lg font-bold text-p-800 dark:text-p-200"></Text>
-
-                    <UIButton
-                      type="secondary"
-                      className="p-2 rounded-lg bg-s-200 dark:bg-s-600"
-                      textClass="text-s-600 dark:text-s-200"
-                      text={t("button.edit")}
-                      onPress={() => {
-                        router.push({
-                          pathname: "/usertimework",
-                        });
-                      }}
-                    />
-                  </View>
-                </View>
-
                 <View className="py-2 flex-row gap-4 items-center">
                   <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                     {t(`phone`)}
@@ -200,7 +208,7 @@ export default function TabProfileScreen() {
                   <Text className="text-lg font-bold text-p-800 dark:text-p-200">
                     {userFromStore.phone}
                   </Text>
-                </View>
+                </View> */}
 
                 {/* {userFromStore?.auth ? (
                   <View className="py-2 flex-row gap-4 items-center border-b border-s-100 dark:border-s-800">
@@ -214,7 +222,40 @@ export default function TabProfileScreen() {
                 ) : null} */}
               </Card>
 
-              <Card className="my-4">
+              {userFromStore?.dops?.length && (
+                <Card className="mb-4">
+                  <UIButton type="link" onPress={() => onShowDops()}>
+                    <View className="flex-row gap-4 items-center">
+                      <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
+                        {t(`dops.title`)}
+                      </Text>
+                      <View className="-mx-1 flex-row gap-4">
+                        {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                          ***
+                        </Text> */}
+
+                        <View className="rounded-full bg-green-500">
+                          <Text
+                            numberOfLines={1}
+                            className={`text-sm text-white leading-4 p-1 ${
+                              userFromStore.dops?.length > 9 ? "" : "px-2"
+                            }`}
+                          >
+                            {userFromStore.dops?.length}
+                          </Text>
+                        </View>
+                        <SIcon path="iChevronRight" size={20} />
+                      </View>
+                      {/* <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                      {userFromStore?.oklad}{" "}
+                      {getNoun(userFromStore?.oklad, "₽", "₽", "₽")}
+                    </Text> */}
+                    </View>
+                  </UIButton>
+                </Card>
+              )}
+
+              <Card className="mb-4">
                 <View className="py-0">
                   <UIButton
                     type="link"
@@ -250,7 +291,45 @@ export default function TabProfileScreen() {
                 </View>
               </Card>
 
-              <Card className="my-4">
+              {userFromStore.roleObject.value.includes("maxTime-edit") && (
+                <Card className="mb-4">
+                  <>
+                    <View className="py-2 flex-row gap-4 items-center">
+                      <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
+                        {t(`timeWork`)}
+                      </Text>
+                      <View className="-mx-1 flex-row gap-4">
+                        <Text className="text-lg font-bold text-p-800 dark:text-p-200">
+                          {userFromStore.maxTime} {t("time.hours")}
+                        </Text>
+
+                        <UIButton
+                          type="secondary"
+                          className="p-2 rounded-lg bg-s-200 dark:bg-s-600"
+                          textClass="text-s-600 dark:text-s-200"
+                          text={t("button.edit")}
+                          onPress={() => {
+                            router.push({
+                              pathname: "/usertimework",
+                            });
+                          }}
+                        />
+                      </View>
+                    </View>
+
+                    <View className="text-md bg-p-50 dark:bg-s-800 p-2 rounded-lg">
+                      {/* <Text className="text-p-900 dark:text-p-200 font-medium">
+                        {t("title.info")}
+                      </Text> */}
+                      <Text className="text-p-800 dark:text-p-100">
+                        {t("maxTimeHelp")}
+                      </Text>
+                    </View>
+                  </>
+                </Card>
+              )}
+
+              <Card className="mb-4">
                 {!["admin", "boss", "designer", "superadmin"].includes(
                   userFromStore.roleObject?.code
                 ) && (
@@ -357,7 +436,7 @@ export default function TabProfileScreen() {
               <Card className="mt-4">
                 <UserSettingGeo />
               </Card> */}
-              <View className="mt-4">
+              <View>
                 <Card>
                   <View className="py-0 border-b border-s-100 dark:border-s-800">
                     <UIButton

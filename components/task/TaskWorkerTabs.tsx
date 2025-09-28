@@ -86,7 +86,7 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
 
     return _result;
   }, [taskWorkers]);
-  console.log("tabs");
+  // console.log("tabs");
 
   return (
     <ScrollView horizontal className="flex">
@@ -95,13 +95,15 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
         <View className="flex-row gap-2">
           {/* <Text>{props.objectId}</Text> */}
           {isLoading ? (
-            <ActivityIndicator size={30} />
-          ) : // [1, 2, 3, 4, 5].map((item) => (
-          //   <View key={item.toString()} className="flex-auto w-20">
-          //     <SSkeleton className="flex-1 bg-white dark:bg-s-900" />
-          //   </View>
-          // ))
-          objectsForTask.length ? (
+            // (
+            //   <ActivityIndicator size={30} />
+            // )
+            [1, 2, 3].map((item) => (
+              <View key={item.toString()} className="flex-auto w-20 h-12 m-0.5">
+                <SSkeleton className="flex-1 bg-white dark:bg-s-900"></SSkeleton>
+              </View>
+            ))
+          ) : objectsForTask.length ? (
             objectsForTask.map((item) =>
               item ? (
                 <View

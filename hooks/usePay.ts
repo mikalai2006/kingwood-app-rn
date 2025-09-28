@@ -12,6 +12,7 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { IPay } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUsePayProps {
   id?: string[];
@@ -124,7 +125,7 @@ const usePay = (props: IUsePayProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("usePay", e));
           // console.log('UseNode error: ', e?.message);
         }
       };

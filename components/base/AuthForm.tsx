@@ -10,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { hostAPI, isWriteConsole } from "@/utils/global";
-import { useNavigation } from "expo-router";
 import { authData, setAuthData, setTokens, tokens } from "@/store/storeSlice";
 import { ITokenResponse } from "@/types";
 import UIInput from "@/components/ui/UIInput";
@@ -19,16 +18,20 @@ import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
 import SIcon from "@/components/ui/SIcon";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { isExpiredTime } from "@/utils/utils";
+import useAuth from "@/hooks/useAuth";
 import useErrors, { CustomError } from "@/hooks/useErrors";
 
-export default function Modal() {
+export default function AuthForm() {
+  isWriteConsole && console.log("Render AuthForm");
+
   const { colorScheme } = useColorScheme();
 
   const { t } = useTranslation();
   const { onCreateError } = useErrors();
 
+  const { onRefreshToken } = useAuth();
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const tokensFromStore = useAppSelector(tokens);
 
   const authDataFromStore = useAppSelector(authData);
@@ -46,10 +49,35 @@ export default function Modal() {
   //   setResult(result.type);
   // };
 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // console.log(
+    //   "tokensFromStore: ",
+    //   tokensFromStore,
+    //   isExpiredTime(tokensFromStore?.expires_in),
+    //   isExpiredTime(tokensFromStore?.expires_in_r)
+    // );
+    const refreshF = async () => {
+      if (
+        tokensFromStore?.refresh_token &&
+        !isExpiredTime(tokensFromStore?.expires_in_r) &&
+        isExpiredTime(tokensFromStore?.expires_in)
+      ) {
+        setLoading(true);
+        await onRefreshToken();
+        setLoading(false);
+      }
+    };
+
+    refreshF();
+  }, []);
+
   const { onFetch } = useFetch();
 
   const onLogin = async () => {
     isWriteConsole && console.log(hostAPI + "/auth/sign-in");
+    setLoading(true);
 
     return await onFetch(hostAPI + "/auth/sign-in", {
       method: "POST",
@@ -112,8 +140,13 @@ export default function Modal() {
       })
       .catch((e) => {
         // Alert.alert(t("error.title"), t(e?.message));
-        const err = new CustomError("modalauth", e, "100");
+        // throw e;
+        const err = new CustomError("AuthForm", e, "100");
+
         onCreateError(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -246,6 +279,7 @@ export default function Modal() {
             <UIButton
               type="primary"
               disabled={!login || !password}
+              loading={loading}
               text={t("button.signin")}
               onPress={onLogin}
             />

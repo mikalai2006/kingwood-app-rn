@@ -12,6 +12,7 @@ import { useRealm } from "@realm/react";
 import { BSON, UpdateMode } from "realm";
 import { IWorkTime } from "@/types";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IUseWorkTimeProps {
   id?: string[];
@@ -171,7 +172,7 @@ const UseWorkTime = (props: IUseWorkTimeProps, deps: any[]) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useWorkTime", e?.message));
           // console.log('UseNode error: ', e?.message);
         }
       };

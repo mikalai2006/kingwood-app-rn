@@ -6,7 +6,7 @@ import { useAppSelector } from "@/store/hooks";
 import { tokens } from "@/store/storeSlice";
 
 export const useFetchWithAuth = () => {
-  const { onSyncToken, isAccessTokenExpired } = useAuth();
+  const { onSyncToken } = useAuth();
   const { t } = useTranslation();
   const tokenFromStore = useAppSelector(tokens);
 

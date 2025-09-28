@@ -13,6 +13,7 @@ import { BSON, UpdateMode } from "realm";
 import { IObject } from "@/types";
 import { ObjectsSchema } from "@/schema/ObjectsSchema";
 import { useError } from "./useError";
+import { CustomError } from "./useErrors";
 
 export interface IuseObjectsProps {
   userId?: string;
@@ -129,7 +130,7 @@ const useObjects = (props: IuseObjectsProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
+          onSendError(new CustomError("useObjects", e));
           // console.log('UseNode error: ', e?.message);
         }
       };

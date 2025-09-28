@@ -13,6 +13,7 @@ import { BSON, UpdateMode } from "realm";
 import { INotify } from "@/types";
 import { useError } from "./useError";
 import { getObjectId } from "@/utils/utils";
+import { CustomError } from "./useErrors";
 
 export interface IUseNotifyProps {
   id?: string[];
@@ -169,8 +170,8 @@ const useNotify = (props: IUseNotifyProps) => {
           //     ToastAndroid.TOP,
           // );
           setError(e.message);
-          onSendError(e);
-          isWriteConsole && console.log("UseNotify error: ", e);
+          onSendError(new CustomError("useNotify", e));
+          // isWriteConsole && console.log("UseNotify error: ", e);
         }
       };
 

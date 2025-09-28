@@ -95,15 +95,15 @@ const TaskWorkerTabs = (props: TaskWorkerTabsProps) => {
         <View className="flex-row gap-2">
           {/* <Text>{props.objectId}</Text> */}
           {isLoading ? (
-            // (
-            //   <ActivityIndicator size={30} />
-            // )
-            [1, 2, 3].map((item) => (
-              <View key={item.toString()} className="flex-auto w-20 h-12 m-0.5">
-                <SSkeleton className="flex-1 bg-white dark:bg-s-900"></SSkeleton>
-              </View>
-            ))
-          ) : objectsForTask.length ? (
+            <View className="flex-auto w-20 h-12 m-0.5">
+              <ActivityIndicator size={30} />
+            </View>
+          ) : // [1, 2, 3].map((item) => (
+          //   <View key={item.toString()} className="flex-auto w-20 h-12 m-0.5">
+          //     <SSkeleton className="flex-1 bg-white dark:bg-s-900"></SSkeleton>
+          //   </View>
+          // ))
+          objectsForTask.length ? (
             objectsForTask.map((item) =>
               item ? (
                 <View

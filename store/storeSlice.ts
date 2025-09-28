@@ -21,6 +21,7 @@ const initialState: AppState = {
   activeLanguage: null,
   languages: [],
   user: null,
+  news: [],
   role: {},
   users: {},
   activeTaskWorker: null,
@@ -91,6 +92,11 @@ export const storeSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser | null>) => {
       // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
       state.user = action.payload ? { ...action.payload } : null;
+    },
+    addNew: (state, action: PayloadAction<string>) => {
+      if (state.news.indexOf(action.payload) == -1) {
+        state.news.push(action.payload);
+      }
     },
     setSchedules: (state, action: PayloadAction<ISchedule[]>) => {
       // console.log('setUser: ', JSON.stringify(action.payload)); // JSON.stringify(action.payload)
@@ -191,6 +197,7 @@ export const {
   setLinkParams,
   setSchedules,
   setAuthData,
+  addNew,
 } = storeSlice.actions;
 // Функция ниже называется селектором и позволяет нам выбрать значение из
 // штат. Селекторы также могут быть определены встроенными, где они используются вместо
@@ -206,6 +213,7 @@ export const users = (state: RootState) => state.store.users;
 export const activeTaskWorker = (state: RootState) =>
   state.store.activeTaskWorker;
 export const workTime = (state: RootState) => state.store.workTime;
+export const news = (state: RootState) => state.store.news;
 export const workHistory = (state: RootState) => state.store.workHistory;
 export const financyFilter = (state: RootState) => state.store.financyFilter;
 export const linkParams = (state: RootState) => state.store.linkParams;

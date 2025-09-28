@@ -5,13 +5,7 @@ import { Text, View, ScrollView, Alert } from "react-native";
 // import * as Linking from "expo-linking";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  schedules,
-  setActiveTaskWorker,
-  setWorkHistory,
-  tokens,
-  user,
-} from "@/store/storeSlice";
+import { schedules, tokens, user } from "@/store/storeSlice";
 import UIButton from "@/components/ui/UIButton";
 import useAuth from "@/hooks/useAuth";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,6 +21,7 @@ import { useObject } from "@realm/react";
 import { PostSchema } from "@/schema";
 import { BSON } from "realm";
 import dayjs from "@/utils/dayjs";
+// import BadgeNew from "@/components/badge/BadgeNew";
 // import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
 export default function TabProfileScreen() {
@@ -225,6 +220,11 @@ export default function TabProfileScreen() {
               {userFromStore?.dops?.length && (
                 <Card className="mb-4">
                   <UIButton type="link" onPress={() => onShowDops()}>
+                    {/* <BadgeNew
+                      keyString="doplata"
+                      text={t("new")}
+                      customClass=" -top-4 -left-4 rounded-tl-lg"
+                    /> */}
                     <View className="flex-row gap-4 items-center">
                       <Text className="flex-auto text-lg text-s-800 dark:text-s-500">
                         {t(`dops.title`)}
@@ -291,10 +291,15 @@ export default function TabProfileScreen() {
                 </View>
               </Card>
 
-              {userFromStore.roleObject.value.includes("maxTime-edit") && (
+              {userFromStore?.maxTime > 0 && (
                 <Card className="mb-4">
                   <>
                     <View className="py-2 flex-row gap-4 items-center">
+                      {/* <BadgeNew
+                        keyString="maxTime"
+                        text={t("new")}
+                        customClass=" -top-4 -left-4 rounded-tl-lg"
+                      /> */}
                       <Text className="px-2 flex-auto text-lg text-s-800 dark:text-s-500">
                         {t(`timeWork`)}
                       </Text>
@@ -303,17 +308,21 @@ export default function TabProfileScreen() {
                           {userFromStore.maxTime} {t("time.hours")}
                         </Text>
 
-                        <UIButton
-                          type="secondary"
-                          className="p-2 rounded-lg bg-s-200 dark:bg-s-600"
-                          textClass="text-s-600 dark:text-s-200"
-                          text={t("button.edit")}
-                          onPress={() => {
-                            router.push({
-                              pathname: "/usertimework",
-                            });
-                          }}
-                        />
+                        {userFromStore.roleObject.value.includes(
+                          "maxTime-edit"
+                        ) && (
+                          <UIButton
+                            type="secondary"
+                            className="p-2 rounded-lg bg-s-200 dark:bg-s-600"
+                            textClass="text-s-600 dark:text-s-200"
+                            text={t("button.edit")}
+                            onPress={() => {
+                              router.push({
+                                pathname: "/usertimework",
+                              });
+                            }}
+                          />
+                        )}
                       </View>
                     </View>
 

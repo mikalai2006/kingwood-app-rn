@@ -357,16 +357,19 @@ export default function TabLayout() {
               tabBarItemStyle: {
                 maxWidth: 90,
               },
-              tabBarIcon: ({ color, focused }) =>
-                !userFromStore?.images ? (
-                  <SIcon
-                    path={focused ? "iPerson" : "iPerson"}
-                    size={25}
-                    color={color}
-                  />
-                ) : (
-                  <UserTabInfo userData={userFromStore} />
-                ),
+              tabBarIcon: ({ color, focused }) => (
+                <View>
+                  {!userFromStore?.images ? (
+                    <SIcon
+                      path={focused ? "iPerson" : "iPerson"}
+                      size={25}
+                      color={color}
+                    />
+                  ) : (
+                    <UserTabInfo userData={userFromStore} />
+                  )}
+                </View>
+              ),
             }}
           />
         </Tabs>

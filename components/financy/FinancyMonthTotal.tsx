@@ -224,39 +224,41 @@ export function FinancyMonthTotal({ from, to, time }: FinancyMonthTotalProps) {
             </View> */}
             </View>
 
-            <View className="mb-2 bg-s-50 dark:bg-s-700 py-2 rounded-lg">
-              {allPayMonth.map((pay, index) => (
-                <View
-                  key={pay._id.toString()}
-                  className={
-                    "flex flex-row gap-2 px-2 py-0.5 " +
-                    (index < allPayMonth.length - 1
-                      ? "border-b border-s-200 dark:border-s-950 border-dotted"
-                      : "")
-                  }
-                >
-                  <Text
+            {allPayMonth.length > 0 && (
+              <View className="mb-2 bg-s-50 dark:bg-s-700 py-2 rounded-lg">
+                {allPayMonth.map((pay, index) => (
+                  <View
+                    key={pay._id.toString()}
                     className={
-                      "flex-auto " +
-                      (pay.total > 0
-                        ? "text-s-800 dark:text-s-300 "
-                        : "text-r-600 dark:text-r-400")
+                      "flex flex-row gap-2 px-2 py-0.5 " +
+                      (index < allPayMonth.length - 1
+                        ? "border-b border-s-200 dark:border-s-950 border-dotted"
+                        : "")
                     }
                   >
-                    {pay.name}
-                  </Text>
-                  <Text
-                    className={
-                      pay.total > 0
-                        ? "text-p-600 dark:text-p-300 font-medium"
-                        : "text-r-600 dark:text-r-400 font-medium"
-                    }
-                  >
-                    {pay.total.toLocaleString("ru-RU")} ₽
-                  </Text>
-                </View>
-              ))}
-            </View>
+                    <Text
+                      className={
+                        "flex-auto " +
+                        (pay.total > 0
+                          ? "text-s-800 dark:text-s-300 "
+                          : "text-r-600 dark:text-r-400")
+                      }
+                    >
+                      {pay.name}
+                    </Text>
+                    <Text
+                      className={
+                        pay.total > 0
+                          ? "text-p-600 dark:text-p-300 font-medium"
+                          : "text-r-600 dark:text-r-400 font-medium"
+                      }
+                    >
+                      {pay.total.toLocaleString("ru-RU")} ₽
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         )}
         <View className="flex flex-row gap-2 items-center">

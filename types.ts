@@ -493,6 +493,7 @@ export interface AppState {
   users: {
     [key: string]: IUser;
   };
+  news: string[];
   activeTaskWorker: ITaskWorkerPopulate | null;
   workTime: IWorkTime | null;
   workHistory: IWorkHistory | null;

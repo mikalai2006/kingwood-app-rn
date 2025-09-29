@@ -21,6 +21,7 @@ import { useObject } from "@realm/react";
 import { PostSchema } from "@/schema";
 import { BSON } from "realm";
 import dayjs from "@/utils/dayjs";
+import AppInfo from "@/components/update/AppInfo";
 // import BadgeNew from "@/components/badge/BadgeNew";
 // import { useTaskWorkerUtils } from "@/hooks/useTaskWorkerUtils";
 
@@ -491,6 +492,8 @@ export default function TabProfileScreen() {
               </UIButton> */}
             </Card>
           )}
+
+          <AppInfo />
         </View>
       </SafeAreaView>
     </ScrollView>

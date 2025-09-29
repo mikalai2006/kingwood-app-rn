@@ -38,7 +38,7 @@ export default function NotifyScreen() {
 
   return (
     // <SafeAreaView style={{ flex: 1 }} className="bg-s-200 dark:bg-s-950">
-    <View className="flex-1 bg-s-200 dark:bg-s-950">
+    <View className="flex-1 bg-s-200 dark:bg-s-950 pb-6">
       {!notifys.length ? (
         <View className="p-4">
           <Text className="text-lg text-s-500 dark:text-s-300">

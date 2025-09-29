@@ -35,6 +35,25 @@ export default function Layout() {
   return (
     <View className="flex-1 bg-s-100 dark:bg-s-800">
       <SafeAreaView style={{ flex: 1 }}>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor:
+                colorScheme === "dark" ? Colors.s[950] : Colors.s[100],
+            },
+            headerTintColor:
+              colorScheme === "dark" ? Colors.s[200] : Colors.s[800],
+          }}
+        >
+          <Stack.Screen
+            name="new"
+            options={{
+              headerShown: false,
+              // presentation: "transparentModal",
+              animation: "slide_from_right",
+            }}
+          />
+        </Stack>
         {/* <Stack
           screenOptions={{
             headerStyle: {
@@ -55,8 +74,8 @@ export default function Layout() {
             }}
           />
         </Stack> */}
-        <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}>
-          <MaterialTopTabs.Screen
+        {/* <MaterialTopTabs tabBar={(props) => <LotsTabBar {...props} />}> */}
+        {/* <MaterialTopTabs.Screen
             name="new"
             options={{
               title: t("title.notifyNew"),
@@ -66,8 +85,8 @@ export default function Layout() {
               //   </View>
               // ),
             }}
-          />
-          {/* <MaterialTopTabs.Screen
+          /> */}
+        {/* <MaterialTopTabs.Screen
                     name="question"
                     options={{
                       title: "Вопросы",
@@ -78,7 +97,7 @@ export default function Layout() {
                       ),
                     }}
                   /> */}
-          <MaterialTopTabs.Screen
+        {/* <MaterialTopTabs.Screen
             name="old"
             options={{
               title: t("title.notifyOld"),
@@ -88,8 +107,8 @@ export default function Layout() {
               //   </View>
               // ),
             }}
-          />
-        </MaterialTopTabs>
+          /> */}
+        {/* </MaterialTopTabs> */}
       </SafeAreaView>
     </View>
   );

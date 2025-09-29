@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import * as Application from "expo-application";
 import NetInfo from "@react-native-community/netinfo";
 
 import * as Device from "expo-device";
@@ -110,12 +111,16 @@ export default function WidgetEvents() {
   }, []);
 
   const onSetExpoPushToken = async (token: string) => {
-    // console.log("userFromStore: ", userFromStore?.id);
     if (userFromStore?.id && !isExpiredTime(tokensFromStore?.expires_in)) {
+      isWriteConsole && console.log("onSetExpoPushToken: ", token.toString());
       await onFetchWithAuth(`${hostAPI}/auth/${userFromStore?.userId}`, {
         method: "PATCH",
         body: JSON.stringify({
           pushToken: token.toString(),
+          appInfo: {
+            versionApp: Application.nativeApplicationVersion,
+            versionBuild: Application.nativeBuildVersion,
+          },
         }),
       })
         .then((res) => res.json())
@@ -748,7 +753,7 @@ export default function WidgetEvents() {
             }
           });
         } else {
-          isWriteConsole && console.log("EVENT ID NULL");
+          isWriteConsole && console.log("EVENT ID NULL:", data);
         }
         // Notifications.scheduleNotificationAsync({
         //   content: {

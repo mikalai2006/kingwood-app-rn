@@ -27,7 +27,7 @@ const OrderTasks = ({ orderId }: OrderTasksProps) => {
       {tasks?.map((task, index) => (
         <View
           key={task._id.toString()}
-          className="flex flex-row items-center gap-4"
+          className="flex flex-row items-center gap-4 mb-6"
         >
           <View>
             {task?.statusId && (
@@ -41,7 +41,7 @@ const OrderTasks = ({ orderId }: OrderTasksProps) => {
           </View>
           <View className="flex-auto min-h-28">
             <Text
-              className="text-2xl text-s-900 dark:text-s-200 leading-6"
+              className="text-xl font-medium text-s-900 dark:text-s-200 leading-6"
               lineBreakMode="tail"
             >
               {task.name}

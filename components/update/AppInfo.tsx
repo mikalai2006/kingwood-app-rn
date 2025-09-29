@@ -94,8 +94,8 @@ const AppInfo = () => {
   return (
     <View className="p-6">
       <Text className="text-s-700 dark:text-s-500">
-        {Application.applicationName}: [{Application.nativeApplicationVersion}/
-        {Application.nativeBuildVersion}]
+        {Application.applicationName} ver.[
+        {Application.nativeApplicationVersion}/{Application.nativeBuildVersion}]
       </Text>
 
       {/* <UIButton
